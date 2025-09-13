@@ -1,0 +1,110 @@
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import {
+    getFirestore, collection, addDoc, serverTimestamp,
+    query, orderBy, onSnapshot, limit
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  // >>> Deine Firebase-Konfiguration hier einfügen <<<
+  const firebaseConfig = {
+    apiKey: "…",
+    authDomain: "…",
+    projectId: "…",
+    appId: "…"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db  = getFirestore(app);
+
+  // Collections
+  const guestbookCol = collection(db, "guestbook");
+  const candlesCol   = collection(db, "candles");
+
+  // UI-Referenzen aus deinem DOM
+  const lightCandleBtn   = document.getElementById('light-candle');
+  const candlesContainer = document.getElementById('candles-container');
+  const guestbookForm    = document.getElementById('guestbook-form');
+  const guestbookEntries = document.getElementById('guestbook-entries');
+
+  // ---------- Schreiben ----------
+  // Kerze
+  lightCandleBtn.addEventListener('click', async () => {
+    const name = prompt("Ihr Name (optional):");
+    try {
+      await addDoc(candlesCol, {
+        name: (name && name.trim()) ? name.trim() : 'Anonym',
+        createdAt: serverTimestamp()
+      });
+    } catch (e) {
+      alert("Kerze konnte nicht gespeichert werden. Bitte später erneut versuchen.");
+      console.error(e);
+    }
+  });
+
+  // Gästebuch
+  guestbookForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const nameEl = document.getElementById('name');
+    const msgEl  = document.getElementById('message');
+    const name   = (nameEl.value || '').trim();
+    const msg    = (msgEl.value  || '').trim();
+
+    if (!msg) return;
+
+    try {
+      await addDoc(guestbookCol, {
+        name: name ? name : 'Anonym',
+        message: msg,
+        createdAt: serverTimestamp()
+      });
+      guestbookForm.reset();
+    } catch (e) {
+      alert("Eintrag konnte nicht gespeichert werden. Bitte später erneut versuchen.");
+      console.error(e);
+    }
+  });
+
+  // ---------- Lesen (Echtzeit) ----------
+  // Kerzen (neueste zuerst, max. 100)
+  onSnapshot(
+    query(candlesCol, orderBy('createdAt', 'desc'), limit(100)),
+    (snapshot) => {
+      candlesContainer.innerHTML = '';
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        const candle = document.createElement('div');
+        candle.className = 'candle candle-lit flex flex-col items-center';
+        candle.innerHTML = `
+          <div class="relative">
+            <div class="w-4 h-8 bg-yellow-100 rounded-t-full mx-auto"></div>
+            <div class="w-2 h-2 bg-yellow-300 rounded-full mx-auto mt-1 animate-pulse"></div>
+          </div>
+          <span class="text-xs mt-1">${(data.name || 'Anonym')}</span>
+        `;
+        candlesContainer.appendChild(candle);
+      });
+    }
+  );
+
+  // Gästebuch (neueste zuerst, max. 100)
+  onSnapshot(
+    query(guestbookCol, orderBy('createdAt', 'desc'), limit(100)),
+    (snapshot) => {
+      guestbookEntries.innerHTML = '';
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        const created = data.createdAt?.toDate
+          ? data.createdAt.toDate()
+          : (data.createdAt || new Date());
+        const entry = document.createElement('div');
+        entry.className = 'bg-gray-50 p-4 rounded-lg';
+        entry.innerHTML = `
+          <h3 class="font-medium text-gray-800">${(data.name || 'Anonym')}</h3>
+          <p class="text-gray-600 mt-1">${(data.message || '').replace(/</g,"&lt;").replace(/>/g,"&gt;")}</p>
+          <p class="text-xs text-gray-400 mt-2">${new Intl.DateTimeFormat('de-DE').format(created)}</p>
+        `;
+        guestbookEntries.appendChild(entry);
+      });
+    }
+  );
+</script>
