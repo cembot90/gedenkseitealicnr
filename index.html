@@ -14,11 +14,10 @@
 </head>
 <body>
   <a class="skip" href="#jahrestag">Zum Inhalt</a>
-  <canvas id="dust" aria-hidden="true"></canvas>
 
-  <header class="topbar">
-    <a class="mark" href="#top" aria-label="Nach oben">AÇ</a>
-    <nav class="nav" aria-label="Hauptnavigation">
+  <header class="nav">
+    <a class="nav__name" href="#top">Ali Çinar</a>
+    <nav class="nav__links" aria-label="Hauptnavigation">
       <a href="#jahrestag" data-i18n="navYear"></a>
       <a href="#leben" data-i18n="navLife"></a>
       <a href="#erinnerungen" data-i18n="navMemories"></a>
@@ -26,116 +25,105 @@
       <a href="#bilder" data-i18n="navGallery"></a>
       <a href="#gedenkbuch" data-i18n="navBook"></a>
     </nav>
-    <div class="lang" role="group" aria-label="Sprache / Dil">
+    <div class="seg-switch" role="group" aria-label="Sprache / Dil">
       <button type="button" data-lang="de" aria-pressed="true">DE</button>
       <button type="button" data-lang="tr" aria-pressed="false">TR</button>
     </div>
   </header>
 
   <main id="top">
-    <section class="hero">
-      <div class="hero__inner">
-        <p class="eyebrow" data-i18n="inMemory"></p>
-        <div class="portrait" id="portrait" aria-hidden="true">
-          <div class="portrait__ring"></div>
-          <div class="portrait__img"></div>
+    <!-- 1 · Auftakt: Porträt zieht sich beim Scrollen zurück -->
+    <section class="hero scene" data-scene>
+      <div class="stage">
+        <div class="hero__portrait" id="portrait"><div class="portrait__img"></div></div>
+        <div class="hero__text">
+          <p class="hero__lead" data-i18n="inMemory"></p>
+          <h1 class="hero__name" id="heroName"></h1>
+          <p class="hero__role" id="heroNick"></p>
+          <p class="hero__dates"><span id="born"></span><span class="hero__dash" aria-hidden="true"></span><span id="died"></span></p>
+          <p class="hero__places" id="places"></p>
         </div>
-        <h1 class="hero__name silver" id="heroName"></h1>
-        <p class="hero__nick" id="heroNick"></p>
-        <p class="hero__dates"><span id="born"></span><span class="sep" aria-hidden="true"></span><span id="died"></span></p>
-        <p class="hero__places" id="places"></p>
-        <blockquote class="hero__quote">
-          <p id="quote"></p>
-          <cite id="quoteSource"></cite>
-        </blockquote>
-        <button class="btn btn--silver" type="button" data-action="candle">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c1.6 2.4 3 4.2 3 6a3 3 0 0 1-6 0c0-1.8 1.4-3.6 3-6Z"/><rect x="10" y="12" width="4" height="10" rx="1"/></svg>
-          <span data-i18n="lightCandle"></span>
-        </button>
-      </div>
-      <a class="scrollcue" href="#jahrestag"><span data-i18n="scroll"></span><i aria-hidden="true"></i></a>
-    </section>
-
-    <section class="section anniv" id="jahrestag">
-      <div class="wrap">
-        <article class="letter reveal">
-          <p class="eyebrow" id="annEyebrow"></p>
-          <h2 class="letter__title" id="annTitle"></h2>
-          <div class="letter__body" id="annBody"></div>
-          <p class="letter__reflection" id="annReflection"></p>
-          <p class="letter__blessing" id="annBlessing"></p>
-          <p class="letter__blessing letter__blessing--tr">Devr-i Daim. Işıklar yoldaşın olsun.</p>
-          <p class="letter__closing" id="annClosing"></p>
-          <p class="letter__signature silver" id="annSignature"></p>
-          <a class="letter__link" href="#worte"><span data-i18n="speechLink"></span><i aria-hidden="true">→</i></a>
-        </article>
+        <span class="hero__cue" aria-hidden="true"></span>
       </div>
     </section>
 
-    <section class="section" id="leben">
-      <div class="wrap narrow">
-        <p class="intro reveal" id="intro"></p>
+    <!-- 2 · Seine Worte, Wort für Wort -->
+    <section class="words scene" data-scene>
+      <div class="stage">
+        <p class="words__line" id="wordsLine" lang="tr"></p>
+        <p class="words__meaning" id="wordsMeaning"></p>
+        <p class="words__after" id="wordsAfter"></p>
       </div>
-      <div class="wrap">
-        <header class="shead reveal">
-          <p class="eyebrow" data-i18n="lifeEyebrow"></p>
-          <h2 data-i18n="lifeTitle"></h2>
-        </header>
+    </section>
+
+    <!-- 3 · Ein Jahr ohne dich -->
+    <section class="year" id="jahrestag">
+      <div class="col">
+        <h2 class="year__title" id="annTitle"></h2>
+        <p class="year__kicker" id="annEyebrow"></p>
+        <div class="year__body" id="annBody"></div>
+        <p class="year__reflection" id="annReflection"></p>
+        <div class="year__close">
+          <p id="annBlessing"></p>
+          <p class="year__devr" lang="tr">Devr-i Daim. Işıklar yoldaşın olsun.</p>
+          <p class="year__sign"><span id="annClosing"></span><br><strong id="annSignature"></strong></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 · Lebensweg -->
+    <section class="life" id="leben">
+      <div class="col">
+        <p class="intro" id="intro"></p>
+        <h2 class="h2" data-i18n="lifeTitle"></h2>
         <ol class="timeline" id="timeline"></ol>
       </div>
     </section>
 
-    <section class="section memories" id="erinnerungen">
-      <div class="memories__glow" aria-hidden="true"></div>
-      <div class="wrap">
-        <header class="shead reveal">
-          <p class="eyebrow" data-i18n="memEyebrow"></p>
-          <h2 data-i18n="memTitle"></h2>
-        </header>
-        <div class="memgrid" id="memories"></div>
+    <!-- 5 · Fröhliche Erinnerungen: bildschirmfüllende Fotos, die mitgehen -->
+    <section class="moments" id="erinnerungen">
+      <div class="col moments__head">
+        <h2 class="h2 h2--color" data-i18n="memTitle"></h2>
+        <p class="sub" data-i18n="memEyebrow"></p>
+      </div>
+      <div id="memories"></div>
+    </section>
+
+    <!-- 6 · Worte für ihn -->
+    <section class="speak" id="worte">
+      <div class="col">
+        <h2 class="h2" data-i18n="wordsTitle"></h2>
+        <p class="sub" data-i18n="wordsEyebrow"></p>
+        <div id="speeches"></div>
       </div>
     </section>
 
-    <section class="section" id="worte">
-      <div class="wrap">
-        <header class="shead reveal">
-          <p class="eyebrow" data-i18n="wordsEyebrow"></p>
-          <h2 data-i18n="wordsTitle"></h2>
-        </header>
-        <div class="speeches" id="speeches"></div>
-      </div>
-    </section>
-
-    <section class="section" id="bilder">
-      <div class="wrap">
-        <header class="shead reveal">
-          <p class="eyebrow" data-i18n="galleryEyebrow"></p>
-          <h2 data-i18n="galleryTitle"></h2>
-        </header>
-        <div class="gallery" id="gallery"></div>
-      </div>
-    </section>
-
-    <section class="section candles" id="kerzen">
-      <div class="wrap">
-        <header class="shead reveal">
-          <p class="eyebrow" data-i18n="candlesEyebrow"></p>
-          <h2 data-i18n="candlesTitle"></h2>
-        </header>
-        <p class="candles__count" id="candleCount" aria-live="polite"></p>
-        <div class="candlefield" id="candles"></div>
-        <div class="center">
-          <button class="btn btn--silver" type="button" data-action="candle"><span data-i18n="lightCandle"></span></button>
+    <!-- 7 · Galerie: fährt beim Scrollen seitlich durch -->
+    <section class="reel scene" id="bilder" data-scene>
+      <div class="stage">
+        <div class="reel__head col">
+          <h2 class="h2" data-i18n="galleryTitle"></h2>
         </div>
+        <div class="reel__track" id="gallery"></div>
       </div>
     </section>
 
-    <section class="section" id="gedenkbuch">
-      <div class="wrap book">
-        <div class="book__form reveal">
-          <p class="eyebrow" data-i18n="bookEyebrow"></p>
-          <h2 data-i18n="bookTitle"></h2>
-          <p class="muted" data-i18n="bookIntro"></p>
+    <!-- 8 · Lichter -->
+    <section class="lights" id="kerzen">
+      <div class="col">
+        <h2 class="h2" data-i18n="candlesTitle"></h2>
+        <p class="sub" id="candleCount" aria-live="polite"></p>
+        <div class="candlefield" id="candles"></div>
+        <button class="btn btn--primary" type="button" data-action="candle"><span data-i18n="lightCandle"></span></button>
+      </div>
+    </section>
+
+    <!-- 9 · Gedenkbuch -->
+    <section class="book" id="gedenkbuch">
+      <div class="col book__grid">
+        <div class="book__form">
+          <h2 class="h2" data-i18n="bookTitle"></h2>
+          <p class="sub" data-i18n="bookIntro"></p>
           <p class="demo-note" id="demoNote" hidden data-i18n="demo"></p>
           <form id="bookForm" novalidate>
             <label class="field">
@@ -156,7 +144,7 @@
               <span><span data-i18n="fConsent"></span> <a href="datenschutz.html" data-i18n="privacy"></a></span>
             </label>
             <label class="hp" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off"></label>
-            <button class="btn btn--solid" type="submit" data-i18n="fSubmit"></button>
+            <button class="btn btn--primary btn--wide" type="submit" data-i18n="fSubmit"></button>
             <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
           </form>
         </div>
@@ -166,16 +154,16 @@
   </main>
 
   <footer class="footer">
-    <p class="silver footer__name" id="footName"></p>
-    <p class="muted" id="footFamily"></p>
-    <nav class="legal" aria-label="Rechtliches"><a href="impressum.html" data-i18n="imprint"></a><a href="datenschutz.html" data-i18n="privacy"></a></nav>
+    <p class="footer__name" id="footName"></p>
+    <p class="footer__family" id="footFamily"></p>
+    <nav class="footer__legal" aria-label="Rechtliches"><a href="impressum.html" data-i18n="imprint"></a><a href="datenschutz.html" data-i18n="privacy"></a></nav>
   </footer>
 
   <button class="music" type="button" id="musicBtn" aria-pressed="false">
     <span class="bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
     <span class="music__label" id="musicLabel"></span>
   </button>
-  <audio id="bgMusic" preload="none" loop></audio>
+  <audio id="bgMusic" preload="auto" loop></audio>
 
   <dialog id="candleDialog" class="dialog">
     <form method="dialog" id="candleForm">

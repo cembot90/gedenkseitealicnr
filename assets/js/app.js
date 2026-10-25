@@ -24,7 +24,7 @@
   function renderStatic() {
     document.documentElement.lang = lang;
     $$("[data-i18n]").forEach(n => { n.textContent = t(n.dataset.i18n); });
-    $$(".lang button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.lang === lang)));
+    $$("[data-lang]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.lang === lang)));
 
     const p = M.person;
     $("#heroName").textContent = p.name;
@@ -32,73 +32,77 @@
     $("#born").textContent = p.born;
     $("#died").textContent = p.died;
     $("#places").textContent = L(p.places);
-    $("#quote").textContent = L(p.quote);
-    $("#quoteSource").textContent = L(p.quoteSource);
     $("#intro").textContent = L(M.intro);
     $("#footName").textContent = p.name;
     $("#footFamily").textContent = L(M.family);
     document.title = (lang === "tr" ? "Anısına: " : "In Erinnerung an ") + p.name;
     const img = $(".portrait__img");
-    if (p.portrait) { img.style.backgroundImage = `url("${encodeURI(p.portrait)}")`; img.style.backgroundPosition = p.portraitPosition || "center"; img.classList.remove("is-empty"); } else img.classList.add("is-empty");
+    if (p.portrait) { img.style.backgroundImage = `url("${encodeURI(p.portrait)}")`; img.style.backgroundPosition = p.portraitPosition || "center"; }
+
+    // Seine Worte, Wort für Wort
+    const line = $("#wordsLine"); line.replaceChildren();
+    String(p.words || "").split(" ").forEach((w, i, arr) => { line.append(el("span", null, w)); if (i < arr.length - 1) line.append(document.createTextNode(" ")); });
+    $("#wordsMeaning").textContent = L(p.wordsMeaning);
+    $("#wordsAfter").textContent = L(p.wordsAfter);
 
     // Erstes Jahresgedenken
     const A = M.anniversary;
     if (A) {
       $("#annEyebrow").textContent = L(A.eyebrow);
       $("#annTitle").textContent = L(A.title);
-      const body = $("#annBody"); body.replaceChildren(...(A.paragraphs[lang] || A.paragraphs.de).map(x => el("p", null, x)));
-      $("#annReflection").textContent = L(A.reflection);
+      const body = $("#annBody"); body.replaceChildren(...(A.paragraphs[lang] || A.paragraphs.de).map(x => el("p", "glow", x)));
+      const r = $("#annReflection"); r.textContent = L(A.reflection); r.classList.add("glow");
       $("#annBlessing").textContent = L(A.blessing);
       $("#annClosing").textContent = L(A.closing);
       $("#annSignature").textContent = L(A.signature);
     } else $("#jahrestag").hidden = true;
+    $("#intro").classList.add("glow");
 
     // Lebensweg
     const tl = $("#timeline"); tl.replaceChildren();
     M.timeline.forEach(item => {
-      const li = el("li", "tl reveal");
-      li.append(el("div", "tl__year", item.year));
+      const li = el("li", "tl");
+      li.append(el("div", "tl__year glow", item.year));
       const b = el("div", "tl__body"); b.append(el("h3", null, L(item.title)), el("p", null, L(item.text)));
       li.append(b); tl.append(li);
     });
 
-    // Erinnerungen
+    // Erinnerungen: Foto bleibt stehen, zoomt und färbt sich, Text gleitet darüber
     const mg = $("#memories"); mg.replaceChildren();
-    M.memories.forEach((m, i) => {
-      const c = el("article", `mem mem--${m.color} reveal`); c.style.transitionDelay = `${i * 120}ms`;
+    M.memories.forEach(m => {
+      const sc = el("article", `moment moment--${m.color} scene`); sc.dataset.scene = "";
+      const st = el("div", "stage");
+      st.append(el("div", "moment__glow"));
       if (m.image) {
-        const fig = el("div", "mem__img"); const im = el("img"); im.src = m.image; im.alt = L(m.title); im.loading = "lazy"; im.decoding = "async";
-        fig.append(im); c.append(fig); c.classList.add("has-img");
-        fig.addEventListener("click", () => openLightbox(m.image, L(m.title)));
+        const fr = el("div", "moment__frame"); const im = el("img"); im.src = m.image; im.alt = L(m.title); im.loading = "lazy"; im.decoding = "async";
+        fr.append(im); fr.addEventListener("click", () => openLightbox(m.image, L(m.title))); st.append(fr);
       }
-      const ic = el("div", "mem__icon"); ic.append(svgIcon(m.icon));
-      c.append(ic, el("h3", null, L(m.title)), el("p", null, L(m.text)));
-      mg.append(c);
+      const cp = el("div", "moment__copy");
+      const ic = el("span", "moment__icon"); ic.append(svgIcon(m.icon));
+      cp.append(ic, el("h3", null, L(m.title)), el("p", null, L(m.text)));
+      st.append(cp); sc.append(st); mg.append(sc);
     });
 
     renderSpeeches();
 
-    // Galerie
+    // Galerie: Band, das beim Scrollen seitlich durchfährt
     const g = $("#gallery"); g.replaceChildren();
-    const ratios = ["4/5", "1/1", "3/4", "4/3", "4/5", "1/1"];
-    M.gallery.forEach((ph, i) => {
-      const f = el("figure", "photo reveal");
-      if (ph.src) {
-        const im = el("img"); im.src = ph.src; im.alt = L(ph.caption); im.loading = "lazy"; im.decoding = "async";
-        f.tabIndex = 0; f.append(im, el("figcaption", null, L(ph.caption)));
-        if (ph.video) { f.classList.add("photo--video"); const pb = el("span", "photo__play"); pb.setAttribute("aria-hidden", "true"); f.append(pb); }
-        const open = () => openLightbox(ph.src, L(ph.caption), ph.video);
-        f.addEventListener("click", open); f.addEventListener("keydown", e => { if (e.key === "Enter") open(); });
-      } else {
-        f.classList.add("photo--empty"); f.style.setProperty("--ar", ratios[i % ratios.length]); f.textContent = t("photoSoon");
-      }
+    M.gallery.filter(ph => ph.src).forEach(ph => {
+      const f = el("figure", "shot"); f.tabIndex = 0;
+      const im = el("img"); im.src = ph.src; im.alt = L(ph.caption); im.decoding = "async";
+      im.addEventListener("load", measure);
+      f.append(im, el("figcaption", null, L(ph.caption)));
+      if (ph.video) { const pb = el("span", "shot__play"); pb.setAttribute("aria-hidden", "true"); f.append(pb); }
+      const open = () => openLightbox(ph.src, L(ph.caption), ph.video);
+      f.addEventListener("click", open); f.addEventListener("keydown", e => { if (e.key === "Enter") open(); });
       g.append(f);
     });
 
+    observeGlow();
+    collectScenes();
     updateMusicLabel();
     renderCandles(lastCandles);
     renderEntries(lastEntries);
-    observeReveals();
   }
 
   /* ---------- Reden: eine Karte, Umschalter DE | TR, Text läuft mit ---------- */
@@ -112,12 +116,12 @@
       const langs = Object.keys(sp.versions);
       let cur = speechLang[sp.id] || (sp.versions[lang] ? lang : langs[0]);
 
-      const card = el("article", "speech reveal");
+      const card = el("article", "speech");
       const head = el("div", "speech__head");
       const btn = el("button", "play"); btn.type = "button"; btn.setAttribute("aria-label", L(sp.title));
       btn.innerHTML = '<svg class="i-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg><svg class="i-pause" viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>';
       const meta = el("div"); meta.append(el("h3", "speech__title", L(sp.title)), el("p", "speech__by", L(sp.by)));
-      const sw = el("div", "lang speech__lang"); sw.setAttribute("role", "group"); sw.setAttribute("aria-label", "Fassung / Dil");
+      const sw = el("div", "seg-switch speech__lang"); sw.setAttribute("role", "group"); sw.setAttribute("aria-label", "Fassung / Dil");
       const swBtns = langs.map(l => { const b = el("button", null, l.toUpperCase()); b.type = "button"; b.dataset.v = l; sw.append(b); return b; });
       head.append(btn, meta, sw);
 
@@ -319,41 +323,50 @@
 
   let toastT; function toast(s) { const n = $("#toast"); n.textContent = s; n.classList.add("is-on"); clearTimeout(toastT); toastT = setTimeout(() => n.classList.remove("is-on"), 3200); }
 
-  $$(".lang button").forEach(b => b.addEventListener("click", () => { if (b.dataset.lang === lang) return; lang = b.dataset.lang; store.set("lang", lang); renderStatic(); }));
+  $$(".nav [data-lang]").forEach(b => b.addEventListener("click", () => { if (b.dataset.lang === lang) return; lang = b.dataset.lang; store.set("lang", lang); renderStatic(); }));
 
-  const topbar = $(".topbar");
-  const onScroll = () => topbar.classList.toggle("is-solid", scrollY > 40);
-  addEventListener("scroll", onScroll, { passive: true }); onScroll();
-
-  let io;
-  function observeReveals() {
-    if (!("IntersectionObserver" in window)) { $$(".reveal").forEach(n => n.classList.add("is-in")); return; }
-    io = io || new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("is-in"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -8% 0px", threshold: .08 });
-    $$(".reveal:not(.is-in)").forEach(n => io.observe(n));
+  /* ---------- Scroll-Szenen: --p von 0 bis 1 je Szene ---------- */
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const nav = $(".nav");
+  let scenes = [];
+  function collectScenes() { scenes = $$("[data-scene]"); measure(); tick(); }
+  function measure() {
+    const tr = $("#gallery");
+    if (tr) tr.style.setProperty("--shift", Math.max(0, tr.scrollWidth - innerWidth) + "px");
   }
-  // Farbe "erblüht", wenn die fröhlichen Erinnerungen ins Bild kommen
-  const memSec = $("#erinnerungen");
-  new IntersectionObserver(es => es.forEach(e => memSec.classList.toggle("is-bloom", e.isIntersecting)), { threshold: .25 }).observe(memSec);
-  // aktive Navigation
-  const navLinks = $$(".nav a");
+  function tick() {
+    const vh = innerHeight;
+    for (const sc of scenes) {
+      const r = sc.getBoundingClientRect(), len = r.height - vh;
+      let p = len > 0 ? -r.top / len : (r.top < 0 ? 1 : 0);
+      p = Math.min(1, Math.max(0, p));
+      if (sc._p !== p) { sc._p = p; sc.style.setProperty("--p", p.toFixed(4)); }
+    }
+    const w = $(".words");
+    if (w) {
+      const p = reduced ? 1 : (w._p || 0), spans = $$("#wordsLine span"), n = spans.length;
+      spans.forEach((sp, i) => sp.classList.toggle("on", p > (i + .5) / n * .6));
+      $("#wordsMeaning").classList.toggle("on", p > .66);
+      $("#wordsAfter").classList.toggle("on", p > .78);
+    }
+    nav.classList.toggle("is-on", scrollY > vh * .7);
+  }
+  let ticking = false;
+  addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(() => { ticking = false; tick(); }); } }, { passive: true });
+  addEventListener("resize", () => { measure(); tick(); });
 
-  /* ---------- Silberstaub im Hintergrund ---------- */
-  function dust() {
-    const c = $("#dust"); if (!c || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const x = c.getContext("2d"); let w, h, ps;
-    const size = () => { const d = Math.min(devicePixelRatio || 1, 2); w = c.width = innerWidth * d; h = c.height = innerHeight * d; ps = Array.from({ length: Math.round(innerWidth / 22) }, () => ({ x: Math.random() * w, y: Math.random() * h, r: (Math.random() * 1.4 + .3) * d, v: (Math.random() * .25 + .05) * d, a: Math.random() * .5 + .1, p: Math.random() * 6.28 })); };
-    size(); addEventListener("resize", size);
-    (function loop(ts) {
-      x.clearRect(0, 0, w, h);
-      for (const p of ps) { p.y -= p.v; p.x += Math.sin(ts / 3000 + p.p) * .15; if (p.y < -5) { p.y = h + 5; p.x = Math.random() * w; }
-        x.globalAlpha = p.a * (.6 + .4 * Math.sin(ts / 1500 + p.p)); x.fillStyle = "#dfe3e8"; x.beginPath(); x.arc(p.x, p.y, p.r, 0, 6.28); x.fill(); }
-      requestAnimationFrame(loop);
-    })(0);
+  /* ---------- Absätze leuchten in der Bildmitte auf ---------- */
+  let glowIO;
+  function observeGlow() {
+    if (reduced || !("IntersectionObserver" in window)) { $$(".glow").forEach(n => n.classList.add("lit")); return; }
+    glowIO = glowIO || new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle("lit", e.isIntersecting || e.boundingClientRect.top < 0)), { rootMargin: "-38% 0px -38% 0px" });
+    $$(".glow").forEach(n => glowIO.observe(n));
   }
 
+  /* ---------- Aktiver Menüpunkt ---------- */
+  const navLinks = $$(".nav__links a");
   const navObserver = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) navLinks.forEach(a => a.classList.toggle("is-active", a.getAttribute("href") === "#" + e.target.id)); }), { rootMargin: "-45% 0px -50% 0px" });
   $$("main section[id]").forEach(s => navObserver.observe(s));
 
   renderStatic();
-  dust();
 })();

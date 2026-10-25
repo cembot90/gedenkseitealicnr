@@ -19,7 +19,11 @@ window.MEMORIAL = {
       de: "„Ömrümü yaşayamadan gittim.“ Seine eigenen Worte. Und doch hat er uns so viel Liebe hinterlassen.",
       tr: "„Ömrümü yaşayamadan gittim.“ Kendi sözleri. Yine de bize ne çok sevgi bıraktı."
     },
-    quoteSource: { de: "Ali Çinar", tr: "Ali Çinar" }
+    quoteSource: { de: "Ali Çinar", tr: "Ali Çinar" },
+    // Seine eigenen Worte: leuchten beim Scrollen Wort für Wort auf
+    words: "Ömrümü yaşayamadan gittim.",
+    wordsMeaning: { de: "„Ich bin gegangen, ohne mein Leben gelebt zu haben.“ Das hat er selbst gesagt.", tr: "Bu sözleri kendisi söylemişti." },
+    wordsAfter: { de: "Und doch hat er uns so viel Liebe hinterlassen.", tr: "Yine de bize ne çok sevgi bıraktı." }
   },
 
   music: {
