@@ -328,6 +328,7 @@
   /* ---------- Scroll-Szenen: --p von 0 bis 1 je Szene ---------- */
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const nav = $(".nav");
+  const noHover = matchMedia("(hover: none)").matches;
   let scenes = [];
   function collectScenes() { scenes = $$("[data-scene]"); measure(); tick(); }
   function measure() {
@@ -350,6 +351,13 @@
       $("#wordsAfter").classList.toggle("on", p > .78);
     }
     nav.classList.toggle("is-on", scrollY > vh * .7);
+    // Ohne Maus (Handy, Tablet): das Bild in der Mitte wird farbig
+    if (noHover) {
+      const shots = $$(".shot"), mid = innerWidth / 2; let best = null, bd = Infinity;
+      const reel = $(".reel"), inReel = reel && reel._p > 0 && reel._p < 1;
+      shots.forEach(sh => { const r = sh.getBoundingClientRect(), d = Math.abs(r.left + r.width / 2 - mid); if (d < bd) { bd = d; best = sh; } });
+      shots.forEach(sh => sh.classList.toggle("is-center", inReel && sh === best));
+    }
   }
   let ticking = false;
   addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(() => { ticking = false; tick(); }); } }, { passive: true });

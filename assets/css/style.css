@@ -327,3 +327,7 @@ button { font: inherit; color: inherit; letter-spacing: inherit; }
 }
 
 .book .h2 { font-size: clamp(36px, 4.4vw, 56px); }
+
+/* Galerie: grau, nur das Bild unter der Maus (bzw. auf dem Handy das mittlere) in Farbe */
+.shot img { filter: grayscale(1) brightness(.8); transition: filter .6s var(--ease), transform .8s var(--ease); }
+.shot:hover img, .shot:focus-visible img, .shot.is-center img { filter: none; transform: scale(1.02); }
