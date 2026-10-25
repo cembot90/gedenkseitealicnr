@@ -15,12 +15,13 @@
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-  <a class="skip" href="#leben">Zum Inhalt</a>
+  <a class="skip" href="#jahrestag">Zum Inhalt</a>
   <canvas id="dust" aria-hidden="true"></canvas>
 
   <header class="topbar">
     <a class="mark" href="#top" aria-label="Nach oben">AÇ</a>
     <nav class="nav" aria-label="Hauptnavigation">
+      <a href="#jahrestag" data-i18n="navYear"></a>
       <a href="#leben" data-i18n="navLife"></a>
       <a href="#erinnerungen" data-i18n="navMemories"></a>
       <a href="#worte" data-i18n="navWords"></a>
@@ -54,7 +55,31 @@
           <span data-i18n="lightCandle"></span>
         </button>
       </div>
-      <a class="scrollcue" href="#leben"><span data-i18n="scroll"></span><i aria-hidden="true"></i></a>
+      <a class="scrollcue" href="#jahrestag"><span data-i18n="scroll"></span><i aria-hidden="true"></i></a>
+    </section>
+
+    <section class="section anniv" id="jahrestag">
+      <div class="wrap">
+        <article class="letter reveal">
+          <p class="eyebrow" id="annEyebrow"></p>
+          <h2 class="letter__title" id="annTitle"></h2>
+          <div class="letter__body" id="annBody"></div>
+          <div class="invite">
+            <p class="invite__label" data-i18n="inviteLabel"></p>
+            <p class="invite__text" id="annInvite"></p>
+            <dl class="invite__facts">
+              <div><dt data-i18n="whenLabel"></dt><dd id="annDate"></dd></div>
+              <div><dt data-i18n="whereLabel"></dt><dd id="annPlace"></dd></div>
+            </dl>
+          </div>
+          <p class="letter__reflection" id="annReflection"></p>
+          <p class="letter__blessing" id="annBlessing"></p>
+          <p class="letter__blessing letter__blessing--tr">Devr-i Daim. Işıklar yoldaşın olsun.</p>
+          <p class="letter__closing" id="annClosing"></p>
+          <p class="letter__signature silver" id="annSignature"></p>
+          <a class="letter__link" href="#worte"><span data-i18n="speechLink"></span><i aria-hidden="true">→</i></a>
+        </article>
+      </div>
     </section>
 
     <section class="section" id="leben">

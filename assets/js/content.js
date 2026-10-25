@@ -34,6 +34,38 @@ window.MEMORIAL = {
     tr: "Hayatını yorulmak bilmeyen bir emekle, derin bir sevgiyle ve büyük bir adanmışlıkla ailesine verdi. Geriye sıcaklığı, şefkati ve en küçükleri kucağına aldığında yüzüne yayılan o gülümseme kaldı."
   },
 
+  // Erstes Jahresgedenken (14.09.2026)
+  anniversary: {
+    eyebrow: { de: "Erstes Jahresgedenken", tr: "Birinci yıl anması" },
+    title: { de: "Ein Jahr ohne dich", tr: "Sensiz bir yıl" },
+    paragraphs: {
+      de: [
+        "Ein Jahr ist vergangen, seit unser lieber Vater, Onkel und Bruder Ali Çinar von uns gegangen ist. Die Zeit hat den Schmerz leiser werden lassen, doch die Lücke, die er hinterlassen hat, bleibt.",
+        "Wir vermissen seinen unermüdlichen Fleiß, seine Wärme und die stille Fürsorge, mit der er sein Leben seiner Familie gewidmet hat."
+      ],
+      tr: [
+        "Sevgili babamız, dayımız ve kardeşimiz Ali Çinar'ın aramızdan ayrılışının üzerinden bir yıl geçti. Zaman acımızı biraz dindirdi, ama ardında bıraktığı boşluk hâlâ yerinde duruyor.",
+        "Yorulmak bilmeyen emeğini, sıcaklığını ve hayatını ailesine adadığı o sessiz şefkatini özlüyoruz."
+      ]
+    },
+    invitation: {
+      de: "Zu seinem ersten Jahresgedenken laden wir alle Verwandten, Freunde und Bekannten herzlich ein, gemeinsam an ihn zu denken.",
+      tr: "Birinci yıl anmasında onu birlikte anmak için tüm akrabalarımızı, dostlarımızı ve tanıdıklarımızı içtenlikle davet ediyoruz."
+    },
+    date: { de: "[Datum, Uhrzeit]", tr: "[Tarih, saat]" },
+    place: { de: "[Ort]", tr: "[Yer]" },
+    reflection: {
+      de: "Er selbst sagte: „Ömrümü yaşayamadan gittim.“ Sein Leben empfand er als unvollständig. Für uns aber war es reich an Liebe, die bis heute in uns weiterlebt.",
+      tr: "Kendisi „Ömrümü yaşayamadan gittim“ demişti. Hayatını yarım kalmış saydı. Bizim içinse sevgiyle doluydu ve o sevgi bugün hâlâ içimizde yaşıyor."
+    },
+    blessing: {
+      de: "Möge sein Weg vom Licht begleitet sein, möge sein Kreis ewig bestehen.",
+      tr: "Yolu ışıkla aydınlansın, cemi daim olsun."
+    },
+    closing: { de: "In Liebe und Dankbarkeit", tr: "Sevgi ve minnetle" },
+    signature: { de: "Die Familie Çinar", tr: "Çinar Ailesi" }
+  },
+
   timeline: [
     { year: "1966", title: { de: "Erzincan", tr: "Erzincan" },
       text: { de: "Am 1. Februar 1966 in Erzincan geboren. [Kindheit, Familie, erste Erinnerungen.]", tr: "1 Şubat 1966'da Erzincan'da doğdu. [Çocukluğu, ailesi, ilk anılar.]" } },
@@ -64,30 +96,60 @@ window.MEMORIAL = {
       text: { de: "[Eine lustige oder warme Geschichte aus dem Familienalltag mit ihm.]", tr: "[Onunla aile hayatından komik ya da sıcak bir hikâye.]" } }
   ],
 
-  // Reden, z. B. mit Suno erstellt. lang = Sprache der Aufnahme.
+  // Gedenkrede zum ersten Jahrestag. Die Zeitmarken (t, in Sekunden) sind geschätzt
+  // und werden an die fertigen Suno-Aufnahmen angepasst.
   speeches: [
     {
       id: "rede-tr",
       lang: "tr",
       src: "audio/rede-tr.mp3",
-      title: { de: "Abschiedsworte auf Türkisch", tr: "Türkçe veda sözleri" },
-      by: { de: "[Name, Beziehung]", tr: "[İsim, yakınlık]" },
+      title: { de: "Gedenkrede zum ersten Jahrestag (Türkisch)", tr: "Birinci yıl anma konuşması (Türkçe)" },
+      by: { de: "Die Familie Çinar", tr: "Çinar Ailesi" },
       segments: [
-        { t: 0,  text: "[Erster Satz der Rede im Original]", translation: "[Übersetzung ins Deutsche]" },
-        { t: 8,  text: "[Zweiter Satz]", translation: "[Übersetzung]" },
-        { t: 16, text: "[Dritter Satz]", translation: "[Übersetzung]" }
+        { t: 0, text: "Sevgili ailem, sevgili dostlar,", translation: "Liebe Familie, liebe Freunde," },
+        { t: 3, text: "bir yıl önce vedalaştık.", translation: "vor einem Jahr haben wir Abschied genommen." },
+        { t: 6, text: "O gün dilimiz tutulmuştu, söylemek istediğimiz pek çok şey söylenmeden kaldı.", translation: "Damals waren wir sprachlos, und vieles, was wir sagen wollten, blieb ungesagt." },
+        { t: 12, text: "Bugün yeniden bir aradayız, yalnızca yasla değil, minnetle de.", translation: "Heute stehen wir wieder zusammen, nicht nur in Trauer, sondern auch in Dankbarkeit." },
+        { t: 18, text: "Ali Çinar çok söze ihtiyaç duymayan bir insandı.", translation: "Ali Çinar war ein Mensch, der nicht viele Worte brauchte." },
+        { t: 22, text: "Sevgisini yaptıklarıyla gösterirdi: alın teriyle, güvenilirliğiyle, gelen herkese açık olan kapısıyla.", translation: "Er zeigte seine Liebe durch das, was er tat: durch harte Arbeit, durch Verlässlichkeit, durch ein offenes Haus für jeden, der kam." },
+        { t: 29, text: "Kendini nadiren düşünür, bizi ise hep düşünürdü.", translation: "Er hat selten an sich gedacht und immer an uns." },
+        { t: 33, text: "Bir keresinde şöyle demişti: „Ömrümü yaşayamadan gittim.“", translation: "Er hat einmal gesagt: „Ömrümü yaşayamadan gittim.“" },
+        { t: 38, text: "Bu söz yüreğimizi yakıyor.", translation: "Dieser Satz tut weh." },
+        { t: 41, text: "Ama bugün etrafımıza baktığımızda, onun neler yarattığını görüyoruz.", translation: "Aber wenn wir uns heute hier umsehen, dann sehen wir, was er geschaffen hat." },
+        { t: 45, text: "Çocuklarını, kardeşlerini, ailesini görüyoruz.", translation: "Wir sehen seine Kinder, seine Geschwister, seine Familie." },
+        { t: 48, text: "Bize kazandırdığı değerleri görüyoruz.", translation: "Wir sehen die Werte, die er uns mitgegeben hat." },
+        { t: 51, text: "Belki kendi ömrünü tam yaşayamadı, ama onu bize armağan etti.", translation: "Vielleicht hat er sein eigenes Leben nicht ganz gelebt, aber er hat es uns geschenkt." },
+        { t: 57, text: "Memleketi Erzincan onu geri aldı.", translation: "Seine Heimat Erzincan hat ihn zurückbekommen." },
+        { t: 61, text: "Biz ise onu her sohbette, her anıda, onu hatırlatan her kahkahada yanımızda taşıyoruz.", translation: "Wir aber tragen ihn mit uns, in jedem Gespräch, in jeder Erinnerung, in jedem Lachen, das an ihn erinnert." },
+        { t: 68, text: "Sevgili Ali, canım babam: Seni unutmayacağız.", translation: "Lieber Ali, lieber Baba: Wir vergessen dich nicht." },
+        { t: 72, text: "Devr-i Daim. Işıklar yoldaşın olsun.", translation: "Devr-i Daim. Işıklar yoldaşın olsun." }
       ]
     },
     {
       id: "rede-de",
       lang: "de",
       src: "audio/rede-de.mp3",
-      title: { de: "Abschiedsworte auf Deutsch", tr: "Almanca veda sözleri" },
-      by: { de: "[Name, Beziehung]", tr: "[İsim, yakınlık]" },
+      title: { de: "Gedenkrede zum ersten Jahrestag (Deutsch)", tr: "Birinci yıl anma konuşması (Almanca)" },
+      by: { de: "Die Familie Çinar", tr: "Çinar Ailesi" },
       segments: [
-        { t: 0,  text: "[Erster Satz der Rede im Original]", translation: "[Türkçe çevirisi]" },
-        { t: 8,  text: "[Zweiter Satz]", translation: "[Çeviri]" },
-        { t: 16, text: "[Dritter Satz]", translation: "[Çeviri]" }
+        { t: 0, text: "Liebe Familie, liebe Freunde,", translation: "Sevgili ailem, sevgili dostlar," },
+        { t: 3, text: "vor einem Jahr haben wir Abschied genommen.", translation: "bir yıl önce vedalaştık." },
+        { t: 7, text: "Damals waren wir sprachlos, und vieles, was wir sagen wollten, blieb ungesagt.", translation: "O gün dilimiz tutulmuştu, söylemek istediğimiz pek çok şey söylenmeden kaldı." },
+        { t: 13, text: "Heute stehen wir wieder zusammen, nicht nur in Trauer, sondern auch in Dankbarkeit.", translation: "Bugün yeniden bir aradayız, yalnızca yasla değil, minnetle de." },
+        { t: 20, text: "Ali Çinar war ein Mensch, der nicht viele Worte brauchte.", translation: "Ali Çinar çok söze ihtiyaç duymayan bir insandı." },
+        { t: 25, text: "Er zeigte seine Liebe durch das, was er tat: durch harte Arbeit, durch Verlässlichkeit, durch ein offenes Haus für jeden, der kam.", translation: "Sevgisini yaptıklarıyla gösterirdi: alın teriyle, güvenilirliğiyle, gelen herkese açık olan kapısıyla." },
+        { t: 36, text: "Er hat selten an sich gedacht und immer an uns.", translation: "Kendini nadiren düşünür, bizi ise hep düşünürdü." },
+        { t: 42, text: "Er hat einmal gesagt: „Ömrümü yaşayamadan gittim.“", translation: "Bir keresinde şöyle demişti: „Ömrümü yaşayamadan gittim.“" },
+        { t: 46, text: "Ich bin gegangen, ohne mein Leben gelebt zu haben.", translation: "Ömrümü yaşayamadan gittim." },
+        { t: 51, text: "Dieser Satz tut weh.", translation: "Bu söz yüreğimizi yakıyor." },
+        { t: 54, text: "Aber wenn wir uns heute hier umsehen, dann sehen wir, was er geschaffen hat.", translation: "Ama bugün etrafımıza baktığımızda, onun neler yarattığını görüyoruz." },
+        { t: 61, text: "Wir sehen seine Kinder, seine Geschwister, seine Familie.", translation: "Çocuklarını, kardeşlerini, ailesini görüyoruz." },
+        { t: 65, text: "Wir sehen die Werte, die er uns mitgegeben hat.", translation: "Bize kazandırdığı değerleri görüyoruz." },
+        { t: 70, text: "Vielleicht hat er sein eigenes Leben nicht ganz gelebt, aber er hat es uns geschenkt.", translation: "Belki kendi ömrünü tam yaşayamadı, ama onu bize armağan etti." },
+        { t: 78, text: "Seine Heimat Erzincan hat ihn zurückbekommen.", translation: "Memleketi Erzincan onu geri aldı." },
+        { t: 82, text: "Wir aber tragen ihn mit uns, in jedem Gespräch, in jeder Erinnerung, in jedem Lachen, das an ihn erinnert.", translation: "Biz ise onu her sohbette, her anıda, onu hatırlatan her kahkahada yanımızda taşıyoruz." },
+        { t: 91, text: "Lieber Ali, lieber Baba: Wir vergessen dich nicht.", translation: "Sevgili Ali, canım babam: Seni unutmayacağız." },
+        { t: 96, text: "Devr-i Daim. Işıklar yoldaşın olsun.", translation: "Devr-i Daim. Işıklar yoldaşın olsun." }
       ]
     }
   ],
@@ -107,8 +169,8 @@ window.MEMORIAL = {
 /* Oberflächentexte */
 window.UI = {
   de: {
-    navLife: "Leben", navMemories: "Erinnerungen", navWords: "Worte", navGallery: "Bilder", navBook: "Gedenkbuch",
-    inMemory: "In liebendem Gedenken an",
+    navYear: "Jahrestag", navLife: "Leben", navMemories: "Erinnerungen", navWords: "Worte", navGallery: "Bilder", navBook: "Gedenkbuch",
+    inMemory: "In liebendem Gedenken an", inviteLabel: "Einladung", whenLabel: "Wann", whereLabel: "Wo", speechLink: "Gedenkrede anhören",
     lightCandle: "Licht anzünden", scroll: "Weiter",
     lifeEyebrow: "Sein Weg", lifeTitle: "Ein Leben voller Wärme",
     memEyebrow: "Was uns zum Lächeln bringt", memTitle: "Fröhliche Erinnerungen",
@@ -128,8 +190,8 @@ window.UI = {
     demo: "Vorschau: Einträge werden noch nicht gespeichert."
   },
   tr: {
-    navLife: "Hayatı", navMemories: "Anılar", navWords: "Sözler", navGallery: "Fotoğraflar", navBook: "Anı Defteri",
-    inMemory: "Sevgiyle anıyoruz",
+    navYear: "Yıl dönümü", navLife: "Hayatı", navMemories: "Anılar", navWords: "Sözler", navGallery: "Fotoğraflar", navBook: "Anı Defteri",
+    inMemory: "Sevgiyle anıyoruz", inviteLabel: "Davet", whenLabel: "Ne zaman", whereLabel: "Nerede", speechLink: "Anma konuşmasını dinle",
     lightCandle: "Çerağ uyandır", scroll: "Devam",
     lifeEyebrow: "Yolculuğu", lifeTitle: "Sıcaklıkla dolu bir hayat",
     memEyebrow: "Bizi gülümseten", memTitle: "Neşeli anılar",

@@ -41,6 +41,21 @@
     const img = $(".portrait__img");
     if (p.portrait) { img.style.backgroundImage = `url("${encodeURI(p.portrait)}")`; img.style.backgroundPosition = p.portraitPosition || "center"; img.classList.remove("is-empty"); } else img.classList.add("is-empty");
 
+    // Erstes Jahresgedenken
+    const A = M.anniversary;
+    if (A) {
+      $("#annEyebrow").textContent = L(A.eyebrow);
+      $("#annTitle").textContent = L(A.title);
+      const body = $("#annBody"); body.replaceChildren(...(A.paragraphs[lang] || A.paragraphs.de).map(x => el("p", null, x)));
+      $("#annInvite").textContent = L(A.invitation);
+      $("#annDate").textContent = L(A.date);
+      $("#annPlace").textContent = L(A.place);
+      $("#annReflection").textContent = L(A.reflection);
+      $("#annBlessing").textContent = L(A.blessing);
+      $("#annClosing").textContent = L(A.closing);
+      $("#annSignature").textContent = L(A.signature);
+    } else $("#jahrestag").hidden = true;
+
     // Lebensweg
     const tl = $("#timeline"); tl.replaceChildren();
     M.timeline.forEach(item => {
