@@ -101,102 +101,134 @@
     observeReveals();
   }
 
-  /* ---------- Reden mit mitlaufendem Text ---------- */
+  /* ---------- Reden: eine Karte, Umschalter DE | TR, Text läuft mit ---------- */
   const players = [];
+  const speechLang = {}; // gewählte Fassung je Rede, bleibt beim Sprachwechsel der Seite erhalten, wenn bewusst gewählt
   function renderSpeeches() {
     players.forEach(p => { p.audio.pause(); });
     players.length = 0;
     const box = $("#speeches"); box.replaceChildren();
     M.speeches.forEach(sp => {
-      const card = el("article", "speech reveal show-tr");
+      const langs = Object.keys(sp.versions);
+      let cur = speechLang[sp.id] || (sp.versions[lang] ? lang : langs[0]);
+
+      const card = el("article", "speech reveal");
       const head = el("div", "speech__head");
       const btn = el("button", "play"); btn.type = "button"; btn.setAttribute("aria-label", L(sp.title));
       btn.innerHTML = '<svg class="i-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg><svg class="i-pause" viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>';
       const meta = el("div"); meta.append(el("h3", "speech__title", L(sp.title)), el("p", "speech__by", L(sp.by)));
-      head.append(btn, meta, el("span", "badge", sp.lang.toUpperCase()));
+      const sw = el("div", "lang speech__lang"); sw.setAttribute("role", "group"); sw.setAttribute("aria-label", "Fassung / Dil");
+      const swBtns = langs.map(l => { const b = el("button", null, l.toUpperCase()); b.type = "button"; b.dataset.v = l; sw.append(b); return b; });
+      head.append(btn, meta, sw);
 
       const bar = el("div", "speech__bar"); const fill = el("i"); bar.append(fill);
-      const time = el("div", "speech__time"); const cur = el("span", null, "0:00"); const dur = el("span", null, "–"); time.append(cur, dur);
-      const tog = el("label", "trtoggle"); const cb = el("input"); cb.type = "checkbox"; cb.checked = true;
+      const time = el("div", "speech__time"); const curT = el("span", null, "0:00"); const dur = el("span", null, "–"); time.append(curT, dur);
+      const tog = el("label", "trtoggle"); const cb = el("input"); cb.type = "checkbox";
       tog.append(cb, document.createTextNode(t("showTranslation")));
       cb.addEventListener("change", () => card.classList.toggle("show-tr", cb.checked));
-      // Übersetzung nur sinnvoll, wenn Aufnahme nicht in der gewählten Sprache ist; trotzdem immer umschaltbar
-      if (sp.lang === lang) { cb.checked = false; card.classList.remove("show-tr"); }
-
       const text = el("div", "speech__text");
-      const segEls = sp.segments.map(s => {
-        const d = el("div", "seg"); d.append(el("p", "seg__orig", s.text), el("p", "seg__tr", s.translation)); text.append(d);
-        return d;
-      });
 
-      const audio = new Audio(); audio.preload = "none"; audio.src = sp.src;
+      const audio = new Audio(); audio.preload = "none";
       const fmt = s => isFinite(s) ? `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}` : "–";
-      let curIdx = -1;
+      let segEls = [], curIdx = -1;
+
+      function load(v) {
+        cur = v; const ver = sp.versions[v];
+        audio.pause(); audio.src = ver.src; card.classList.remove("is-missing", "is-playing");
+        swBtns.forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === v)));
+        cb.checked = v !== lang; card.classList.toggle("show-tr", cb.checked);
+        fill.style.width = "0"; curT.textContent = "0:00"; dur.textContent = "–"; curIdx = -1;
+        text.replaceChildren();
+        segEls = ver.segments.map((s, i) => {
+          const d = el("div", "seg"); d.append(el("p", "seg__orig", s.text), el("p", "seg__tr", s.translation)); text.append(d);
+          d.addEventListener("click", () => {
+            if (card.classList.contains("is-missing")) return;
+            audio.currentTime = ver.segments[i].t; if (audio.paused) audio.play().catch(() => {});
+          });
+          return d;
+        });
+      }
+      swBtns.forEach(b => b.addEventListener("click", () => { if (b.dataset.v !== cur) { speechLang[sp.id] = b.dataset.v; load(b.dataset.v); } }));
+
       audio.addEventListener("loadedmetadata", () => { dur.textContent = fmt(audio.duration); });
       audio.addEventListener("timeupdate", () => {
-        cur.textContent = fmt(audio.currentTime);
+        curT.textContent = fmt(audio.currentTime);
         if (audio.duration) fill.style.width = `${(audio.currentTime / audio.duration) * 100}%`;
-        let idx = -1; sp.segments.forEach((s, i) => { if (audio.currentTime >= s.t) idx = i; });
+        const segs = sp.versions[cur].segments;
+        let idx = -1; segs.forEach((s, i) => { if (audio.currentTime >= s.t) idx = i; });
         if (idx !== curIdx) {
           segEls.forEach((e, i) => e.classList.toggle("is-current", i === idx)); curIdx = idx;
           const e = segEls[idx]; if (e) text.scrollTo({ top: e.offsetTop - text.clientHeight / 3, behavior: "smooth" });
         }
       });
-      audio.addEventListener("play", () => { card.classList.add("is-playing"); players.forEach(o => { if (o.audio !== audio) o.audio.pause(); }); duck(true, !!sp.isMusic); });
-      audio.addEventListener("pause", () => { card.classList.remove("is-playing"); if (!players.some(o => !o.audio.paused)) duck(false); });
+      audio.addEventListener("play", () => { card.classList.add("is-playing"); players.forEach(o => { if (o.audio !== audio) o.audio.pause(); }); stopMusic(); });
+      audio.addEventListener("pause", () => { card.classList.remove("is-playing"); });
       audio.addEventListener("ended", () => { segEls.forEach(e => e.classList.remove("is-current")); curIdx = -1; fill.style.width = "0"; });
-      audio.addEventListener("error", () => { card.classList.add("is-missing"); });
+      audio.addEventListener("error", () => { if (audio.getAttribute("src")) card.classList.add("is-missing"); });
 
       btn.addEventListener("click", () => {
+        userActed = true;
         if (card.classList.contains("is-missing")) { toast(t("audioMissing")); return; }
         audio.paused ? audio.play().catch(() => { card.classList.add("is-missing"); toast(t("audioMissing")); }) : audio.pause();
       });
       bar.addEventListener("click", e => { if (!audio.duration) return; const r = bar.getBoundingClientRect(); audio.currentTime = ((e.clientX - r.left) / r.width) * audio.duration; });
-      segEls.forEach((e, i) => e.addEventListener("click", () => {
-        if (card.classList.contains("is-missing")) return;
-        audio.currentTime = sp.segments[i].t; if (audio.paused) audio.play().catch(() => {});
-      }));
 
       card.append(head, bar, time, tog, text); box.append(card);
       players.push({ audio, card });
+      load(cur);
     });
   }
 
-  /* ---------- Hintergrundmusik mit Absenken während Reden ---------- */
+  /* ---------- Trauerlied als Hintergrundmusik ----------
+     Startet beim Betreten der Seite. Browser erlauben Ton oft erst nach der ersten Berührung/Taste,
+     dann startet es bei der ersten Interaktion. Läuft eine Rede oder ein Video, stoppt die Musik;
+     wieder an geht sie nur über den Musik-Knopf. */
   const music = $("#bgMusic"); const musicBtn = $("#musicBtn");
-  music.src = M.music.src; music.volume = M.music.volume;
-  let musicWanted = false, musicMissing = false, fadeTimer = null, resumeAfterSpeech = false;
-  const volumeWorks = (() => { const a = new Audio(); a.volume = 0.5; return a.volume === 0.5; })(); // iOS ignoriert volume
+  music.src = M.music.src; music.volume = M.music.volume; music.preload = "auto";
+  let musicWanted = false, musicMissing = false, fadeTimer = null, userActed = false;
   function fadeTo(target, ms = 900) {
     clearInterval(fadeTimer);
     const start = music.volume, steps = 30, d = (target - start) / steps; let i = 0;
     fadeTimer = setInterval(() => { i++; music.volume = Math.min(1, Math.max(0, start + d * i)); if (i >= steps) clearInterval(fadeTimer); }, ms / steps);
   }
-  let duckedHard = false;
-  function duck(on, hard = false) {
-    if (!musicWanted) return;
-    if (on && (hard || !volumeWorks)) { duckedHard = true; resumeAfterSpeech = !music.paused; clearInterval(fadeTimer); music.pause(); }
-    else if (on) fadeTo(M.music.duckVolume);
-    else if (duckedHard) { duckedHard = false; if (resumeAfterSpeech) { music.volume = 0; music.play().then(() => fadeTo(M.music.volume, 1600)).catch(() => {}); } }
-    else fadeTo(M.music.volume);
+  async function startMusic() {
+    if (musicMissing) return false;
+    musicWanted = true; updateMusicLabel();
+    music.volume = 0;
+    try { await music.play(); fadeTo(M.music.volume, 2000); return true; }
+    catch (e) { musicWanted = false; updateMusicLabel(); if (e && e.name !== "NotAllowedError") musicMissing = true; return false; }
   }
+  function stopMusic() {
+    if (!musicWanted && music.paused) return;
+    musicWanted = false; clearInterval(fadeTimer); music.pause(); updateMusicLabel();
+  }
+  function duck(on) { if (on) stopMusic(); } // Video in der Großansicht
   function updateMusicLabel() {
     $("#musicLabel").textContent = musicWanted ? t("musicOn") : L(M.music.title);
     musicBtn.setAttribute("aria-pressed", String(musicWanted));
     musicBtn.setAttribute("aria-label", musicWanted ? t("musicOn") : t("musicOff"));
   }
   musicBtn.addEventListener("click", async () => {
+    userActed = true;
     if (musicMissing) { toast(t("audioMissing")); return; }
-    if (musicWanted) { musicWanted = false; fadeTo(0, 600); setTimeout(() => { if (!musicWanted) music.pause(); }, 650); }
-    else {
-      musicWanted = true; music.volume = 0;
-      try { await music.play(); fadeTo(players.some(p => !p.audio.paused) ? M.music.duckVolume : M.music.volume, 1600); }
-      catch { musicWanted = false; musicMissing = true; toast(t("audioMissing")); }
-    }
-    store.set("music", musicWanted ? "1" : "0");
-    updateMusicLabel();
+    if (musicWanted) { musicWanted = false; fadeTo(0, 600); updateMusicLabel(); setTimeout(() => { if (!musicWanted) music.pause(); }, 650); }
+    else { players.forEach(p => p.audio.pause()); await startMusic(); }
   });
   music.addEventListener("error", () => { musicMissing = true; musicWanted = false; updateMusicLabel(); });
+
+  // Beim Betreten starten; falls der Browser blockiert, bei der ersten Interaktion
+  startMusic().then(ok => {
+    if (ok) return;
+    const kick = (e) => {
+      if (e.target && e.target.closest && e.target.closest("#musicBtn, .play, .speech__lang")) return; // diese Knöpfe entscheiden selbst
+      ["pointerdown", "keydown", "touchend"].forEach(n => removeEventListener(n, kick, true));
+      setTimeout(() => {
+        const speechRunning = players.some(p => !p.audio.paused);
+        if (!userActed && !speechRunning && !musicWanted) startMusic();
+      }, 0);
+    };
+    ["pointerdown", "keydown", "touchend"].forEach(n => addEventListener(n, kick, true));
+  });
 
   /* ---------- Kerzen ---------- */
   let lastCandles = null;
@@ -282,7 +314,7 @@
     else { lbVid.hidden = true; lbImg.hidden = false; lbImg.src = src; lbImg.alt = cap; }
     lb.showModal();
   }
-  lb.addEventListener("close", () => { if (!lbVid.hidden) { lbVid.pause(); lbVid.removeAttribute("src"); lbVid.load(); if (!players.some(o => !o.audio.paused)) duck(false); } });
+  lb.addEventListener("close", () => { if (!lbVid.hidden) { lbVid.pause(); lbVid.removeAttribute("src"); lbVid.load(); } });
   lb.addEventListener("click", e => { if (e.target === lb || e.target.closest(".lightbox__close")) lb.close(); });
 
   let toastT; function toast(s) { const n = $("#toast"); n.textContent = s; n.classList.add("is-on"); clearTimeout(toastT); toastT = setTimeout(() => n.classList.remove("is-on"), 3200); }

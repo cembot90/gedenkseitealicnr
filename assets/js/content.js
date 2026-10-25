@@ -23,10 +23,9 @@ window.MEMORIAL = {
   },
 
   music: {
-    src: "audio/trauerlied.m4a",   // bis eine Instrumentalfassung da ist
-    title: { de: "Musik für Ali", tr: "Ali için müzik" },
-    volume: 0.35,      // normale Lautstärke
-    duckVolume: 0.06   // Lautstärke, während eine Rede läuft
+    src: "audio/trauerlied.m4a",   // „Ali Çınar, Ali'miz“, startet beim Betreten der Seite
+    title: { de: "Trauerlied abspielen", tr: "Ağıtı çal" },
+    volume: 0.55       // Lautstärke des Trauerlieds
   },
 
   intro: {
@@ -90,107 +89,60 @@ window.MEMORIAL = {
       text: { de: "[Eine lustige oder warme Geschichte aus dem Familienalltag mit ihm.]", tr: "[Onunla aile hayatından komik ya da sıcak bir hikâye.]" } }
   ],
 
-  // Trauerlied und Gedenkrede. Zeitmarken (t, in Sekunden) aus den Textspuren der Suno-Aufnahmen;
-  // die türkische Rede hat noch keine Aufnahme, ihre Zeiten sind geschätzt.
+  // Gedenkrede: eine Karte mit Umschalter DE | TR.
+  // Zeitmarken (t, in Sekunden): DE aus der Textspur der Suno-Aufnahme, TR geschätzt bis die Aufnahme da ist.
   speeches: [
     {
-      id: "trauerlied",
-      lang: "tr",
-      isMusic: true,   // pausiert die Hintergrundmusik ganz, statt sie nur leiser zu machen
-      src: "audio/trauerlied.m4a",
-      title: { de: "Ali Çınar, Ali'miz", tr: "Ali Çınar, Ali'miz" },
-      by: { de: "Das Trauerlied", tr: "Ağıt" },
-      segments: [
-        { t: 26.2, text: "Bir yıl geçti sen gideli,", translation: "Ein Jahr ist vergangen, seit du gegangen bist," },
-        { t: 30.0, text: "Hâlâ sofrada yerin boş.", translation: "noch immer ist dein Platz am Tisch leer." },
-        { t: 37.9, text: "Ömrünü bize adadın,", translation: "Dein Leben hast du uns gewidmet," },
-        { t: 41.9, text: "Sensiz geçmiyor günler hoş.", translation: "ohne dich sind die Tage nicht mehr schön." },
-        { t: 50.9, text: "Ali Çınar, Ali'miz,", translation: "Ali Çınar, unser Ali," },
-        { t: 54.5, text: "Işıklar yoldaşın olsun.", translation: "mögen die Lichter dich begleiten." },
-        { t: 58.0, text: "Erzincan'ın toprağında", translation: "In der Erde von Erzincan" },
-        { t: 61.9, text: "Ruhun orda huzur bulsun.", translation: "möge deine Seele Frieden finden." },
-        { t: 65.8, text: "Devr-i daim, Ali Çınar,", translation: "Devr-i Daim, Ali Çınar," },
-        { t: 70.1, text: "Adın gönlümüzde dursun.", translation: "dein Name bleibe in unseren Herzen." },
-        { t: 98.5, text: "Derdin hep „yaşayamadım“,", translation: "Dein Kummer war stets: „Ich habe nicht gelebt“," },
-        { t: 102.8, text: "Gözlerinde vardı keder.", translation: "in deinen Augen lag Traurigkeit." },
-        { t: 108.3, text: "Oysa ektiğin sevgiyle", translation: "Doch aus der Liebe, die du gesät hast," },
-        { t: 112.3, text: "Yeşerdi evlat, kardeşler.", translation: "sind Kinder und Geschwister erblüht." },
-        { t: 121.0, text: "Ali Çınar, Ali'miz,", translation: "Ali Çınar, unser Ali," },
-        { t: 124.6, text: "Işıklar yoldaşın olsun.", translation: "mögen die Lichter dich begleiten." },
-        { t: 128.1, text: "Erzincan'ın toprağında", translation: "In der Erde von Erzincan" },
-        { t: 132.0, text: "Ruhun orda huzur bulsun.", translation: "möge deine Seele Frieden finden." },
-        { t: 135.9, text: "Devr-i daim, Ali Çınar,", translation: "Devr-i Daim, Ali Çınar," },
-        { t: 140.3, text: "Adın gönlümüzde dursun.", translation: "dein Name bleibe in unseren Herzen." },
-        { t: 175.1, text: "Baba, kardeş, can yoldaşı,", translation: "Vater, Bruder, Weggefährte der Seele," },
-        { t: 179.0, text: "Sığınaktın hepimize.", translation: "du warst uns allen eine Zuflucht." },
-        { t: 185.0, text: "Kapın açık, kalbin geniş,", translation: "Deine Tür offen, dein Herz weit," },
-        { t: 188.5, text: "Sevgin kaldı her birimize.", translation: "deine Liebe blieb in jedem von uns." },
-        { t: 197.0, text: "Bağlamanın tellerinde", translation: "In den Saiten der Bağlama" },
-        { t: 201.1, text: "Sesin hâlâ yankılanır.", translation: "klingt deine Stimme noch immer nach." },
-        { t: 205.2, text: "Her bir nefes, her bir dua", translation: "Jeder Atemzug, jedes Gebet" },
-        { t: 209.4, text: "Seni bize hatırlatır.", translation: "erinnert uns an dich." },
-        { t: 216.1, text: "Ali Çınar, Ali'miz,", translation: "Ali Çınar, unser Ali," },
-        { t: 219.8, text: "Işıklar yoldaşın olsun.", translation: "mögen die Lichter dich begleiten." },
-        { t: 223.2, text: "Erzincan'ın toprağında", translation: "In der Erde von Erzincan" },
-        { t: 227.2, text: "Ruhun orda huzur bulsun.", translation: "möge deine Seele Frieden finden." },
-        { t: 231.1, text: "Devr-i daim, Ali Çınar,", translation: "Devr-i Daim, Ali Çınar," },
-        { t: 236.3, text: "Adın gönlümüzde dursun.", translation: "dein Name bleibe in unseren Herzen." },
-        { t: 242.4, text: "Ali Çınar, Ali'miz,", translation: "Ali Çınar, unser Ali," },
-        { t: 248.9, text: "Devr-i daim …", translation: "Devr-i Daim …" }
-      ]
-    },
-    {
-      id: "rede-de",
-      lang: "de",
-      src: "audio/rede-de.m4a",
+      id: "gedenkrede",
       title: { de: "Wir vergessen dich nicht", tr: "Seni unutmayacağız" },
-      by: { de: "Gedenkrede zum ersten Jahrestag", tr: "Birinci yıl anma konuşması (Almanca)" },
-      segments: [
-        { t: 1.9, text: "Liebe Familie, liebe Freunde,", translation: "Sevgili ailem, sevgili dostlar," },
-        { t: 6.1, text: "vor einem Jahr haben wir Abschied genommen.", translation: "bir yıl önce vedalaştık." },
-        { t: 9.9, text: "Damals waren wir sprachlos, und vieles, was wir sagen wollten, blieb ungesagt.", translation: "O gün dilimiz tutulmuştu, söylemek istediğimiz pek çok şey söylenmeden kaldı." },
-        { t: 16.8, text: "Heute stehen wir wieder zusammen, nicht nur in Trauer, sondern auch in Dankbarkeit.", translation: "Bugün yeniden bir aradayız, yalnızca yasla değil, minnetle de." },
-        { t: 28.7, text: "Ali Çinar war ein Mensch, der nicht viele Worte brauchte.", translation: "Ali Çinar çok söze ihtiyaç duymayan bir insandı." },
-        { t: 33.6, text: "Er zeigte seine Liebe durch das, was er tat: durch harte Arbeit, durch Verlässlichkeit, durch ein offenes Haus für jeden, der kam.", translation: "Sevgisini yaptıklarıyla gösterirdi: alın teriyle, güvenilirliğiyle, gelen herkese açık olan kapısıyla." },
-        { t: 44.8, text: "Er hat selten an sich gedacht und immer an uns.", translation: "Kendini nadiren düşünür, bizi ise hep düşünürdü." },
-        { t: 53.9, text: "Er hat einmal gesagt: „Ömrümü yaşayamadan gittim.“", translation: "Bir keresinde şöyle demişti: „Ömrümü yaşayamadan gittim.“" },
-        { t: 58.9, text: "Ich bin gegangen, ohne mein Leben gelebt zu haben.", translation: "Ömrümü yaşayamadan gittim." },
-        { t: 63.9, text: "Dieser Satz tut weh.", translation: "Bu söz yüreğimizi yakıyor." },
-        { t: 65.9, text: "Aber wenn wir uns heute hier umsehen, dann sehen wir, was er geschaffen hat.", translation: "Ama bugün etrafımıza baktığımızda, onun neler yarattığını görüyoruz." },
-        { t: 73.5, text: "Wir sehen seine Kinder, seine Geschwister, seine Familie.", translation: "Çocuklarını, kardeşlerini, ailesini görüyoruz." },
-        { t: 79.2, text: "Wir sehen die Werte, die er uns mitgegeben hat.", translation: "Bize kazandırdığı değerleri görüyoruz." },
-        { t: 83.9, text: "Vielleicht hat er sein eigenes Leben nicht ganz gelebt, aber er hat es uns geschenkt.", translation: "Belki kendi ömrünü tam yaşayamadı, ama onu bize armağan etti." },
-        { t: 102.0, text: "Seine Heimat Erzincan hat ihn zurückbekommen.", translation: "Memleketi Erzincan onu geri aldı." },
-        { t: 108.4, text: "Wir aber tragen ihn mit uns, in jedem Gespräch, in jeder Erinnerung, in jedem Lachen, das an ihn erinnert.", translation: "Biz ise onu her sohbette, her anıda, onu hatırlatan her kahkahada yanımızda taşıyoruz." },
-        { t: 129.0, text: "Lieber Ali, lieber Baba: Wir vergessen dich nicht.", translation: "Sevgili Ali, canım babam: Seni unutmayacağız." },
-        { t: 139.7, text: "Devr-i Daim. Işıklar yoldaşın olsun.", translation: "Devr-i Daim. Işıklar yoldaşın olsun." }
-      ]
-    },
-    {
-      id: "rede-tr",
-      lang: "tr",
-      src: "audio/rede-tr.m4a",
-      title: { de: "Gedenkrede zum ersten Jahrestag (Türkisch)", tr: "Birinci yıl anma konuşması (Türkçe)" },
-      by: { de: "Die Familie Çinar", tr: "Çinar Ailesi" },
-      segments: [
-        { t: 0, text: "Sevgili ailem, sevgili dostlar,", translation: "Liebe Familie, liebe Freunde," },
-        { t: 3, text: "bir yıl önce vedalaştık.", translation: "vor einem Jahr haben wir Abschied genommen." },
-        { t: 6, text: "O gün dilimiz tutulmuştu, söylemek istediğimiz pek çok şey söylenmeden kaldı.", translation: "Damals waren wir sprachlos, und vieles, was wir sagen wollten, blieb ungesagt." },
-        { t: 12, text: "Bugün yeniden bir aradayız, yalnızca yasla değil, minnetle de.", translation: "Heute stehen wir wieder zusammen, nicht nur in Trauer, sondern auch in Dankbarkeit." },
-        { t: 18, text: "Ali Çinar çok söze ihtiyaç duymayan bir insandı.", translation: "Ali Çinar war ein Mensch, der nicht viele Worte brauchte." },
-        { t: 22, text: "Sevgisini yaptıklarıyla gösterirdi: alın teriyle, güvenilirliğiyle, gelen herkese açık olan kapısıyla.", translation: "Er zeigte seine Liebe durch das, was er tat: durch harte Arbeit, durch Verlässlichkeit, durch ein offenes Haus für jeden, der kam." },
-        { t: 29, text: "Kendini nadiren düşünür, bizi ise hep düşünürdü.", translation: "Er hat selten an sich gedacht und immer an uns." },
-        { t: 33, text: "Bir keresinde şöyle demişti: „Ömrümü yaşayamadan gittim.“", translation: "Er hat einmal gesagt: „Ömrümü yaşayamadan gittim.“" },
-        { t: 38, text: "Bu söz yüreğimizi yakıyor.", translation: "Dieser Satz tut weh." },
-        { t: 41, text: "Ama bugün etrafımıza baktığımızda, onun neler yarattığını görüyoruz.", translation: "Aber wenn wir uns heute hier umsehen, dann sehen wir, was er geschaffen hat." },
-        { t: 45, text: "Çocuklarını, kardeşlerini, ailesini görüyoruz.", translation: "Wir sehen seine Kinder, seine Geschwister, seine Familie." },
-        { t: 48, text: "Bize kazandırdığı değerleri görüyoruz.", translation: "Wir sehen die Werte, die er uns mitgegeben hat." },
-        { t: 51, text: "Belki kendi ömrünü tam yaşayamadı, ama onu bize armağan etti.", translation: "Vielleicht hat er sein eigenes Leben nicht ganz gelebt, aber er hat es uns geschenkt." },
-        { t: 57, text: "Memleketi Erzincan onu geri aldı.", translation: "Seine Heimat Erzincan hat ihn zurückbekommen." },
-        { t: 61, text: "Biz ise onu her sohbette, her anıda, onu hatırlatan her kahkahada yanımızda taşıyoruz.", translation: "Wir aber tragen ihn mit uns, in jedem Gespräch, in jeder Erinnerung, in jedem Lachen, das an ihn erinnert." },
-        { t: 68, text: "Sevgili Ali, canım babam: Seni unutmayacağız.", translation: "Lieber Ali, lieber Baba: Wir vergessen dich nicht." },
-        { t: 72, text: "Devr-i Daim. Işıklar yoldaşın olsun.", translation: "Devr-i Daim. Işıklar yoldaşın olsun." }
-      ]
+      by: { de: "Gedenkrede zum ersten Jahrestag", tr: "Birinci yıl anma konuşması" },
+      versions: {
+        de: {
+          src: "audio/rede-de.m4a",
+          segments: [
+            { t: 1.9, text: "Liebe Familie, liebe Freunde,", translation: "Sevgili ailem, sevgili dostlar," },
+            { t: 6.1, text: "vor einem Jahr haben wir Abschied genommen.", translation: "bir yıl önce vedalaştık." },
+            { t: 9.9, text: "Damals waren wir sprachlos, und vieles, was wir sagen wollten, blieb ungesagt.", translation: "O gün dilimiz tutulmuştu, söylemek istediğimiz pek çok şey söylenmeden kaldı." },
+            { t: 16.8, text: "Heute stehen wir wieder zusammen, nicht nur in Trauer, sondern auch in Dankbarkeit.", translation: "Bugün yeniden bir aradayız, yalnızca yasla değil, minnetle de." },
+            { t: 28.7, text: "Ali Çinar war ein Mensch, der nicht viele Worte brauchte.", translation: "Ali Çinar çok söze ihtiyaç duymayan bir insandı." },
+            { t: 33.6, text: "Er zeigte seine Liebe durch das, was er tat: durch harte Arbeit, durch Verlässlichkeit, durch ein offenes Haus für jeden, der kam.", translation: "Sevgisini yaptıklarıyla gösterirdi: alın teriyle, güvenilirliğiyle, gelen herkese açık olan kapısıyla." },
+            { t: 44.8, text: "Er hat selten an sich gedacht und immer an uns.", translation: "Kendini nadiren düşünür, bizi ise hep düşünürdü." },
+            { t: 53.9, text: "Er hat einmal gesagt: „Ömrümü yaşayamadan gittim.“", translation: "Bir keresinde şöyle demişti: „Ömrümü yaşayamadan gittim.“" },
+            { t: 58.9, text: "Ich bin gegangen, ohne mein Leben gelebt zu haben.", translation: "Ömrümü yaşayamadan gittim." },
+            { t: 63.9, text: "Dieser Satz tut weh.", translation: "Bu söz yüreğimizi yakıyor." },
+            { t: 65.9, text: "Aber wenn wir uns heute hier umsehen, dann sehen wir, was er geschaffen hat.", translation: "Ama bugün etrafımıza baktığımızda, onun neler yarattığını görüyoruz." },
+            { t: 73.5, text: "Wir sehen seine Kinder, seine Geschwister, seine Familie.", translation: "Çocuklarını, kardeşlerini, ailesini görüyoruz." },
+            { t: 79.2, text: "Wir sehen die Werte, die er uns mitgegeben hat.", translation: "Bize kazandırdığı değerleri görüyoruz." },
+            { t: 83.9, text: "Vielleicht hat er sein eigenes Leben nicht ganz gelebt, aber er hat es uns geschenkt.", translation: "Belki kendi ömrünü tam yaşayamadı, ama onu bize armağan etti." },
+            { t: 102.0, text: "Seine Heimat Erzincan hat ihn zurückbekommen.", translation: "Memleketi Erzincan onu geri aldı." },
+            { t: 108.4, text: "Wir aber tragen ihn mit uns, in jedem Gespräch, in jeder Erinnerung, in jedem Lachen, das an ihn erinnert.", translation: "Biz ise onu her sohbette, her anıda, onu hatırlatan her kahkahada yanımızda taşıyoruz." },
+            { t: 129.0, text: "Lieber Ali, lieber Baba: Wir vergessen dich nicht.", translation: "Sevgili Ali, canım babam: Seni unutmayacağız." },
+            { t: 139.7, text: "Devr-i Daim. Işıklar yoldaşın olsun.", translation: "Devr-i Daim. Işıklar yoldaşın olsun." }
+          ]
+        },
+        tr: {
+          src: "audio/rede-tr.m4a",
+          segments: [
+            { t: 0, text: "Sevgili ailem, sevgili dostlar,", translation: "Liebe Familie, liebe Freunde," },
+            { t: 3, text: "bir yıl önce vedalaştık.", translation: "vor einem Jahr haben wir Abschied genommen." },
+            { t: 6, text: "O gün dilimiz tutulmuştu, söylemek istediğimiz pek çok şey söylenmeden kaldı.", translation: "Damals waren wir sprachlos, und vieles, was wir sagen wollten, blieb ungesagt." },
+            { t: 12, text: "Bugün yeniden bir aradayız, yalnızca yasla değil, minnetle de.", translation: "Heute stehen wir wieder zusammen, nicht nur in Trauer, sondern auch in Dankbarkeit." },
+            { t: 18, text: "Ali Çinar çok söze ihtiyaç duymayan bir insandı.", translation: "Ali Çinar war ein Mensch, der nicht viele Worte brauchte." },
+            { t: 22, text: "Sevgisini yaptıklarıyla gösterirdi: alın teriyle, güvenilirliğiyle, gelen herkese açık olan kapısıyla.", translation: "Er zeigte seine Liebe durch das, was er tat: durch harte Arbeit, durch Verlässlichkeit, durch ein offenes Haus für jeden, der kam." },
+            { t: 29, text: "Kendini nadiren düşünür, bizi ise hep düşünürdü.", translation: "Er hat selten an sich gedacht und immer an uns." },
+            { t: 33, text: "Bir keresinde şöyle demişti: „Ömrümü yaşayamadan gittim.“", translation: "Er hat einmal gesagt: „Ömrümü yaşayamadan gittim.“" },
+            { t: 38, text: "Bu söz yüreğimizi yakıyor.", translation: "Dieser Satz tut weh." },
+            { t: 41, text: "Ama bugün etrafımıza baktığımızda, onun neler yarattığını görüyoruz.", translation: "Aber wenn wir uns heute hier umsehen, dann sehen wir, was er geschaffen hat." },
+            { t: 45, text: "Çocuklarını, kardeşlerini, ailesini görüyoruz.", translation: "Wir sehen seine Kinder, seine Geschwister, seine Familie." },
+            { t: 48, text: "Bize kazandırdığı değerleri görüyoruz.", translation: "Wir sehen die Werte, die er uns mitgegeben hat." },
+            { t: 51, text: "Belki kendi ömrünü tam yaşayamadı, ama onu bize armağan etti.", translation: "Vielleicht hat er sein eigenes Leben nicht ganz gelebt, aber er hat es uns geschenkt." },
+            { t: 57, text: "Memleketi Erzincan onu geri aldı.", translation: "Seine Heimat Erzincan hat ihn zurückbekommen." },
+            { t: 61, text: "Biz ise onu her sohbette, her anıda, onu hatırlatan her kahkahada yanımızda taşıyoruz.", translation: "Wir aber tragen ihn mit uns, in jedem Gespräch, in jeder Erinnerung, in jedem Lachen, das an ihn erinnert." },
+            { t: 68, text: "Sevgili Ali, canım babam: Seni unutmayacağız.", translation: "Lieber Ali, lieber Baba: Wir vergessen dich nicht." },
+            { t: 72, text: "Devr-i Daim. Işıklar yoldaşın olsun.", translation: "Devr-i Daim. Işıklar yoldaşın olsun." }
+          ]
+        }
+      }
     }
   ],
 

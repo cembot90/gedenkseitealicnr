@@ -321,3 +321,7 @@ main, .footer, .topbar { position: relative; z-index: 2; }
   .reveal { opacity: 1; transform: none; }
   .mem { filter: none; }
 }
+
+/* Umschalter DE | TR in der Redenkarte */
+.speech__lang { align-self: center; }
+.speech.is-missing .speech__text { opacity: .7; }
