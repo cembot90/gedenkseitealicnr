@@ -47,9 +47,6 @@
       $("#annEyebrow").textContent = L(A.eyebrow);
       $("#annTitle").textContent = L(A.title);
       const body = $("#annBody"); body.replaceChildren(...(A.paragraphs[lang] || A.paragraphs.de).map(x => el("p", null, x)));
-      $("#annInvite").textContent = L(A.invitation);
-      $("#annDate").textContent = L(A.date);
-      $("#annPlace").textContent = L(A.place);
       $("#annReflection").textContent = L(A.reflection);
       $("#annBlessing").textContent = L(A.blessing);
       $("#annClosing").textContent = L(A.closing);

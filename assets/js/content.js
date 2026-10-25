@@ -48,12 +48,6 @@ window.MEMORIAL = {
         "Yorulmak bilmeyen emeğini, sıcaklığını ve hayatını ailesine adadığı o sessiz şefkatini özlüyoruz."
       ]
     },
-    invitation: {
-      de: "Zu seinem ersten Jahresgedenken laden wir alle Verwandten, Freunde und Bekannten herzlich ein, gemeinsam an ihn zu denken.",
-      tr: "Birinci yıl anmasında onu birlikte anmak için tüm akrabalarımızı, dostlarımızı ve tanıdıklarımızı içtenlikle davet ediyoruz."
-    },
-    date: { de: "[Datum, Uhrzeit]", tr: "[Tarih, saat]" },
-    place: { de: "[Ort]", tr: "[Yer]" },
     reflection: {
       de: "Er selbst sagte: „Ömrümü yaşayamadan gittim.“ Sein Leben empfand er als unvollständig. Für uns aber war es reich an Liebe, die bis heute in uns weiterlebt.",
       tr: "Kendisi „Ömrümü yaşayamadan gittim“ demişti. Hayatını yarım kalmış saydı. Bizim içinse sevgiyle doluydu ve o sevgi bugün hâlâ içimizde yaşıyor."
@@ -216,7 +210,7 @@ window.MEMORIAL = {
 window.UI = {
   de: {
     navYear: "Jahrestag", navLife: "Leben", navMemories: "Erinnerungen", navWords: "Worte", navGallery: "Bilder", navBook: "Gedenkbuch",
-    inMemory: "In liebendem Gedenken an", inviteLabel: "Einladung", whenLabel: "Wann", whereLabel: "Wo", speechLink: "Gedenkrede anhören",
+    inMemory: "In liebendem Gedenken an", speechLink: "Gedenkrede anhören",
     lightCandle: "Licht anzünden", scroll: "Weiter",
     lifeEyebrow: "Sein Weg", lifeTitle: "Ein Leben voller Wärme",
     memEyebrow: "Was uns zum Lächeln bringt", memTitle: "Fröhliche Erinnerungen",
@@ -238,7 +232,7 @@ window.UI = {
   },
   tr: {
     navYear: "Yıl dönümü", navLife: "Hayatı", navMemories: "Anılar", navWords: "Sözler", navGallery: "Fotoğraflar", navBook: "Anı Defteri",
-    inMemory: "Sevgiyle anıyoruz", inviteLabel: "Davet", whenLabel: "Ne zaman", whereLabel: "Nerede", speechLink: "Anma konuşmasını dinle",
+    inMemory: "Sevgiyle anıyoruz", speechLink: "Anma konuşmasını dinle",
     lightCandle: "Çerağ uyandır", scroll: "Devam",
     lifeEyebrow: "Yolculuğu", lifeTitle: "Sıcaklıkla dolu bir hayat",
     memEyebrow: "Bizi gülümseten", memTitle: "Neşeli anılar",
