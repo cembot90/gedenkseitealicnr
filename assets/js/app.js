@@ -221,7 +221,7 @@
     if (dlg.returnValue !== "ok") return;
     const name = dlg.querySelector("input").value.trim().slice(0, 40);
     try { await window.MemorialStore?.addCandle(name); toast(t("candleThanks")); document.getElementById("kerzen").scrollIntoView({ behavior: "smooth" }); }
-    catch (e) { console.error(e); toast(t(e && e.code === "rejected" ? "fRejected" : "fError")); }
+    catch (e) { console.error(e); toast(t(e && e.code === "rejected" ? "fRejected" : "fError") + (e && e.code && e.code !== "rejected" ? ` (${e.code})` : "")); }
   });
 
   /* ---------- Gedenkbuch ---------- */
@@ -263,7 +263,7 @@
       await window.MemorialStore.addEntry(data);
       lastSubmit = Date.now(); form.reset(); $("#msgCount").textContent = "0";
       status.textContent = t("fThanks");
-    } catch (err) { console.error(err); status.textContent = t(err && err.code === "rejected" ? "fRejected" : "fError"); status.classList.add("is-error"); }
+    } catch (err) { console.error(err); status.textContent = t(err && err.code === "rejected" ? "fRejected" : "fError") + (err && err.code && err.code !== "rejected" ? ` (${err.code})` : ""); status.classList.add("is-error"); }
     finally { btn.disabled = false; btn.textContent = t("fSubmit"); }
   });
 
