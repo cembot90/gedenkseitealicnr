@@ -23,7 +23,7 @@ window.MEMORIAL = {
   },
 
   music: {
-    src: "audio/hintergrund.mp3",
+    src: "audio/trauerlied.m4a",   // bis eine Instrumentalfassung da ist
     title: { de: "Musik für Ali", tr: "Ali için müzik" },
     volume: 0.35,      // normale Lautstärke
     duckVolume: 0.06   // Lautstärke, während eine Rede läuft
@@ -96,13 +96,86 @@ window.MEMORIAL = {
       text: { de: "[Eine lustige oder warme Geschichte aus dem Familienalltag mit ihm.]", tr: "[Onunla aile hayatından komik ya da sıcak bir hikâye.]" } }
   ],
 
-  // Gedenkrede zum ersten Jahrestag. Die Zeitmarken (t, in Sekunden) sind geschätzt
-  // und werden an die fertigen Suno-Aufnahmen angepasst.
+  // Trauerlied und Gedenkrede. Zeitmarken (t, in Sekunden) aus den Textspuren der Suno-Aufnahmen;
+  // die türkische Rede hat noch keine Aufnahme, ihre Zeiten sind geschätzt.
   speeches: [
+    {
+      id: "trauerlied",
+      lang: "tr",
+      isMusic: true,   // pausiert die Hintergrundmusik ganz, statt sie nur leiser zu machen
+      src: "audio/trauerlied.m4a",
+      title: { de: "Ali Çınar, Ali'miz", tr: "Ali Çınar, Ali'miz" },
+      by: { de: "Das Trauerlied", tr: "Ağıt" },
+      segments: [
+        { t: 26.2, text: "Bir yıl geçti sen gideli,", translation: "Ein Jahr ist vergangen, seit du gegangen bist," },
+        { t: 30.0, text: "Hâlâ sofrada yerin boş.", translation: "noch immer ist dein Platz am Tisch leer." },
+        { t: 37.9, text: "Ömrünü bize adadın,", translation: "Dein Leben hast du uns gewidmet," },
+        { t: 41.9, text: "Sensiz geçmiyor günler hoş.", translation: "ohne dich sind die Tage nicht mehr schön." },
+        { t: 50.9, text: "Ali Çınar, Ali'miz,", translation: "Ali Çınar, unser Ali," },
+        { t: 54.5, text: "Işıklar yoldaşın olsun.", translation: "mögen die Lichter dich begleiten." },
+        { t: 58.0, text: "Erzincan'ın toprağında", translation: "In der Erde von Erzincan" },
+        { t: 61.9, text: "Ruhun orda huzur bulsun.", translation: "möge deine Seele Frieden finden." },
+        { t: 65.8, text: "Devr-i daim, Ali Çınar,", translation: "Devr-i Daim, Ali Çınar," },
+        { t: 70.1, text: "Adın gönlümüzde dursun.", translation: "dein Name bleibe in unseren Herzen." },
+        { t: 98.5, text: "Derdin hep „yaşayamadım“,", translation: "Dein Kummer war stets: „Ich habe nicht gelebt“," },
+        { t: 102.8, text: "Gözlerinde vardı keder.", translation: "in deinen Augen lag Traurigkeit." },
+        { t: 108.3, text: "Oysa ektiğin sevgiyle", translation: "Doch aus der Liebe, die du gesät hast," },
+        { t: 112.3, text: "Yeşerdi evlat, kardeşler.", translation: "sind Kinder und Geschwister erblüht." },
+        { t: 121.0, text: "Ali Çınar, Ali'miz,", translation: "Ali Çınar, unser Ali," },
+        { t: 124.6, text: "Işıklar yoldaşın olsun.", translation: "mögen die Lichter dich begleiten." },
+        { t: 128.1, text: "Erzincan'ın toprağında", translation: "In der Erde von Erzincan" },
+        { t: 132.0, text: "Ruhun orda huzur bulsun.", translation: "möge deine Seele Frieden finden." },
+        { t: 135.9, text: "Devr-i daim, Ali Çınar,", translation: "Devr-i Daim, Ali Çınar," },
+        { t: 140.3, text: "Adın gönlümüzde dursun.", translation: "dein Name bleibe in unseren Herzen." },
+        { t: 175.1, text: "Baba, kardeş, can yoldaşı,", translation: "Vater, Bruder, Weggefährte der Seele," },
+        { t: 179.0, text: "Sığınaktın hepimize.", translation: "du warst uns allen eine Zuflucht." },
+        { t: 185.0, text: "Kapın açık, kalbin geniş,", translation: "Deine Tür offen, dein Herz weit," },
+        { t: 188.5, text: "Sevgin kaldı her birimize.", translation: "deine Liebe blieb in jedem von uns." },
+        { t: 197.0, text: "Bağlamanın tellerinde", translation: "In den Saiten der Bağlama" },
+        { t: 201.1, text: "Sesin hâlâ yankılanır.", translation: "klingt deine Stimme noch immer nach." },
+        { t: 205.2, text: "Her bir nefes, her bir dua", translation: "Jeder Atemzug, jedes Gebet" },
+        { t: 209.4, text: "Seni bize hatırlatır.", translation: "erinnert uns an dich." },
+        { t: 216.1, text: "Ali Çınar, Ali'miz,", translation: "Ali Çınar, unser Ali," },
+        { t: 219.8, text: "Işıklar yoldaşın olsun.", translation: "mögen die Lichter dich begleiten." },
+        { t: 223.2, text: "Erzincan'ın toprağında", translation: "In der Erde von Erzincan" },
+        { t: 227.2, text: "Ruhun orda huzur bulsun.", translation: "möge deine Seele Frieden finden." },
+        { t: 231.1, text: "Devr-i daim, Ali Çınar,", translation: "Devr-i Daim, Ali Çınar," },
+        { t: 236.3, text: "Adın gönlümüzde dursun.", translation: "dein Name bleibe in unseren Herzen." },
+        { t: 242.4, text: "Ali Çınar, Ali'miz,", translation: "Ali Çınar, unser Ali," },
+        { t: 248.9, text: "Devr-i daim …", translation: "Devr-i Daim …" }
+      ]
+    },
+    {
+      id: "rede-de",
+      lang: "de",
+      src: "audio/rede-de.m4a",
+      title: { de: "Wir vergessen dich nicht", tr: "Seni unutmayacağız" },
+      by: { de: "Gedenkrede zum ersten Jahrestag", tr: "Birinci yıl anma konuşması (Almanca)" },
+      segments: [
+        { t: 1.9, text: "Liebe Familie, liebe Freunde,", translation: "Sevgili ailem, sevgili dostlar," },
+        { t: 6.1, text: "vor einem Jahr haben wir Abschied genommen.", translation: "bir yıl önce vedalaştık." },
+        { t: 9.9, text: "Damals waren wir sprachlos, und vieles, was wir sagen wollten, blieb ungesagt.", translation: "O gün dilimiz tutulmuştu, söylemek istediğimiz pek çok şey söylenmeden kaldı." },
+        { t: 16.8, text: "Heute stehen wir wieder zusammen, nicht nur in Trauer, sondern auch in Dankbarkeit.", translation: "Bugün yeniden bir aradayız, yalnızca yasla değil, minnetle de." },
+        { t: 28.7, text: "Ali Çinar war ein Mensch, der nicht viele Worte brauchte.", translation: "Ali Çinar çok söze ihtiyaç duymayan bir insandı." },
+        { t: 33.6, text: "Er zeigte seine Liebe durch das, was er tat: durch harte Arbeit, durch Verlässlichkeit, durch ein offenes Haus für jeden, der kam.", translation: "Sevgisini yaptıklarıyla gösterirdi: alın teriyle, güvenilirliğiyle, gelen herkese açık olan kapısıyla." },
+        { t: 44.8, text: "Er hat selten an sich gedacht und immer an uns.", translation: "Kendini nadiren düşünür, bizi ise hep düşünürdü." },
+        { t: 53.9, text: "Er hat einmal gesagt: „Ömrümü yaşayamadan gittim.“", translation: "Bir keresinde şöyle demişti: „Ömrümü yaşayamadan gittim.“" },
+        { t: 58.9, text: "Ich bin gegangen, ohne mein Leben gelebt zu haben.", translation: "Ömrümü yaşayamadan gittim." },
+        { t: 63.9, text: "Dieser Satz tut weh.", translation: "Bu söz yüreğimizi yakıyor." },
+        { t: 65.9, text: "Aber wenn wir uns heute hier umsehen, dann sehen wir, was er geschaffen hat.", translation: "Ama bugün etrafımıza baktığımızda, onun neler yarattığını görüyoruz." },
+        { t: 73.5, text: "Wir sehen seine Kinder, seine Geschwister, seine Familie.", translation: "Çocuklarını, kardeşlerini, ailesini görüyoruz." },
+        { t: 79.2, text: "Wir sehen die Werte, die er uns mitgegeben hat.", translation: "Bize kazandırdığı değerleri görüyoruz." },
+        { t: 83.9, text: "Vielleicht hat er sein eigenes Leben nicht ganz gelebt, aber er hat es uns geschenkt.", translation: "Belki kendi ömrünü tam yaşayamadı, ama onu bize armağan etti." },
+        { t: 102.0, text: "Seine Heimat Erzincan hat ihn zurückbekommen.", translation: "Memleketi Erzincan onu geri aldı." },
+        { t: 108.4, text: "Wir aber tragen ihn mit uns, in jedem Gespräch, in jeder Erinnerung, in jedem Lachen, das an ihn erinnert.", translation: "Biz ise onu her sohbette, her anıda, onu hatırlatan her kahkahada yanımızda taşıyoruz." },
+        { t: 129.0, text: "Lieber Ali, lieber Baba: Wir vergessen dich nicht.", translation: "Sevgili Ali, canım babam: Seni unutmayacağız." },
+        { t: 139.7, text: "Devr-i Daim. Işıklar yoldaşın olsun.", translation: "Devr-i Daim. Işıklar yoldaşın olsun." }
+      ]
+    },
     {
       id: "rede-tr",
       lang: "tr",
-      src: "audio/rede-tr.mp3",
+      src: "audio/rede-tr.m4a",
       title: { de: "Gedenkrede zum ersten Jahrestag (Türkisch)", tr: "Birinci yıl anma konuşması (Türkçe)" },
       by: { de: "Die Familie Çinar", tr: "Çinar Ailesi" },
       segments: [
@@ -123,33 +196,6 @@ window.MEMORIAL = {
         { t: 61, text: "Biz ise onu her sohbette, her anıda, onu hatırlatan her kahkahada yanımızda taşıyoruz.", translation: "Wir aber tragen ihn mit uns, in jedem Gespräch, in jeder Erinnerung, in jedem Lachen, das an ihn erinnert." },
         { t: 68, text: "Sevgili Ali, canım babam: Seni unutmayacağız.", translation: "Lieber Ali, lieber Baba: Wir vergessen dich nicht." },
         { t: 72, text: "Devr-i Daim. Işıklar yoldaşın olsun.", translation: "Devr-i Daim. Işıklar yoldaşın olsun." }
-      ]
-    },
-    {
-      id: "rede-de",
-      lang: "de",
-      src: "audio/rede-de.mp3",
-      title: { de: "Gedenkrede zum ersten Jahrestag (Deutsch)", tr: "Birinci yıl anma konuşması (Almanca)" },
-      by: { de: "Die Familie Çinar", tr: "Çinar Ailesi" },
-      segments: [
-        { t: 0, text: "Liebe Familie, liebe Freunde,", translation: "Sevgili ailem, sevgili dostlar," },
-        { t: 3, text: "vor einem Jahr haben wir Abschied genommen.", translation: "bir yıl önce vedalaştık." },
-        { t: 7, text: "Damals waren wir sprachlos, und vieles, was wir sagen wollten, blieb ungesagt.", translation: "O gün dilimiz tutulmuştu, söylemek istediğimiz pek çok şey söylenmeden kaldı." },
-        { t: 13, text: "Heute stehen wir wieder zusammen, nicht nur in Trauer, sondern auch in Dankbarkeit.", translation: "Bugün yeniden bir aradayız, yalnızca yasla değil, minnetle de." },
-        { t: 20, text: "Ali Çinar war ein Mensch, der nicht viele Worte brauchte.", translation: "Ali Çinar çok söze ihtiyaç duymayan bir insandı." },
-        { t: 25, text: "Er zeigte seine Liebe durch das, was er tat: durch harte Arbeit, durch Verlässlichkeit, durch ein offenes Haus für jeden, der kam.", translation: "Sevgisini yaptıklarıyla gösterirdi: alın teriyle, güvenilirliğiyle, gelen herkese açık olan kapısıyla." },
-        { t: 36, text: "Er hat selten an sich gedacht und immer an uns.", translation: "Kendini nadiren düşünür, bizi ise hep düşünürdü." },
-        { t: 42, text: "Er hat einmal gesagt: „Ömrümü yaşayamadan gittim.“", translation: "Bir keresinde şöyle demişti: „Ömrümü yaşayamadan gittim.“" },
-        { t: 46, text: "Ich bin gegangen, ohne mein Leben gelebt zu haben.", translation: "Ömrümü yaşayamadan gittim." },
-        { t: 51, text: "Dieser Satz tut weh.", translation: "Bu söz yüreğimizi yakıyor." },
-        { t: 54, text: "Aber wenn wir uns heute hier umsehen, dann sehen wir, was er geschaffen hat.", translation: "Ama bugün etrafımıza baktığımızda, onun neler yarattığını görüyoruz." },
-        { t: 61, text: "Wir sehen seine Kinder, seine Geschwister, seine Familie.", translation: "Çocuklarını, kardeşlerini, ailesini görüyoruz." },
-        { t: 65, text: "Wir sehen die Werte, die er uns mitgegeben hat.", translation: "Bize kazandırdığı değerleri görüyoruz." },
-        { t: 70, text: "Vielleicht hat er sein eigenes Leben nicht ganz gelebt, aber er hat es uns geschenkt.", translation: "Belki kendi ömrünü tam yaşayamadı, ama onu bize armağan etti." },
-        { t: 78, text: "Seine Heimat Erzincan hat ihn zurückbekommen.", translation: "Memleketi Erzincan onu geri aldı." },
-        { t: 82, text: "Wir aber tragen ihn mit uns, in jedem Gespräch, in jeder Erinnerung, in jedem Lachen, das an ihn erinnert.", translation: "Biz ise onu her sohbette, her anıda, onu hatırlatan her kahkahada yanımızda taşıyoruz." },
-        { t: 91, text: "Lieber Ali, lieber Baba: Wir vergessen dich nicht.", translation: "Sevgili Ali, canım babam: Seni unutmayacağız." },
-        { t: 96, text: "Devr-i Daim. Işıklar yoldaşın olsun.", translation: "Devr-i Daim. Işıklar yoldaşın olsun." }
       ]
     }
   ],
@@ -182,6 +228,7 @@ window.UI = {
     bookEyebrow: "Gedenkbuch", bookTitle: "Teilen Sie eine Erinnerung",
     bookIntro: "Jeder Eintrag wird von der Familie gelesen und erscheint nach Freigabe.",
     fName: "Name", fRelation: "Verbindung (z. B. Neffe, Nachbar, Kollege)", fMessage: "Ihre Worte", fSubmit: "Eintrag senden",
+    fConsent: "Ich bin einverstanden, dass mein Eintrag nach Freigabe auf dieser Seite erscheint. Mehr dazu in der", privacy: "Datenschutzerklärung", imprint: "Impressum", fNoConsent: "Bitte bestätigen Sie die Einwilligung.",
     fSending: "Wird gesendet …", fThanks: "Danke. Ihr Eintrag erscheint, sobald die Familie ihn freigegeben hat.",
     fError: "Das hat leider nicht geklappt. Bitte versuchen Sie es später erneut.",
     fTooShort: "Bitte schreiben Sie ein paar Worte.",
@@ -203,6 +250,7 @@ window.UI = {
     bookEyebrow: "Anı Defteri", bookTitle: "Bir anınızı paylaşın",
     bookIntro: "Her yazı aile tarafından okunur ve onaylandıktan sonra yayınlanır.",
     fName: "İsim", fRelation: "Yakınlık (ör. yeğen, komşu, iş arkadaşı)", fMessage: "Sözleriniz", fSubmit: "Gönder",
+    fConsent: "Yazımın onaylandıktan sonra bu sayfada yayınlanmasını kabul ediyorum. Ayrıntılar:", privacy: "Gizlilik bildirimi (Almanca)", imprint: "Künye", fNoConsent: "Lütfen onay kutusunu işaretleyin.",
     fSending: "Gönderiliyor …", fThanks: "Teşekkürler. Yazınız aile onayladıktan sonra görünecek.",
     fError: "Maalesef olmadı. Lütfen daha sonra tekrar deneyin.",
     fTooShort: "Lütfen birkaç kelime yazın.",

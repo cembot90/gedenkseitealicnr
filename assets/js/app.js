@@ -145,7 +145,7 @@
           const e = segEls[idx]; if (e) text.scrollTo({ top: e.offsetTop - text.clientHeight / 3, behavior: "smooth" });
         }
       });
-      audio.addEventListener("play", () => { card.classList.add("is-playing"); players.forEach(o => { if (o.audio !== audio) o.audio.pause(); }); duck(true); });
+      audio.addEventListener("play", () => { card.classList.add("is-playing"); players.forEach(o => { if (o.audio !== audio) o.audio.pause(); }); duck(true, !!sp.isMusic); });
       audio.addEventListener("pause", () => { card.classList.remove("is-playing"); if (!players.some(o => !o.audio.paused)) duck(false); });
       audio.addEventListener("ended", () => { segEls.forEach(e => e.classList.remove("is-current")); curIdx = -1; fill.style.width = "0"; });
       audio.addEventListener("error", () => { card.classList.add("is-missing"); });
@@ -175,11 +175,13 @@
     const start = music.volume, steps = 30, d = (target - start) / steps; let i = 0;
     fadeTimer = setInterval(() => { i++; music.volume = Math.min(1, Math.max(0, start + d * i)); if (i >= steps) clearInterval(fadeTimer); }, ms / steps);
   }
-  function duck(on) {
+  let duckedHard = false;
+  function duck(on, hard = false) {
     if (!musicWanted) return;
-    if (volumeWorks) fadeTo(on ? M.music.duckVolume : M.music.volume);
-    else if (on) { resumeAfterSpeech = !music.paused; music.pause(); }
-    else if (resumeAfterSpeech) music.play().catch(() => {});
+    if (on && (hard || !volumeWorks)) { duckedHard = true; resumeAfterSpeech = !music.paused; clearInterval(fadeTimer); music.pause(); }
+    else if (on) fadeTo(M.music.duckVolume);
+    else if (duckedHard) { duckedHard = false; if (resumeAfterSpeech) { music.volume = 0; music.play().then(() => fadeTo(M.music.volume, 1600)).catch(() => {}); } }
+    else fadeTo(M.music.volume);
   }
   function updateMusicLabel() {
     $("#musicLabel").textContent = musicWanted ? t("musicOn") : L(M.music.title);
@@ -254,6 +256,7 @@
       lang
     };
     if (data.message.length < 2) { status.textContent = t("fTooShort"); status.classList.add("is-error"); return; }
+    if (!form.elements.consent.checked) { status.textContent = t("fNoConsent"); status.classList.add("is-error"); return; }
     if (Date.now() - lastSubmit < 30000) { status.textContent = t("fThanks"); return; } // Doppelklick/Spam bremsen
     const btn = form.querySelector("button[type=submit]"); btn.disabled = true; btn.textContent = t("fSending");
     try {

@@ -277,6 +277,19 @@ main, .footer, .topbar { position: relative; z-index: 2; }
 .field input, .field textarea { width: 100%; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; color: var(--text); font: 400 16px/1.5 var(--sans); transition: border-color .3s, background .3s; resize: vertical; }
 .field input:focus, .field textarea:focus { outline: none; border-color: var(--silver-2); background: var(--panel-2); }
 .counter { justify-self: end; color: var(--faint); font-size: 12px; }
+.consent { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start; font-size: 13px; line-height: 1.5; color: var(--muted); cursor: pointer; }
+.consent input { margin-top: 3px; width: 18px; height: 18px; accent-color: var(--silver-2); }
+.consent a { color: var(--silver-2); }
+.legal { display: flex; justify-content: center; gap: 22px; margin-top: 26px; font-size: 13px; }
+.legal a { color: var(--faint); text-decoration: none; }
+.legal a:hover { color: var(--text); }
+/* Rechtstexte */
+.doc { width: min(760px, 100% - 32px); margin: 0 auto; padding: 120px 0 100px; }
+.doc h1 { font: 500 clamp(36px, 6vw, 54px)/1.1 var(--serif); margin: 0 0 30px; }
+.doc h2 { font: 500 26px/1.2 var(--serif); margin: 40px 0 10px; }
+.doc p, .doc li { color: #c9ccd1; font-size: 16px; }
+.doc a { color: var(--silver-1); }
+.doc .back { display: inline-block; margin-bottom: 30px; color: var(--muted); text-decoration: none; font-size: 14px; }
 .hp { position: absolute !important; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
 .form-status { min-height: 1.4em; margin: 0; font-size: 14px; color: var(--silver-2); }
 .form-status.is-error { color: #f19a9a; }

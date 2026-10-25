@@ -15,6 +15,8 @@ Statische Seite für GitHub Pages, mit Gedenkbuch und Kerzen über Firebase Fire
 | `audio/` | `hintergrund.mp3`, Reden (z. B. `rede-tr.mp3`) |
 | `images/` | Porträt und Galerie |
 | `firestore.rules` | Sicherheitsregeln der Datenbank |
+| `impressum.html`, `datenschutz.html` | Rechtstexte |
+| `assets/fonts/` | Lokal eingebundene Schriften (keine Verbindung zu Google Fonts) |
 
 ## Audio
 
@@ -28,7 +30,7 @@ Statische Seite für GitHub Pages, mit Gedenkbuch und Kerzen über Firebase Fire
 2. **Web-App** registrieren, die Werte `apiKey`, `authDomain`, `projectId`, `appId` in `assets/js/config.js` eintragen.
 3. **Regeln**: Inhalt von `firestore.rules` unter *Firestore > Regeln* einfügen und veröffentlichen.
 4. **Index**: beim ersten Laden zeigt die Browser-Konsole einen Link zum Anlegen des Index (approved + createdAt). Anklicken genügt. Alternativ `firestore.indexes.json` per Firebase CLI deployen.
-5. **App Check** (blockiert Bots und fremde Skripte):
+5. **App Check** (optional, nur bei Spam einschalten): lädt Google reCAPTCHA. Dann vorher den auskommentierten Abschnitt in `datenschutz.html` ergänzen.
    - reCAPTCHA v3 Schlüssel anlegen unter [google.com/recaptcha/admin](https://www.google.com/recaptcha/admin), Domain `cembot90.github.io` (bzw. eigene Domain) eintragen.
    - In Firebase unter *App Check* die Web-App mit diesem Schlüssel registrieren.
    - Den **Websiteschlüssel** in `config.js` bei `APPCHECK_SITE_KEY` eintragen.
