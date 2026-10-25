@@ -1,0 +1,44 @@
+rules_version = '2';
+
+// Sicherheitsregeln für die Gedenkseite.
+// In der Firebase-Konsole unter Firestore > Regeln einfügen und veröffentlichen.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Gedenkbuch: jeder darf schreiben, gelesen werden nur freigegebene Einträge.
+    match /guestbook/{entryId} {
+      allow read: if resource.data.approved == true;
+
+      allow create: if
+        request.resource.data.keys().hasOnly(['name', 'relation', 'message', 'lang', 'approved', 'createdAt']) &&
+        request.resource.data.keys().hasAll(['message', 'approved', 'createdAt']) &&
+        request.resource.data.approved == false &&
+        request.resource.data.createdAt == request.time &&
+        request.resource.data.message is string &&
+        request.resource.data.message.size() >= 2 &&
+        request.resource.data.message.size() <= 1500 &&
+        (!('name' in request.resource.data) || (request.resource.data.name is string && request.resource.data.name.size() <= 60)) &&
+        (!('relation' in request.resource.data) || (request.resource.data.relation is string && request.resource.data.relation.size() <= 60)) &&
+        (!('lang' in request.resource.data) || request.resource.data.lang in ['de', 'tr']);
+
+      // Ändern und Löschen nur über die Firebase-Konsole (Freigabe durch die Familie).
+      allow update, delete: if false;
+    }
+
+    // Kerzen: sofort sichtbar, nur ein kurzer Name, nichts sonst.
+    match /candles/{candleId} {
+      allow read: if true;
+      allow create: if
+        request.resource.data.keys().hasOnly(['name', 'createdAt']) &&
+        request.resource.data.createdAt == request.time &&
+        request.resource.data.name is string &&
+        request.resource.data.name.size() <= 40;
+      allow update, delete: if false;
+    }
+
+    // Alles andere ist gesperrt.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

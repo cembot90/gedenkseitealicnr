@@ -1,110 +1,188 @@
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import {
-    getFirestore, collection, addDoc, serverTimestamp,
-    query, orderBy, onSnapshot, limit
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>In Erinnerung an Ali Ã‡inar</title>
+  <meta name="description" content="Gedenkseite fÃ¼r Ali Ã‡inar">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="theme-color" content="#0d0e10">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://www.google.com https://www.recaptcha.net; connect-src 'self' https://firestore.googleapis.com https://*.googleapis.com https://content-firebaseappcheck.googleapis.com https://www.google.com; frame-src https://www.google.com https://www.recaptcha.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <a class="skip" href="#leben">Zum Inhalt</a>
+  <canvas id="dust" aria-hidden="true"></canvas>
 
-  // >>> Deine Firebase-Konfiguration hier einfügen <<<
-  const firebaseConfig = {
-    apiKey: "…",
-    authDomain: "…",
-    projectId: "…",
-    appId: "…"
-  };
+  <header class="topbar">
+    <a class="mark" href="#top" aria-label="Nach oben">AÃ‡</a>
+    <nav class="nav" aria-label="Hauptnavigation">
+      <a href="#leben" data-i18n="navLife"></a>
+      <a href="#erinnerungen" data-i18n="navMemories"></a>
+      <a href="#worte" data-i18n="navWords"></a>
+      <a href="#bilder" data-i18n="navGallery"></a>
+      <a href="#gedenkbuch" data-i18n="navBook"></a>
+    </nav>
+    <div class="lang" role="group" aria-label="Sprache / Dil">
+      <button type="button" data-lang="de" aria-pressed="true">DE</button>
+      <button type="button" data-lang="tr" aria-pressed="false">TR</button>
+    </div>
+  </header>
 
-  const app = initializeApp(firebaseConfig);
-  const db  = getFirestore(app);
+  <main id="top">
+    <section class="hero">
+      <div class="hero__inner">
+        <p class="eyebrow" data-i18n="inMemory"></p>
+        <div class="portrait" id="portrait" aria-hidden="true">
+          <div class="portrait__ring"></div>
+          <div class="portrait__img"></div>
+        </div>
+        <h1 class="hero__name silver" id="heroName"></h1>
+        <p class="hero__nick" id="heroNick"></p>
+        <p class="hero__dates"><span id="born"></span><span class="sep" aria-hidden="true"></span><span id="died"></span></p>
+        <p class="hero__places" id="places"></p>
+        <blockquote class="hero__quote">
+          <p id="quote"></p>
+          <cite id="quoteSource"></cite>
+        </blockquote>
+        <button class="btn btn--silver" type="button" data-action="candle">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c1.6 2.4 3 4.2 3 6a3 3 0 0 1-6 0c0-1.8 1.4-3.6 3-6Z"/><rect x="10" y="12" width="4" height="10" rx="1"/></svg>
+          <span data-i18n="lightCandle"></span>
+        </button>
+      </div>
+      <a class="scrollcue" href="#leben"><span data-i18n="scroll"></span><i aria-hidden="true"></i></a>
+    </section>
 
-  // Collections
-  const guestbookCol = collection(db, "guestbook");
-  const candlesCol   = collection(db, "candles");
+    <section class="section" id="leben">
+      <div class="wrap narrow">
+        <p class="intro reveal" id="intro"></p>
+      </div>
+      <div class="wrap">
+        <header class="shead reveal">
+          <p class="eyebrow" data-i18n="lifeEyebrow"></p>
+          <h2 data-i18n="lifeTitle"></h2>
+        </header>
+        <ol class="timeline" id="timeline"></ol>
+      </div>
+    </section>
 
-  // UI-Referenzen aus deinem DOM
-  const lightCandleBtn   = document.getElementById('light-candle');
-  const candlesContainer = document.getElementById('candles-container');
-  const guestbookForm    = document.getElementById('guestbook-form');
-  const guestbookEntries = document.getElementById('guestbook-entries');
+    <section class="section memories" id="erinnerungen">
+      <div class="memories__glow" aria-hidden="true"></div>
+      <div class="wrap">
+        <header class="shead reveal">
+          <p class="eyebrow" data-i18n="memEyebrow"></p>
+          <h2 data-i18n="memTitle"></h2>
+        </header>
+        <div class="memgrid" id="memories"></div>
+      </div>
+    </section>
 
-  // ---------- Schreiben ----------
-  // Kerze
-  lightCandleBtn.addEventListener('click', async () => {
-    const name = prompt("Ihr Name (optional):");
-    try {
-      await addDoc(candlesCol, {
-        name: (name && name.trim()) ? name.trim() : 'Anonym',
-        createdAt: serverTimestamp()
-      });
-    } catch (e) {
-      alert("Kerze konnte nicht gespeichert werden. Bitte später erneut versuchen.");
-      console.error(e);
-    }
-  });
+    <section class="section" id="worte">
+      <div class="wrap">
+        <header class="shead reveal">
+          <p class="eyebrow" data-i18n="wordsEyebrow"></p>
+          <h2 data-i18n="wordsTitle"></h2>
+        </header>
+        <div class="speeches" id="speeches"></div>
+      </div>
+    </section>
 
-  // Gästebuch
-  guestbookForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const nameEl = document.getElementById('name');
-    const msgEl  = document.getElementById('message');
-    const name   = (nameEl.value || '').trim();
-    const msg    = (msgEl.value  || '').trim();
+    <section class="section" id="bilder">
+      <div class="wrap">
+        <header class="shead reveal">
+          <p class="eyebrow" data-i18n="galleryEyebrow"></p>
+          <h2 data-i18n="galleryTitle"></h2>
+        </header>
+        <div class="gallery" id="gallery"></div>
+      </div>
+    </section>
 
-    if (!msg) return;
+    <section class="section candles" id="kerzen">
+      <div class="wrap">
+        <header class="shead reveal">
+          <p class="eyebrow" data-i18n="candlesEyebrow"></p>
+          <h2 data-i18n="candlesTitle"></h2>
+        </header>
+        <p class="candles__count" id="candleCount" aria-live="polite"></p>
+        <div class="candlefield" id="candles"></div>
+        <div class="center">
+          <button class="btn btn--silver" type="button" data-action="candle"><span data-i18n="lightCandle"></span></button>
+        </div>
+      </div>
+    </section>
 
-    try {
-      await addDoc(guestbookCol, {
-        name: name ? name : 'Anonym',
-        message: msg,
-        createdAt: serverTimestamp()
-      });
-      guestbookForm.reset();
-    } catch (e) {
-      alert("Eintrag konnte nicht gespeichert werden. Bitte später erneut versuchen.");
-      console.error(e);
-    }
-  });
+    <section class="section" id="gedenkbuch">
+      <div class="wrap book">
+        <div class="book__form reveal">
+          <p class="eyebrow" data-i18n="bookEyebrow"></p>
+          <h2 data-i18n="bookTitle"></h2>
+          <p class="muted" data-i18n="bookIntro"></p>
+          <p class="demo-note" id="demoNote" hidden data-i18n="demo"></p>
+          <form id="bookForm" novalidate>
+            <label class="field">
+              <span data-i18n="fName"></span>
+              <input name="name" maxlength="60" autocomplete="name">
+            </label>
+            <label class="field">
+              <span data-i18n="fRelation"></span>
+              <input name="relation" maxlength="60">
+            </label>
+            <label class="field">
+              <span data-i18n="fMessage"></span>
+              <textarea name="message" rows="6" maxlength="1500" required></textarea>
+              <small class="counter"><output id="msgCount">0</output> / 1500</small>
+            </label>
+            <label class="hp" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off"></label>
+            <button class="btn btn--solid" type="submit" data-i18n="fSubmit"></button>
+            <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+        <div class="book__entries" id="entries" aria-live="polite"></div>
+      </div>
+    </section>
+  </main>
 
-  // ---------- Lesen (Echtzeit) ----------
-  // Kerzen (neueste zuerst, max. 100)
-  onSnapshot(
-    query(candlesCol, orderBy('createdAt', 'desc'), limit(100)),
-    (snapshot) => {
-      candlesContainer.innerHTML = '';
-      snapshot.forEach((doc) => {
-        const data = doc.data();
-        const candle = document.createElement('div');
-        candle.className = 'candle candle-lit flex flex-col items-center';
-        candle.innerHTML = `
-          <div class="relative">
-            <div class="w-4 h-8 bg-yellow-100 rounded-t-full mx-auto"></div>
-            <div class="w-2 h-2 bg-yellow-300 rounded-full mx-auto mt-1 animate-pulse"></div>
-          </div>
-          <span class="text-xs mt-1">${(data.name || 'Anonym')}</span>
-        `;
-        candlesContainer.appendChild(candle);
-      });
-    }
-  );
+  <footer class="footer">
+    <p class="silver footer__name" id="footName"></p>
+    <p class="muted" id="footFamily"></p>
+  </footer>
 
-  // Gästebuch (neueste zuerst, max. 100)
-  onSnapshot(
-    query(guestbookCol, orderBy('createdAt', 'desc'), limit(100)),
-    (snapshot) => {
-      guestbookEntries.innerHTML = '';
-      snapshot.forEach((doc) => {
-        const data = doc.data();
-        const created = data.createdAt?.toDate
-          ? data.createdAt.toDate()
-          : (data.createdAt || new Date());
-        const entry = document.createElement('div');
-        entry.className = 'bg-gray-50 p-4 rounded-lg';
-        entry.innerHTML = `
-          <h3 class="font-medium text-gray-800">${(data.name || 'Anonym')}</h3>
-          <p class="text-gray-600 mt-1">${(data.message || '').replace(/</g,"&lt;").replace(/>/g,"&gt;")}</p>
-          <p class="text-xs text-gray-400 mt-2">${new Intl.DateTimeFormat('de-DE').format(created)}</p>
-        `;
-        guestbookEntries.appendChild(entry);
-      });
-    }
-  );
-</script>
+  <button class="music" type="button" id="musicBtn" aria-pressed="false">
+    <span class="bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+    <span class="music__label" id="musicLabel"></span>
+  </button>
+  <audio id="bgMusic" preload="none" loop></audio>
+
+  <dialog id="candleDialog" class="dialog">
+    <form method="dialog" id="candleForm">
+      <div class="dialog__flame" aria-hidden="true"><span class="candle"><span class="flame"></span></span></div>
+      <label class="field">
+        <span data-i18n="candleNameLabel"></span>
+        <input name="cname" maxlength="40" autocomplete="name">
+      </label>
+      <div class="dialog__actions">
+        <button class="btn btn--ghost" value="cancel" data-i18n="cancel"></button>
+        <button class="btn btn--silver" value="ok" data-i18n="candleConfirm"></button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="lightbox" class="lightbox">
+    <button class="lightbox__close" type="button" aria-label="SchlieÃŸen">Ã—</button>
+    <img alt="">
+    <video controls playsinline preload="none" hidden></video>
+    <p class="lightbox__cap"></p>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/content.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script type="module" src="assets/js/store.js"></script>
+</body>
+</html>
