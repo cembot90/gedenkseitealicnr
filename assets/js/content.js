@@ -9,7 +9,7 @@
 window.MEMORIAL = {
   person: {
     name: "Ali Çinar",
-    nickname: { de: "Vater, Onkel, Bruder", tr: "Baba, dayı, kardeş" },
+    nickname: { de: "Vater, Onkel, Bruder", tr: "Baba, dayı, amca, kardeş" },
     born: "01.02.1966",
     died: "14.09.2025",
     places: { de: "Erzincan · Deutschland · Erzincan", tr: "Erzincan · Almanya · Erzincan" },
@@ -44,7 +44,7 @@ window.MEMORIAL = {
         "Wir vermissen seinen unermüdlichen Fleiß, seine Wärme und die stille Fürsorge, mit der er sein Leben seiner Familie gewidmet hat."
       ],
       tr: [
-        "Sevgili babamız, dayımız ve kardeşimiz Ali Çinar'ın aramızdan ayrılışının üzerinden bir yıl geçti. Zaman acımızı biraz dindirdi, ama ardında bıraktığı boşluk hâlâ yerinde duruyor.",
+        "Sevgili babamız, dayımız, amcamız ve kardeşimiz Ali Çinar'ın aramızdan ayrılışının üzerinden bir yıl geçti. Zaman acımızı biraz dindirdi, ama ardında bıraktığı boşluk hâlâ yerinde duruyor.",
         "Yorulmak bilmeyen emeğini, sıcaklığını ve hayatını ailesine adadığı o sessiz şefkatini özlüyoruz."
       ]
     },
