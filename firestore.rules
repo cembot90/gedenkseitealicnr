@@ -2,37 +2,72 @@ rules_version = '2';
 
 // Sicherheitsregeln für die Gedenkseite.
 // In der Firebase-Konsole unter Firestore > Regeln einfügen und veröffentlichen.
+//
+// Einträge und Lichter erscheinen sofort. Spamschutz:
+// - Jeder Beitrag braucht eine (unsichtbare, anonyme) Anmeldung.
+// - Pro Anmeldung höchstens ein Beitrag alle 30 Sekunden (serverseitig geprüft).
+// - Keine Links im Text oder Namen.
+// - Spam blendet die Familie in der Konsole aus (approved auf false) oder löscht ihn.
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Gedenkbuch: jeder darf schreiben, gelesen werden nur freigegebene Einträge.
+    function noLinks(s) {
+      return !s.lower().matches('.*(https?://|www[.]|[a-z0-9-]+[.](com|net|org|ru|xyz|info|top|io|de|tr)([/ ]|$)).*');
+    }
+
+    function optionalText(data, field, maxLen) {
+      return !(field in data) || (data[field] is string && data[field].size() <= maxLen && noLinks(data[field]));
+    }
+
+    // Nur erlaubt, wenn im selben Schreibvorgang die Pausenzeit dieses Besuchers aktualisiert wird.
+    function rateLimited() {
+      return request.auth != null &&
+        getAfter(/databases/$(database)/documents/ratelimits/$(request.auth.uid)).data.last == request.time;
+    }
+
+    // Pausenzeit pro anonymer Anmeldung
+    match /ratelimits/{uid} {
+      allow read: if false;
+      allow create: if request.auth != null && request.auth.uid == uid &&
+        request.resource.data.keys().hasOnly(['last']) &&
+        request.resource.data.last == request.time;
+      allow update: if request.auth != null && request.auth.uid == uid &&
+        request.resource.data.keys().hasOnly(['last']) &&
+        request.resource.data.last == request.time &&
+        request.time > resource.data.last + duration.value(30, 's');
+      allow delete: if false;
+    }
+
+    // Gedenkbuch: sofort sichtbar
     match /guestbook/{entryId} {
       allow read: if resource.data.approved == true;
 
-      allow create: if
+      allow create: if rateLimited() &&
         request.resource.data.keys().hasOnly(['name', 'relation', 'message', 'lang', 'approved', 'createdAt']) &&
         request.resource.data.keys().hasAll(['message', 'approved', 'createdAt']) &&
-        request.resource.data.approved == false &&
+        request.resource.data.approved == true &&
         request.resource.data.createdAt == request.time &&
         request.resource.data.message is string &&
         request.resource.data.message.size() >= 2 &&
         request.resource.data.message.size() <= 1500 &&
-        (!('name' in request.resource.data) || (request.resource.data.name is string && request.resource.data.name.size() <= 60)) &&
-        (!('relation' in request.resource.data) || (request.resource.data.relation is string && request.resource.data.relation.size() <= 60)) &&
+        noLinks(request.resource.data.message) &&
+        optionalText(request.resource.data, 'name', 60) &&
+        optionalText(request.resource.data, 'relation', 60) &&
         (!('lang' in request.resource.data) || request.resource.data.lang in ['de', 'tr']);
 
-      // Ändern und Löschen nur über die Firebase-Konsole (Freigabe durch die Familie).
+      // Ändern und Löschen nur über die Firebase-Konsole.
       allow update, delete: if false;
     }
 
-    // Kerzen: sofort sichtbar, nur ein kurzer Name, nichts sonst.
+    // Lichter: sofort sichtbar, nur ein kurzer Name
     match /candles/{candleId} {
       allow read: if true;
-      allow create: if
+      allow create: if rateLimited() &&
         request.resource.data.keys().hasOnly(['name', 'createdAt']) &&
         request.resource.data.createdAt == request.time &&
         request.resource.data.name is string &&
-        request.resource.data.name.size() <= 40;
+        request.resource.data.name.size() <= 40 &&
+        noLinks(request.resource.data.name);
       allow update, delete: if false;
     }
 

@@ -37,9 +37,13 @@ Statische Seite für GitHub Pages, mit Gedenkbuch und Kerzen über Firebase Fire
    - Nach ein paar Tagen ohne Probleme unter *App Check > Firestore* auf **Erzwingen** stellen.
 6. **API-Schlüssel einschränken**: Google Cloud Console > APIs & Dienste > Anmeldedaten > Browser-Schlüssel > HTTP-Verweis-URLs auf `https://cembot90.github.io/*` begrenzen.
 
-### Einträge freigeben
+### Anonyme Anmeldung einschalten (für den Spamschutz nötig)
 
-Firebase-Konsole > Firestore > `guestbook` > Eintrag öffnen > Feld `approved` von `false` auf `true` setzen. Unpassendes einfach löschen. Kerzen lassen sich genauso entfernen.
+Firebase-Konsole > Authentication > „Jetzt starten“ > Anmeldemethode > **Anonym** aktivieren.
+
+### Spam ausblenden
+
+Einträge erscheinen sofort. Unpassendes in der Firebase-Konsole > Firestore > `guestbook` ausblenden (Feld `approved` auf `false`) oder löschen. Lichter unter `candles` löschen.
 
 ### Was die Sicherheit ausmacht
 
