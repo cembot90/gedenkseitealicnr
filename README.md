@@ -18,6 +18,7 @@ Statische Seite auf GitHub Pages (`https://cembot90.github.io/gedenkseitealicnr/
 | `images/` | Porträt und Galerie |
 | `firestore.rules` | Sicherheitsregeln der Datenbank |
 | `impressum.html`, `datenschutz.html` | Rechtstexte |
+| `manifest.webmanifest`, `icons/` | App-Symbol und Einstellungen für „Zum Home-Bildschirm“ |
 | `assets/fonts/` | Lokal eingebundene Schriften (keine Verbindung zu Google Fonts) |
 
 ## Audio
