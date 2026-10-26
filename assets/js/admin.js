@@ -43,7 +43,7 @@ let toastT;
 function toast(s) { const n = $("#toast"); n.textContent = s; n.classList.add("is-on"); clearTimeout(toastT); toastT = setTimeout(() => n.classList.remove("is-on"), 2800); }
 function button(cls, text, onClick, title) { const b = el("button", cls, text); b.type = "button"; if (title) { b.title = title; b.setAttribute("aria-label", title); } b.addEventListener("click", onClick); return b; }
 function iconBtn(name, title, onClick, extra = "") { const b = button("iconbtn " + extra, null, onClick, title); b.append(svg(ICON[name])); return b; }
-async function act(fn, done) { try { await fn(); if (done) toast(done); } catch (e) { console.error(e); toast(`Hat nicht geklappt (${e.code || e.message || "Fehler"}).`); } }
+async function act(fn, done) { try { await fn(); if (done) toast(done); } catch (e) { console.error(e); toast(e.code ? `Hat nicht geklappt (${e.code}).` : (e.message || "Hat nicht geklappt.")); } }
 
 /* ---------- Zustand ---------- */
 const EDITABLE = ["intro", "anniversary", "timeline", "memories", "gallery", "family", "features"];
@@ -57,7 +57,7 @@ function defaults() {
 }
 const state = {
   user: null, published: null, publishedAt: null, draft: null, dirty: false, loaded: false,
-  media: [], pending: [], approved: [], entries: [], candles: [], view: "home", sub: "kopf"
+  media: [], pending: [], approved: [], entries: [], candles: [], gate: null, view: "home", sub: "kopf"
 };
 const mediaThumb = id => (state.media.find(m => m.id === id) || {}).thumb || "";
 
@@ -95,6 +95,7 @@ function start() {
     if (!state.dirty) state.draft = clone(remote);
     state.loaded = true; render();
   });
+  watch(doc(db, "site", "gate"), d => { state.gate = d.exists() ? d.data() : { enabled: false, mode: "password" }; renderIf("settings", "home"); });
   watch(query(collection(db, "media"), orderBy("createdAt", "desc"), limit(500)), s => { state.media = s.docs.map(d => ({ id: d.id, ...d.data() })); renderIf("media", "content", "home"); });
   watch(query(collection(db, "photos"), where("approved", "==", false), orderBy("createdAt", "desc"), limit(200)), s => { state.pending = s.docs; badges(); renderIf("review", "home"); });
   watch(query(collection(db, "photos"), where("approved", "==", true), orderBy("createdAt", "desc"), limit(200)), s => { state.approved = s.docs; renderIf("review"); });
@@ -161,6 +162,12 @@ function viewHome(main) {
     tile(state.media.length, "Fotos in der Mediathek", "media")
   );
   main.append(tiles);
+  if (state.gate && state.gate.enabled) {
+    const g = el("section", "panel panel--gold");
+    g.append(el("h2", null, state.gate.mode === "password" ? "Passwortschutz ist aktiv" : "Seite ist geschlossen"),
+             el("p", null, "Besucher sehen die Gedenkseite gerade nicht. Du selbst siehst sie, solange du hier angemeldet bist."));
+    const b2 = button("btn btn--ghost", "Ändern", () => go("settings")); b2.style.marginTop = "16px"; g.append(b2); main.append(g);
+  }
   const p = el("section", "panel");
   p.append(el("h2", null, "Inhalte"));
   p.append(el("p", null, state.publishedAt ? `Zuletzt veröffentlicht am ${when(state.publishedAt)}.` : "Noch nichts aus der Verwaltung veröffentlicht. Die Seite zeigt die Inhalte aus dem Repo."));
@@ -490,8 +497,60 @@ function viewCandles(main) {
 /* =========================================================
    Einstellungen
    ========================================================= */
+async function deriveHash(pw, salt, iter) {
+  const enc = new TextEncoder();
+  const key = await crypto.subtle.importKey("raw", enc.encode(pw), "PBKDF2", false, ["deriveBits"]);
+  const bits = await crypto.subtle.deriveBits({ name: "PBKDF2", hash: "SHA-256", salt: enc.encode(salt), iterations: iter }, key, 256);
+  return btoa(String.fromCharCode(...new Uint8Array(bits)));
+}
+function gatePanel(main) {
+  const g = state.gate || { enabled: false, mode: "password" };
+  const box = el("section", "panel gatepanel"); box.style.maxWidth = "760px";
+  const top = el("label", "switchrow switchrow--flat");
+  const t = el("div"); t.append(el("strong", null, "Wartungsmodus"), el("p", "hint", "Die Gedenkseite ist für Besucher verborgen. Du siehst sie weiterhin, solange du hier angemeldet bist. Wirkt sofort beim Speichern."));
+  const sw = el("span", "switch"); const on = el("input"); on.type = "checkbox"; on.checked = !!g.enabled; on.setAttribute("role", "switch");
+  sw.append(on, el("span")); top.append(t, sw); box.append(top);
+
+  const opts = el("div", "form"); opts.style.marginTop = "18px";
+  const modeG = el("div", "fgroup"); modeG.append(el("span", "flabel", "Art"));
+  const seg = el("div", "subtabs"); seg.style.marginBottom = "0";
+  let mode = g.mode === "closed" ? "closed" : "password";
+  const mkSeg = (v, label) => { const b = button("", label, () => { mode = v; seg.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b))); pwG.hidden = mode !== "password"; }); b.setAttribute("aria-pressed", String(mode === v)); return b; };
+  seg.append(mkSeg("password", "Mit Passwort"), mkSeg("closed", "Geschlossen"));
+  modeG.append(seg); opts.append(modeG);
+
+  const pwG = el("div", "fgroup"); pwG.hidden = mode !== "password";
+  const pl = el("label", null, g.hash ? "Neues Passwort (leer lassen, um das bisherige zu behalten)" : "Passwort"); const pw = el("input"); pw.type = "text"; pw.autocomplete = "new-password"; pw.id = "gatePwNew"; pl.htmlFor = pw.id;
+  pwG.append(pl, pw, el("p", "hint", "Mindestens 8 Zeichen. Gib es an Familie und Freunde weiter. Wer es eingegeben hat, wird auf dem Gerät gemerkt, bis du es änderst."));
+  opts.append(pwG);
+
+  const msgG = el("div", "fgroup"); msgG.append(el("span", "flabel", "Hinweis für Besucher (optional)"));
+  const row = el("div", "bi"); const msg = { de: (g.message && g.message.de) || "", tr: (g.message && g.message.tr) || "" };
+  ["de", "tr"].forEach(lg => { const w = el("div", "lang-in"); w.dataset.lang = lg.toUpperCase(); const i = el("input"); i.type = "text"; i.lang = lg; i.value = msg[lg]; i.addEventListener("input", () => msg[lg] = i.value); w.append(i); row.append(w); });
+  msgG.append(row, el("p", "hint", "Leer lassen für den Standardtext."));
+  opts.append(msgG);
+
+  const save = button("btn btn--primary", "Speichern", () => act(async () => {
+    const enabling = on.checked, newPw = pw.value.trim();
+    let { hash = "", salt = "", iter = 210000 } = g;
+    if (mode === "password" && newPw) {
+      if (newPw.length < 8) throw new Error("Das Passwort braucht mindestens 8 Zeichen.");
+      salt = Array.from(crypto.getRandomValues(new Uint8Array(16)), b => b.toString(16).padStart(2, "0")).join("");
+      iter = 210000; hash = await deriveHash(newPw, salt, iter);
+    }
+    if (enabling && mode === "password" && !hash) throw new Error("Bitte zuerst ein Passwort festlegen.");
+    await setDoc(doc(db, "site", "gate"), { enabled: enabling, mode, hash, salt, iter, message: { de: msg.de.trim().slice(0, 300), tr: msg.tr.trim().slice(0, 300) }, updatedAt: serverTimestamp(), updatedBy: state.user.email });
+    pw.value = "";
+  }, on.checked ? "Gespeichert. Die Seite ist jetzt für Besucher verborgen." : "Gespeichert. Die Seite ist wieder öffentlich."));
+  save.style.justifySelf = "start";
+  opts.append(save);
+  box.append(opts);
+  main.append(box);
+}
 function viewSettings(main) {
-  head(main, "Einstellungen", "Schalter für Bereiche der Seite. Wirksam nach „Veröffentlichen“.");
+  head(main, "Einstellungen", "Zugang zur Seite und Schalter für einzelne Bereiche.");
+  gatePanel(main);
+  main.append(el("h2", "flabel settings__sub", "Bereiche (wirksam nach „Veröffentlichen“)"));
   const row = el("label", "switchrow");
   const t = el("div"); t.append(el("strong", null, "Fotos mit Ali"), el("p", "hint", "Besucher können gemeinsame Fotos teilen. Sie erscheinen erst nach deiner Freigabe unter „Freigaben“."));
   const sw = el("span", "switch"); const cb = el("input"); cb.type = "checkbox"; cb.checked = !!state.draft?.features?.sharedPhotos; cb.setAttribute("role", "switch");

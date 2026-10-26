@@ -35,6 +35,7 @@ if (!cfg.apiKey) {
     onContent() {},
     async getMedia() { return null; }
   });
+  if (window.__gate) window.__gate(null, false);
 } else {
   /* ---------- Live mit Firebase ---------- */
   const [{ initializeApp }, fs, au, ac] = await Promise.all([
@@ -53,6 +54,18 @@ if (!cfg.apiKey) {
   const candles = collection(db, "candles");
   const photos = collection(db, "photos");
   const mediaCache = new Map();
+
+  // Wartungsmodus: Zustand aus der Verwaltung; wer in der Verwaltung angemeldet ist, sieht die Seite immer
+  (async () => {
+    try {
+      await auth.authStateReady();
+      const u = auth.currentUser;
+      const isAdmin = !!u && !u.isAnonymous && u.email === "cembot90@gmail.com" && u.emailVerified;
+      onSnapshot(doc(db, "site", "gate"),
+        d => window.__gate && window.__gate(d.exists() ? d.data() : null, isAdmin),
+        err => { console.error(err); window.__gate && window.__gate(null, false); });
+    } catch (e) { console.error(e); window.__gate && window.__gate(null, false); }
+  })();
   const clean = (s, n) => String(s || "").replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, "").trim().slice(0, n);
 
   // Anonyme Anmeldung erst beim ersten Beitrag (nicht beim Seitenaufruf).

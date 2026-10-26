@@ -10,7 +10,9 @@ Statische Seite auf GitHub Pages (`https://cembot90.github.io/gedenkseitealicnr/
 | `assets/js/content.js` | **Alle Inhalte**: Lebensweg, Erinnerungen, Reden mit Zeitmarken, Galerie, Texte DE/TR |
 | `assets/js/config.js` | Firebase- und App-Check-Schlüssel |
 | `assets/js/app.js` | Darstellung, Sprache, Musik, Reden-Player |
-| `assets/js/store.js` | Datenbank (Gedenkbuch, Kerzen) |
+| `assets/js/store.js` | Datenbank (Gedenkbuch, Lichter, Inhalte aus der Verwaltung) |
+| `assets/js/gate.js` | Wartungsmodus / Passwortschutz |
+| `admin.html`, `assets/js/admin.js` | Verwaltung |
 | `assets/css/style.css` | Design |
 | `audio/` | `trauerlied.m4a` (Hintergrundmusik), `rede-de.m4a`, `rede-tr.m4a` |
 | `images/` | Porträt und Galerie |
@@ -61,6 +63,12 @@ Einträge erscheinen sofort. Unpassendes in der Firebase-Konsole > Firestore > `
 
 Übersicht, Inhalte (Editor DE/TR für Seitenkopf, Jahresgedenken, Lebensweg, Erinnerungen, Galerie), Mediathek, Freigaben, Gedenkbuch, Lichter, Einstellungen.
 Inhalte aus der Verwaltung liegen in Firestore (`site/content`) und überschreiben `content.js`; Fotos in `media`/`mediaData`. Audio und Video bleiben im Repo.
+
+## Wartungsmodus / Passwortschutz
+
+In der Verwaltung unter Einstellungen: „Mit Passwort“ oder „Geschlossen“, wirkt sofort. Das Passwort liegt nur als PBKDF2-Hash (210.000 Runden, Salz) in `site/gate`.
+Wer in der Verwaltung angemeldet ist, sieht die Seite immer. Hinweis: Das ist ein Sichtschutz. Statische Dateien (Fotos, Audio) bleiben bei GitHub Pages über ihre direkte Adresse abrufbar.
+Antwortet die Datenbank nicht innerhalb von 8 Sekunden, öffnet sich die Seite, damit niemand dauerhaft ausgesperrt wird.
 
 ## „Fotos mit Ali“ (in der Verwaltung unter Einstellungen einschaltbar)
 

@@ -458,3 +458,19 @@ section[id] { scroll-margin-top: 56px; }
 .lights > * { position: relative; }
 .lights .btn--primary, .dialog .btn--primary[value="ok"] { box-shadow: 0 0 0 1.5px var(--gold), 0 10px 40px rgba(217, 181, 106, .28); }
 .candle { box-shadow: 0 0 34px rgba(217, 181, 106, .25); }
+
+/* ---------- Wartungsmodus / Passwortschutz ---------- */
+html.is-gated body { overflow: hidden; }
+html.is-gated .skip, html.is-gated .nav, html.is-gated .menu, html.is-gated main, html.is-gated .footer, html.is-gated .music { visibility: hidden; }
+.gate { position: fixed; inset: 0; z-index: 300; display: grid; place-items: center; padding: 22px; background: #000; }
+.gate__card { width: min(420px, 100%); text-align: center; }
+.gate__mark, .gate-loader span { display: inline-grid; place-items: center; width: 64px; height: 64px; border-radius: 20px; background: var(--graphite); font-weight: 600; font-size: 22px;
+  color: var(--gold-hi); box-shadow: 0 0 0 1px rgba(217, 181, 106, .35), 0 20px 50px rgba(0, 0, 0, .6); }
+.gate__title { margin: 26px 0 10px; font-weight: 600; font-size: clamp(30px, 7vw, 40px); line-height: 1.1; letter-spacing: -.03em; }
+.gate__msg { margin: 0 auto 28px; max-width: 32ch; color: var(--mist); }
+.gate__form { display: grid; gap: 14px; text-align: left; }
+.gate__form .form-status { text-align: center; }
+.gate-loader { display: none; }
+html.is-checking .gate-loader { position: fixed; inset: 0; z-index: 290; display: grid; place-items: center; background: #000; }
+html.is-checking .gate-loader span { animation: breathe 1.8s ease-in-out infinite; }
+@keyframes breathe { 50% { opacity: .45; transform: scale(.96); } }

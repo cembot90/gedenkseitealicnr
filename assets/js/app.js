@@ -245,8 +245,8 @@
   });
   music.addEventListener("error", () => { musicMissing = true; musicWanted = false; updateMusicLabel(); });
 
-  // Beim Betreten starten; falls der Browser blockiert, bei der ersten Interaktion
-  startMusic().then(ok => {
+  // Beim Betreten starten (erst wenn die Seite offen ist); falls der Browser blockiert, bei der ersten Interaktion
+  (window.GATE || Promise.resolve()).then(() => startMusic()).then(ok => {
     if (ok) return;
     const kick = (e) => {
       if (e.target && e.target.closest && e.target.closest("#musicBtn, .play, .speech__lang")) return; // diese Knöpfe entscheiden selbst
