@@ -1,4 +1,4 @@
-# Gedenkseite Ali Çinar
+# Gedenkseite Ali Çınar
 
 Statische Seite auf GitHub Pages (`https://cembot90.github.io/gedenkseitealicnr/`), Gedenkbuch und Lichter über Firebase Firestore (Projekt `alicnr-ccf0a`). Eingerichtet und getestet.
 

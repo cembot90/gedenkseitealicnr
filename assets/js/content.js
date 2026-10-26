@@ -8,7 +8,7 @@
 */
 window.MEMORIAL = {
   person: {
-    name: "Ali Çinar",
+    name: "Ali Çınar",
     nickname: { de: "Vater, Onkel, Bruder", tr: "Baba, dayı, amca, kardeş" },
     born: "01.02.1966",
     died: "14.09.2025",
@@ -19,7 +19,7 @@ window.MEMORIAL = {
       de: "„Ömrümü yaşayamadan gittim.“ Seine eigenen Worte. Und doch hat er uns so viel Liebe hinterlassen.",
       tr: "„Ömrümü yaşayamadan gittim.“ Kendi sözleri. Yine de bize ne çok sevgi bıraktı."
     },
-    quoteSource: { de: "Ali Çinar", tr: "Ali Çinar" },
+    quoteSource: { de: "Ali Çınar", tr: "Ali Çınar" },
     // Seine eigenen Worte: leuchten beim Scrollen Wort für Wort auf
     words: "Ömrümü yaşayamadan gittim.",
     wordsMeaning: { de: "„Ich bin gegangen, ohne mein Leben gelebt zu haben.“ Das hat er selbst gesagt.", tr: "Bu sözleri kendisi söylemişti." },
@@ -43,11 +43,11 @@ window.MEMORIAL = {
     title: { de: "Ein Jahr ohne dich", tr: "Sensiz bir yıl" },
     paragraphs: {
       de: [
-        "Ein Jahr ist vergangen, seit unser lieber Vater, Onkel und Bruder Ali Çinar von uns gegangen ist. Die Zeit hat den Schmerz leiser werden lassen, doch die Lücke, die er hinterlassen hat, bleibt.",
+        "Ein Jahr ist vergangen, seit unser lieber Vater, Onkel und Bruder Ali Çınar von uns gegangen ist. Die Zeit hat den Schmerz leiser werden lassen, doch die Lücke, die er hinterlassen hat, bleibt.",
         "Wir vermissen seinen unermüdlichen Fleiß, seine Wärme und die stille Fürsorge, mit der er sein Leben seiner Familie gewidmet hat."
       ],
       tr: [
-        "Sevgili babamız, dayımız, amcamız ve kardeşimiz Ali Çinar'ın aramızdan ayrılışının üzerinden bir yıl geçti. Zaman acımızı biraz dindirdi, ama ardında bıraktığı boşluk hâlâ yerinde duruyor.",
+        "Sevgili babamız, dayımız, amcamız ve kardeşimiz Ali Çınar'ın aramızdan ayrılışının üzerinden bir yıl geçti. Zaman acımızı biraz dindirdi, ama ardında bıraktığı boşluk hâlâ yerinde duruyor.",
         "Yorulmak bilmeyen emeğini, sıcaklığını ve hayatını ailesine adadığı o sessiz şefkatini özlüyoruz."
       ]
     },
@@ -60,7 +60,7 @@ window.MEMORIAL = {
       tr: "Yolu ışıkla aydınlansın, cemi daim olsun."
     },
     closing: { de: "In Liebe und Dankbarkeit", tr: "Sevgi ve minnetle" },
-    signature: { de: "Die Familie Çinar", tr: "Çinar Ailesi" }
+    signature: { de: "Die Familie Çınar", tr: "Çınar Ailesi" }
   },
 
   timeline: [
@@ -108,7 +108,7 @@ window.MEMORIAL = {
             { t: 6.1, text: "vor einem Jahr haben wir Abschied genommen.", translation: "bir yıl önce vedalaştık." },
             { t: 9.9, text: "Damals waren wir sprachlos, und vieles, was wir sagen wollten, blieb ungesagt.", translation: "O gün dilimiz tutulmuştu, söylemek istediğimiz pek çok şey söylenmeden kaldı." },
             { t: 16.8, text: "Heute stehen wir wieder zusammen, nicht nur in Trauer, sondern auch in Dankbarkeit.", translation: "Bugün yeniden bir aradayız, yalnızca yasla değil, minnetle de." },
-            { t: 28.7, text: "Ali Çinar war ein Mensch, der nicht viele Worte brauchte.", translation: "Ali Çinar çok söze ihtiyaç duymayan bir insandı." },
+            { t: 28.7, text: "Ali Çınar war ein Mensch, der nicht viele Worte brauchte.", translation: "Ali Çınar çok söze ihtiyaç duymayan bir insandı." },
             { t: 33.6, text: "Er zeigte seine Liebe durch das, was er tat: durch harte Arbeit, durch Verlässlichkeit, durch ein offenes Haus für jeden, der kam.", translation: "Sevgisini yaptıklarıyla gösterirdi: alın teriyle, güvenilirliğiyle, gelen herkese açık olan kapısıyla." },
             { t: 44.8, text: "Er hat selten an sich gedacht und immer an uns.", translation: "Kendini nadiren düşünür, bizi ise hep düşünürdü." },
             { t: 53.9, text: "Er hat einmal gesagt: „Ömrümü yaşayamadan gittim.“", translation: "Bir keresinde şöyle demişti: „Ömrümü yaşayamadan gittim.“" },
@@ -131,7 +131,7 @@ window.MEMORIAL = {
             { t: 3, text: "bir yıl önce vedalaştık.", translation: "vor einem Jahr haben wir Abschied genommen." },
             { t: 6, text: "O gün dilimiz tutulmuştu, söylemek istediğimiz pek çok şey söylenmeden kaldı.", translation: "Damals waren wir sprachlos, und vieles, was wir sagen wollten, blieb ungesagt." },
             { t: 12, text: "Bugün yeniden bir aradayız, yalnızca yasla değil, minnetle de.", translation: "Heute stehen wir wieder zusammen, nicht nur in Trauer, sondern auch in Dankbarkeit." },
-            { t: 18, text: "Ali Çinar çok söze ihtiyaç duymayan bir insandı.", translation: "Ali Çinar war ein Mensch, der nicht viele Worte brauchte." },
+            { t: 18, text: "Ali Çınar çok söze ihtiyaç duymayan bir insandı.", translation: "Ali Çınar war ein Mensch, der nicht viele Worte brauchte." },
             { t: 22, text: "Sevgisini yaptıklarıyla gösterirdi: alın teriyle, güvenilirliğiyle, gelen herkese açık olan kapısıyla.", translation: "Er zeigte seine Liebe durch das, was er tat: durch harte Arbeit, durch Verlässlichkeit, durch ein offenes Haus für jeden, der kam." },
             { t: 29, text: "Kendini nadiren düşünür, bizi ise hep düşünürdü.", translation: "Er hat selten an sich gedacht und immer an uns." },
             { t: 33, text: "Bir keresinde şöyle demişti: „Ömrümü yaşayamadan gittim.“", translation: "Er hat einmal gesagt: „Ömrümü yaşayamadan gittim.“" },
@@ -159,7 +159,7 @@ window.MEMORIAL = {
     { src: "images/mit-dem-baby.jpg", caption: { de: "Willkommen auf der Welt", tr: "Dünyaya hoş geldin" } }
   ],
 
-  family: { de: "Devr-i Daim. Işıklar yoldaşın olsun. Die Familie Çinar", tr: "Devr-i Daim. Işıklar yoldaşın olsun. Çinar Ailesi" }
+  family: { de: "Devr-i Daim. Işıklar yoldaşın olsun. Die Familie Çınar", tr: "Devr-i Daim. Işıklar yoldaşın olsun. Çınar Ailesi" }
 };
 
 /* Oberflächentexte */
