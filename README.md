@@ -1,6 +1,6 @@
 # Gedenkseite Ali Çinar
 
-Statische Seite für GitHub Pages, mit Gedenkbuch und Kerzen über Firebase Firestore.
+Statische Seite auf GitHub Pages (`https://cembot90.github.io/gedenkseitealicnr/`), Gedenkbuch und Lichter über Firebase Firestore (Projekt `alicnr-ccf0a`). Eingerichtet und getestet.
 
 ## Aufbau
 
@@ -12,7 +12,7 @@ Statische Seite für GitHub Pages, mit Gedenkbuch und Kerzen über Firebase Fire
 | `assets/js/app.js` | Darstellung, Sprache, Musik, Reden-Player |
 | `assets/js/store.js` | Datenbank (Gedenkbuch, Kerzen) |
 | `assets/css/style.css` | Design |
-| `audio/` | `hintergrund.mp3`, Reden (z. B. `rede-tr.mp3`) |
+| `audio/` | `trauerlied.m4a` (Hintergrundmusik), `rede-de.m4a`, später `rede-tr.m4a` |
 | `images/` | Porträt und Galerie |
 | `firestore.rules` | Sicherheitsregeln der Datenbank |
 | `impressum.html`, `datenschutz.html` | Rechtstexte |
@@ -20,9 +20,10 @@ Statische Seite für GitHub Pages, mit Gedenkbuch und Kerzen über Firebase Fire
 
 ## Audio
 
-- Hintergrundmusik startet nur auf Klick (Browser erlauben kein automatisches Abspielen mit Ton).
-- Während eine Rede läuft, wird die Musik automatisch leiser und danach wieder lauter.
-- Für jede Rede in `content.js` die Sätze mit Startzeit in Sekunden eintragen. Der aktuelle Satz wird hervorgehoben, die Übersetzung steht darunter.
+- Das Trauerlied startet beim Betreten der Seite (blockiert der Browser das, beim ersten Klick oder Tippen).
+- Startet jemand die Rede oder das Video, stoppt die Musik; wieder an nur über den Musik-Knopf.
+- Die Gedenkrede hat einen Umschalter DE | TR. Sätze mit Startzeit in Sekunden stehen in `content.js`.
+- Nach Änderungen an CSS/JS die Versionsnummer `?v=` in `index.html` erhöhen, damit Browser die neue Fassung laden.
 
 ## Gedenkbuch absichern (einmalig, ca. 15 Minuten)
 
