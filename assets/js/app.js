@@ -302,6 +302,10 @@
   });
 
   /* ---------- Fotos mit Ali: teilen, erst nach Freigabe sichtbar ---------- */
+  // Noch nicht freigeschaltet: Bereich, Menüeintrag und Dialog entfernen
+  if (!(M.features && M.features.sharedPhotos)) {
+    ["#geteilt", "#shareDialog", ".menu a[href='#geteilt']"].forEach(sel => { const n = $(sel); if (n) n.remove(); });
+  }
   let lastShared = null;
   function renderShared(list) {
     lastShared = list;
@@ -361,6 +365,7 @@
   }
 
   const shareDlg = $("#shareDialog"), shareForm = $("#shareForm"), shareStatus = $("#shareStatus");
+  if (shareDlg) {
   const picker = $("#picker"), pickerPreview = $("#pickerPreview"), pickerLabel = $("#pickerLabel");
   let prepared = null, preparing = null;
   function resetShare() {
@@ -401,6 +406,7 @@
       shareStatus.classList.add("is-error");
     } finally { btn.disabled = false; btn.textContent = t("shareSend"); }
   });
+  }
 
   /* ---------- Store anbinden ---------- */
   function bindStore() {
@@ -408,7 +414,7 @@
     $("#demoNote").hidden = !S.demo;
     S.onCandles(renderCandles);
     S.onEntries(renderEntries);
-    if (S.onPhotos) S.onPhotos(renderShared);
+    if (S.onPhotos && M.features && M.features.sharedPhotos) S.onPhotos(renderShared);
   }
   if (window.MemorialStore) bindStore(); else window.addEventListener("memorial-store-ready", bindStore, { once: true });
 

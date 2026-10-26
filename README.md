@@ -54,3 +54,10 @@ Einträge erscheinen sofort. Unpassendes in der Firebase-Konsole > Firestore > `
 - Content Security Policy erlaubt nur Skripte von dieser Seite und von Google/Firebase.
 - Suchmaschinen sind ausgeschlossen (`robots.txt`, `noindex`).
 - Es liegen keine geheimen Schlüssel im Repository.
+
+## Vorbereitet, noch nicht freigeschaltet: „Fotos mit Ali“
+
+Besucher teilen Fotos, die erst nach Freigabe erscheinen (Verwaltung über `admin.html`, Google-Login nur für cembot90@gmail.com).
+Einschalten: in `content.js` `features.sharedPhotos` auf `true`, dann in Firebase die Regeln aus `firestore.rules` veröffentlichen,
+Index `photos` (approved aufsteigend, createdAt absteigend) anlegen, Google-Anmeldung aktivieren, `cembot90.github.io` als autorisierte Domain
+eintragen, `https://alicnr-ccf0a.firebaseapp.com/*` beim API-Schlüssel ergänzen und die auskommentierten Abschnitte in `datenschutz.html`/`impressum.html` aktivieren.

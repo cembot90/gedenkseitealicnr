@@ -7,6 +7,11 @@
   wird der passende Satz hervorgehoben und die Übersetzung darunter gezeigt.
 */
 window.MEMORIAL = {
+  // Funktionen, die vorbereitet, aber noch nicht freigeschaltet sind.
+  // sharedPhotos: Besucher können Fotos mit Ali teilen (Freigabe über admin.html). Vor dem Einschalten
+  // die Firebase-Schritte aus der README erledigen und die Abschnitte in datenschutz.html/impressum.html aktivieren.
+  features: { sharedPhotos: false },
+
   person: {
     name: "Ali Çınar",
     nickname: { de: "Vater, Onkel, Bruder", tr: "Baba, dayı, amca, kardeş" },
