@@ -9,8 +9,8 @@
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="theme-color" content="#0d0e10">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://www.google.com https://www.recaptcha.net; connect-src 'self' https://firestore.googleapis.com https://*.googleapis.com https://content-firebaseappcheck.googleapis.com https://www.google.com; frame-src https://www.google.com https://www.recaptcha.net; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
-  <link rel="stylesheet" href="assets/css/fonts.css?v=20261026d">
-  <link rel="stylesheet" href="assets/css/style.css?v=20261026d">
+  <link rel="stylesheet" href="assets/css/fonts.css?v=20261026e">
+  <link rel="stylesheet" href="assets/css/style.css?v=20261026e">
 </head>
 <body>
   <a class="skip" href="#jahrestag">Zum Inhalt</a>
@@ -43,6 +43,7 @@
       <a href="#erinnerungen" data-i18n="navMemories"></a>
       <a href="#worte" data-i18n="navWords"></a>
       <a href="#bilder" data-i18n="navGallery"></a>
+      <a href="#geteilt" data-i18n="navShared"></a>
       <a href="#kerzen" data-i18n="candlesTitle"></a>
       <a href="#gedenkbuch" data-i18n="navBook"></a>
     </nav>
@@ -57,7 +58,7 @@
           <p class="hero__lead" data-i18n="inMemory"></p>
           <h1 class="hero__name" id="heroName"></h1>
           <p class="hero__role" id="heroNick"></p>
-          <p class="hero__dates"><span id="born"></span><span class="hero__dash" aria-hidden="true"></span><span id="died"></span></p>
+          <p class="hero__dates"><span id="born"></span><svg class="hero__heart" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-7.5-10.4A4.1 4.1 0 0 1 12 7.6a4.1 4.1 0 0 1 7.5 2.5c0 5.8-7.5 10.4-7.5 10.4Z"/></svg><span id="died"></span></p>
           <p class="hero__places" id="places"></p>
         </div>
         <span class="hero__cue" aria-hidden="true"></span>
@@ -125,6 +126,16 @@
       </div>
     </section>
 
+    <!-- 7b · Fotos von Freunden und Familie, erst nach Freigabe sichtbar -->
+    <section class="shared" id="geteilt">
+      <div class="col">
+        <h2 class="h2" data-i18n="sharedTitle"></h2>
+        <p class="sub" data-i18n="sharedSub"></p>
+        <button class="btn btn--primary shared__btn" type="button" data-action="share"><span data-i18n="shareBtn"></span></button>
+        <div class="shared__grid" id="sharedGrid" aria-live="polite"></div>
+      </div>
+    </section>
+
     <!-- 8 · Lichter -->
     <section class="lights" id="kerzen">
       <div class="col">
@@ -172,6 +183,7 @@
 
   <footer class="footer">
     <p class="footer__name" id="footName"></p>
+    <p class="footer__devr" lang="tr">Devr-i Daim. Işıklar yoldaşın olsun.</p>
     <p class="footer__family" id="footFamily"></p>
     <nav class="footer__legal" aria-label="Rechtliches"><a href="impressum.html" data-i18n="imprint"></a><a href="datenschutz.html" data-i18n="privacy"></a></nav>
   </footer>
@@ -196,6 +208,28 @@
     </form>
   </dialog>
 
+  <dialog id="shareDialog" class="dialog dialog--share" aria-labelledby="shareTitle">
+    <form id="shareForm" novalidate>
+      <h3 class="dialog__title" id="shareTitle" data-i18n="shareTitle"></h3>
+      <label class="picker" id="picker">
+        <input type="file" name="photo" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" hidden>
+        <img class="picker__preview" id="pickerPreview" alt="" hidden>
+        <span class="picker__label" id="pickerLabel" data-i18n="sharePick"></span>
+      </label>
+      <label class="field"><span data-i18n="shareName"></span><input name="name" maxlength="60" autocomplete="name" required></label>
+      <label class="field"><span data-i18n="shareCaption"></span><input name="caption" maxlength="140"></label>
+      <label class="consent"><input type="checkbox" name="rights"><span data-i18n="shareRights"></span></label>
+      <label class="consent"><input type="checkbox" name="people"><span data-i18n="sharePeople"></span></label>
+      <label class="consent"><input type="checkbox" name="privacy"><span><span data-i18n="sharePrivacy"></span> <a href="datenschutz.html" target="_blank" rel="noopener" data-i18n="privacy"></a></span></label>
+      <label class="hp" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off"></label>
+      <p class="form-status" id="shareStatus" role="status" aria-live="polite"></p>
+      <div class="dialog__actions">
+        <button class="btn btn--ghost" type="button" data-close data-i18n="cancel"></button>
+        <button class="btn btn--primary" type="submit" data-i18n="shareSend"></button>
+      </div>
+    </form>
+  </dialog>
+
   <dialog id="lightbox" class="lightbox">
     <button class="lightbox__close" type="button" aria-label="Schließen">×</button>
     <img alt="">
@@ -205,9 +239,9 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <script src="assets/js/config.js?v=20261026d"></script>
-  <script src="assets/js/content.js?v=20261026d"></script>
-  <script src="assets/js/app.js?v=20261026d"></script>
-  <script type="module" src="assets/js/store.js?v=20261026d"></script>
+  <script src="assets/js/config.js?v=20261026e"></script>
+  <script src="assets/js/content.js?v=20261026e"></script>
+  <script src="assets/js/app.js?v=20261026e"></script>
+  <script type="module" src="assets/js/store.js?v=20261026e"></script>
 </body>
 </html>

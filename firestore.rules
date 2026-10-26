@@ -3,13 +3,17 @@ rules_version = '2';
 // Sicherheitsregeln für die Gedenkseite.
 // In der Firebase-Konsole unter Firestore > Regeln einfügen und veröffentlichen.
 //
-// Einträge und Lichter erscheinen sofort. Spamschutz:
-// - Jeder Beitrag braucht eine (unsichtbare, anonyme) Anmeldung.
-// - Pro Anmeldung höchstens ein Beitrag alle 30 Sekunden (serverseitig geprüft).
-// - Keine Links im Text oder Namen.
-// - Spam blendet die Familie in der Konsole aus (approved auf false) oder löscht ihn.
+// Gedenkbuch und Lichter erscheinen sofort, Fotos erst nach Freigabe.
+// Spamschutz: anonyme Anmeldung, ein Beitrag alle 30 Sekunden, keine Links.
+// Admin (Freigeben, Ausblenden, Löschen über admin.html): nur cembot90@gmail.com mit Google-Anmeldung.
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    function isAdmin() {
+      return request.auth != null &&
+        request.auth.token.email == 'cembot90@gmail.com' &&
+        request.auth.token.email_verified == true;
+    }
 
     function noLinks(s) {
       return !s.lower().matches('.*(https?://|www[.]|[a-z0-9-]+[.](com|net|org|ru|xyz|info|top|io|de|tr)([/ ]|$)).*');
@@ -19,13 +23,16 @@ service cloud.firestore {
       return !(field in data) || (data[field] is string && data[field].size() <= maxLen && noLinks(data[field]));
     }
 
-    // Nur erlaubt, wenn im selben Schreibvorgang die Pausenzeit dieses Besuchers aktualisiert wird.
     function rateLimited() {
       return request.auth != null &&
         getAfter(/databases/$(database)/documents/ratelimits/$(request.auth.uid)).data.last == request.time;
     }
 
-    // Pausenzeit pro anonymer Anmeldung
+    function onlyApprovedChanges() {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(['approved']) &&
+        request.resource.data.approved is bool;
+    }
+
     match /ratelimits/{uid} {
       allow read: if false;
       allow create: if request.auth != null && request.auth.uid == uid &&
@@ -40,8 +47,7 @@ service cloud.firestore {
 
     // Gedenkbuch: sofort sichtbar
     match /guestbook/{entryId} {
-      allow read: if resource.data.approved == true;
-
+      allow read: if resource.data.approved == true || isAdmin();
       allow create: if rateLimited() &&
         request.resource.data.keys().hasOnly(['name', 'relation', 'message', 'lang', 'approved', 'createdAt']) &&
         request.resource.data.keys().hasAll(['message', 'approved', 'createdAt']) &&
@@ -54,9 +60,8 @@ service cloud.firestore {
         optionalText(request.resource.data, 'name', 60) &&
         optionalText(request.resource.data, 'relation', 60) &&
         (!('lang' in request.resource.data) || request.resource.data.lang in ['de', 'tr']);
-
-      // Ändern und Löschen nur über die Firebase-Konsole.
-      allow update, delete: if false;
+      allow update: if isAdmin() && onlyApprovedChanges();
+      allow delete: if isAdmin();
     }
 
     // Lichter: sofort sichtbar, nur ein kurzer Name
@@ -68,7 +73,46 @@ service cloud.firestore {
         request.resource.data.name is string &&
         request.resource.data.name.size() <= 40 &&
         noLinks(request.resource.data.name);
-      allow update, delete: if false;
+      allow update: if false;
+      allow delete: if isAdmin();
+    }
+
+    // Geteilte Fotos: Vorschau + Angaben, erst nach Freigabe sichtbar
+    match /photos/{photoId} {
+      allow read: if resource.data.approved == true || isAdmin();
+      allow create: if rateLimited() &&
+        request.resource.data.keys().hasOnly(['name', 'caption', 'thumb', 'lang', 'approved', 'createdAt']) &&
+        request.resource.data.keys().hasAll(['name', 'thumb', 'approved', 'createdAt']) &&
+        request.resource.data.approved == false &&
+        request.resource.data.createdAt == request.time &&
+        request.resource.data.name is string &&
+        request.resource.data.name.size() >= 2 &&
+        request.resource.data.name.size() <= 60 &&
+        noLinks(request.resource.data.name) &&
+        optionalText(request.resource.data, 'caption', 140) &&
+        request.resource.data.thumb is string &&
+        request.resource.data.thumb.size() <= 160000 &&
+        request.resource.data.thumb.matches('^data:image/jpeg;base64,[A-Za-z0-9+/=]+$') &&
+        (!('lang' in request.resource.data) || request.resource.data.lang in ['de', 'tr']) &&
+        existsAfter(/databases/$(database)/documents/photoFull/$(photoId));
+      allow update: if isAdmin() && onlyApprovedChanges();
+      allow delete: if isAdmin();
+    }
+
+    // Große Fassung eines geteilten Fotos, nur einzeln abrufbar
+    match /photoFull/{photoId} {
+      allow get: if isAdmin() ||
+        get(/databases/$(database)/documents/photos/$(photoId)).data.approved == true;
+      allow list: if false;
+      allow create: if rateLimited() &&
+        request.resource.data.keys().hasOnly(['data', 'createdAt']) &&
+        request.resource.data.createdAt == request.time &&
+        request.resource.data.data is string &&
+        request.resource.data.data.size() <= 950000 &&
+        request.resource.data.data.matches('^data:image/jpeg;base64,[A-Za-z0-9+/=]+$') &&
+        getAfter(/databases/$(database)/documents/photos/$(photoId)).data.approved == false;
+      allow update: if false;
+      allow delete: if isAdmin();
     }
 
     // Alles andere ist gesperrt.

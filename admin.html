@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Verwaltung · Ali Çınar</title>
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://apis.google.com; connect-src 'self' https://*.googleapis.com https://firestore.googleapis.com; frame-src https://alicnr-ccf0a.firebaseapp.com https://accounts.google.com; img-src 'self' data: https://*.googleusercontent.com; style-src 'self' 'unsafe-inline'; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <link rel="stylesheet" href="assets/css/fonts.css?v=20261026e">
+  <link rel="stylesheet" href="assets/css/style.css?v=20261026e">
+  <link rel="stylesheet" href="assets/css/admin.css?v=20261026e">
+</head>
+<body class="admin">
+  <header class="admin__bar">
+    <a class="nav__name" href="index.html">Ali Çınar</a>
+    <span class="admin__who" id="who"></span>
+    <button class="btn btn--ghost admin__small" type="button" id="logout" hidden>Abmelden</button>
+  </header>
+
+  <main class="admin__main">
+    <section id="login" class="admin__login">
+      <h1 class="h2">Verwaltung</h1>
+      <p class="sub">Hier gibst du geteilte Fotos frei und blendest Einträge aus. Zugang nur mit dem Google-Konto der Familie.</p>
+      <button class="btn btn--primary" type="button" id="loginBtn">Mit Google anmelden</button>
+      <p class="form-status" id="loginStatus" role="status"></p>
+    </section>
+
+    <div id="panel" hidden>
+      <nav class="admin__tabs" aria-label="Bereiche">
+        <button type="button" data-tab="pending" aria-pressed="true">Fotos zur Freigabe <span class="count" id="cPending"></span></button>
+        <button type="button" data-tab="approved" aria-pressed="false">Freigegebene Fotos <span class="count" id="cApproved"></span></button>
+        <button type="button" data-tab="book" aria-pressed="false">Gedenkbuch <span class="count" id="cBook"></span></button>
+        <button type="button" data-tab="candles" aria-pressed="false">Lichter <span class="count" id="cCandles"></span></button>
+      </nav>
+      <section class="admin__list" data-panel="pending"></section>
+      <section class="admin__list" data-panel="approved" hidden></section>
+      <section class="admin__list" data-panel="book" hidden></section>
+      <section class="admin__list" data-panel="candles" hidden></section>
+    </div>
+  </main>
+
+  <dialog id="lightbox" class="lightbox">
+    <button class="lightbox__close" type="button" aria-label="Schließen">×</button>
+    <img alt="">
+    <p class="lightbox__cap"></p>
+  </dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="assets/js/config.js?v=20261026e"></script>
+  <script type="module" src="assets/js/admin.js?v=20261026e"></script>
+</body>
+</html>

@@ -420,3 +420,40 @@ section[id] { scroll-margin-top: 56px; }
   .hero__name { font-size: 50px; }
   .seg-switch button { padding: 4px 10px; }
 }
+
+/* ---------- 7b · Fotos mit Ali ---------- */
+.shared { padding: 14vh 0 4vh; }
+.shared__btn { margin-top: 34px; }
+.shared__grid { margin-top: 7vh; columns: 3 240px; column-gap: 14px; }
+.shared__grid:empty { display: none; }
+.pic { break-inside: avoid; margin: 0 0 14px; border-radius: 20px; overflow: hidden; background: var(--graphite); cursor: zoom-in; }
+.pic img { width: 100%; filter: grayscale(1) brightness(.85); transition: filter .6s var(--ease); }
+.pic:hover img, .pic:focus-visible img { filter: none; }
+.pic figcaption { padding: 14px 16px 16px; font-size: 15px; line-height: 1.4; color: #d2d2d7; }
+.pic figcaption small { display: block; margin-top: 4px; font-size: 13px; color: var(--mist); }
+.shared__empty { margin-top: 5vh; color: var(--mist); }
+@media (hover: none) { .pic img { filter: none; } }
+
+.dialog--share { width: min(520px, 100% - 24px); max-height: calc(100svh - 24px); overflow-y: auto; }
+.dialog--share form { gap: 16px; }
+.dialog__title { margin: 0; font-weight: 600; font-size: 26px; letter-spacing: -.025em; }
+.picker { position: relative; display: grid; place-items: center; min-height: 180px; border-radius: 18px; overflow: hidden; cursor: pointer;
+  background: var(--graphite-2); border: 1.5px dashed var(--dim); transition: border-color .2s; }
+.picker:hover, .picker:focus-within { border-color: var(--mist); }
+.picker__preview { width: 100%; max-height: 300px; object-fit: contain; background: #000; }
+.picker__label { padding: 16px; font-weight: 500; color: var(--silver); text-align: center; }
+.picker.has-photo { border-style: solid; }
+.picker.has-photo .picker__label { position: absolute; bottom: 10px; padding: 6px 14px; border-radius: 999px; background: rgba(0, 0, 0, .7); font-size: 14px; }
+
+/* ---------- Goldene Akzente: ein goldenes Herz, Licht, Devr-i Daim ---------- */
+:root { --gold: #d9b56a; --gold-hi: #f4dfa6; --gold-lo: #a9843f; }
+.hero__heart { width: 22px; height: 22px; fill: none; stroke: var(--gold); stroke-width: 1.5; filter: drop-shadow(0 0 8px rgba(217, 181, 106, .45)); }
+.words__line span.on { color: var(--gold-hi); text-shadow: 0 0 30px rgba(217, 181, 106, .45), 0 0 80px rgba(217, 181, 106, .2); }
+.year__devr, .footer__devr { background: linear-gradient(180deg, var(--gold-hi), var(--gold) 55%, var(--gold-lo)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.footer__devr { margin: 10px 0 0; font-weight: 500; }
+.lights { position: relative; }
+.lights::before { content: ""; position: absolute; left: 50%; top: 50%; width: min(900px, 120vw); height: 70%; transform: translate(-50%, -45%); pointer-events: none;
+  background: radial-gradient(closest-side, rgba(217, 181, 106, .14), transparent 75%); }
+.lights > * { position: relative; }
+.lights .btn--primary, .dialog .btn--primary[value="ok"] { box-shadow: 0 0 0 1.5px var(--gold), 0 10px 40px rgba(217, 181, 106, .28); }
+.candle { box-shadow: 0 0 34px rgba(217, 181, 106, .25); }

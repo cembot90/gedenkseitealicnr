@@ -103,6 +103,7 @@
     updateMusicLabel();
     renderCandles(lastCandles);
     renderEntries(lastEntries);
+    renderShared(lastShared);
   }
 
   /* ---------- Reden: eine Karte, Umschalter DE | TR, Text läuft mit ---------- */
@@ -300,12 +301,114 @@
     finally { btn.disabled = false; btn.textContent = t("fSubmit"); }
   });
 
+  /* ---------- Fotos mit Ali: teilen, erst nach Freigabe sichtbar ---------- */
+  let lastShared = null;
+  function renderShared(list) {
+    lastShared = list;
+    const g = $("#sharedGrid"); if (!g) return;
+    g.replaceChildren();
+    const old = $(".shared__empty"); if (old) old.remove();
+    if (!list) return;
+    if (!list.length) { g.after(el("p", "shared__empty", t("sharedEmpty"))); return; }
+    list.forEach(ph => {
+      const f = el("figure", "pic"); f.tabIndex = 0;
+      const im = el("img"); im.src = ph.thumb; im.alt = ph.caption || (t("sharedBy") + " " + ph.name); im.loading = "lazy"; im.decoding = "async";
+      const cap = el("figcaption");
+      if (ph.caption) cap.append(document.createTextNode(ph.caption));
+      cap.append(el("small", null, `${t("sharedBy")} ${ph.name}`));
+      f.append(im, cap);
+      const open = async () => {
+        const label = [ph.caption, `${t("sharedBy")} ${ph.name}`].filter(Boolean).join(" · ");
+        openLightbox(ph.thumb, label);
+        try { const full = await window.MemorialStore?.getPhoto(ph.id); if (full && lb.open) lbImg.src = full; } catch (e) { console.error(e); }
+      };
+      f.addEventListener("click", open); f.addEventListener("keydown", e => { if (e.key === "Enter") open(); });
+      g.append(f);
+    });
+  }
+
+  // Foto im Browser verkleinern; dabei gehen auch GPS- und Kameradaten verloren (Neuzeichnen ohne Metadaten)
+  async function loadBitmap(file) {
+    if ("createImageBitmap" in window) {
+      try { return await createImageBitmap(file, { imageOrientation: "from-image" }); } catch {}
+    }
+    return await new Promise((res, rej) => {
+      const url = URL.createObjectURL(file), im = new Image();
+      im.onload = () => { URL.revokeObjectURL(url); res(im); };
+      im.onerror = () => { URL.revokeObjectURL(url); rej(new Error("decode")); };
+      im.src = url;
+    });
+  }
+  function encode(src, maxSide, maxChars, q0) {
+    const w0 = src.width, h0 = src.height, k = Math.min(1, maxSide / Math.max(w0, h0));
+    let w = Math.round(w0 * k), h = Math.round(h0 * k), q = q0, out = "";
+    const c = document.createElement("canvas"), x = c.getContext("2d");
+    for (let i = 0; i < 12; i++) {
+      c.width = w; c.height = h; x.fillStyle = "#000"; x.fillRect(0, 0, w, h); x.drawImage(src, 0, 0, w, h);
+      out = c.toDataURL("image/jpeg", q);
+      if (out.length <= maxChars) return out;
+      if (q > .55) q -= .08; else { w = Math.round(w * .85); h = Math.round(h * .85); }
+    }
+    return out.length <= maxChars ? out : null;
+  }
+  async function preparePhoto(file) {
+    const bmp = await loadBitmap(file);
+    const full = encode(bmp, 1600, 900000, .84);
+    const thumb = encode(bmp, 640, 150000, .72);
+    if (bmp.close) bmp.close();
+    if (!full || !thumb) throw new Error("size");
+    return { full, thumb };
+  }
+
+  const shareDlg = $("#shareDialog"), shareForm = $("#shareForm"), shareStatus = $("#shareStatus");
+  const picker = $("#picker"), pickerPreview = $("#pickerPreview"), pickerLabel = $("#pickerLabel");
+  let prepared = null, preparing = null;
+  function resetShare() {
+    shareForm.reset(); prepared = null; preparing = null;
+    pickerPreview.hidden = true; pickerPreview.removeAttribute("src"); picker.classList.remove("has-photo");
+    pickerLabel.textContent = t("sharePick"); shareStatus.textContent = ""; shareStatus.classList.remove("is-error");
+  }
+  $$("[data-action='share']").forEach(b => b.addEventListener("click", () => { resetShare(); shareDlg.showModal(); }));
+  shareDlg.querySelector("[data-close]").addEventListener("click", () => shareDlg.close());
+  shareForm.elements.photo.addEventListener("change", () => {
+    const file = shareForm.elements.photo.files[0]; if (!file) return;
+    shareStatus.textContent = ""; shareStatus.classList.remove("is-error");
+    prepared = null;
+    preparing = preparePhoto(file).then(r => {
+      prepared = r; pickerPreview.src = r.thumb; pickerPreview.hidden = false; picker.classList.add("has-photo"); pickerLabel.textContent = t("shareChange");
+      return r;
+    }).catch(err => { console.error(err); shareStatus.textContent = t("shareBadFile"); shareStatus.classList.add("is-error"); return null; });
+  });
+  shareForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    shareStatus.classList.remove("is-error");
+    const f = shareForm.elements;
+    if (f.website.value) return;
+    if (preparing) await preparing;
+    if (!prepared) { shareStatus.textContent = t("shareNeedPhoto"); shareStatus.classList.add("is-error"); return; }
+    const name = f.name.value.trim().slice(0, 60);
+    if (name.length < 2) { shareStatus.textContent = t("fName"); shareStatus.classList.add("is-error"); f.name.focus(); return; }
+    if (!f.rights.checked || !f.people.checked || !f.privacy.checked) { shareStatus.textContent = t("shareNeedChecks"); shareStatus.classList.add("is-error"); return; }
+    const btn = shareForm.querySelector("button[type=submit]"); btn.disabled = true; btn.textContent = t("fSending");
+    try {
+      await window.MemorialStore.addPhoto({ name, caption: f.caption.value.trim().slice(0, 140), thumb: prepared.thumb, full: prepared.full, lang });
+      shareForm.querySelectorAll("label, .picker").forEach(n => n.hidden = true);
+      shareStatus.textContent = t("shareThanks");
+      setTimeout(() => { if (shareDlg.open) shareDlg.close(); shareForm.querySelectorAll("label, .picker").forEach(n => n.hidden = false); resetShare(); }, 3500);
+    } catch (err) {
+      console.error(err);
+      shareStatus.textContent = t(err && err.code === "rejected" ? "fRejected" : "fError") + (err && err.code && err.code !== "rejected" ? ` (${err.code})` : "");
+      shareStatus.classList.add("is-error");
+    } finally { btn.disabled = false; btn.textContent = t("shareSend"); }
+  });
+
   /* ---------- Store anbinden ---------- */
   function bindStore() {
     const S = window.MemorialStore; if (!S) return;
     $("#demoNote").hidden = !S.demo;
     S.onCandles(renderCandles);
     S.onEntries(renderEntries);
+    if (S.onPhotos) S.onPhotos(renderShared);
   }
   if (window.MemorialStore) bindStore(); else window.addEventListener("memorial-store-ready", bindStore, { once: true });
 

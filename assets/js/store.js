@@ -28,7 +28,10 @@ if (!cfg.apiKey) {
     onCandles(cb) { cl.add(cb); cb([...candles]); },
     onEntries(cb) { el.add(cb); cb([...entries]); },
     async addCandle(name) { candles.unshift({ name }); cl.forEach(cb => cb([...candles])); },
-    async addEntry(e) { await new Promise(r => setTimeout(r, 400)); entries.unshift({ ...e, date: new Date() }); el.forEach(cb => cb([...entries])); }
+    async addEntry(e) { await new Promise(r => setTimeout(r, 400)); entries.unshift({ ...e, date: new Date() }); el.forEach(cb => cb([...entries])); },
+    onPhotos(cb) { cb([]); },
+    async addPhoto() { await new Promise(r => setTimeout(r, 700)); /* Vorschau: nichts gespeichert, live erst nach Freigabe sichtbar */ },
+    async getPhoto() { return null; }
   });
 } else {
   /* ---------- Live mit Firebase ---------- */
@@ -38,7 +41,7 @@ if (!cfg.apiKey) {
     import(`${SDK}/firebase-auth.js`),
     window.APPCHECK_SITE_KEY ? import(`${SDK}/firebase-app-check.js`) : Promise.resolve(null)
   ]);
-  const { getFirestore, collection, doc, writeBatch, serverTimestamp, query, where, orderBy, limit, onSnapshot } = fs;
+  const { getFirestore, collection, doc, getDoc, writeBatch, serverTimestamp, query, where, orderBy, limit, onSnapshot } = fs;
 
   const app = initializeApp(cfg);
   if (ac) ac.initializeAppCheck(app, { provider: new ac.ReCaptchaV3Provider(window.APPCHECK_SITE_KEY), isTokenAutoRefreshEnabled: true });
@@ -46,6 +49,7 @@ if (!cfg.apiKey) {
   const auth = au.getAuth(app);
   const guestbook = collection(db, "guestbook");
   const candles = collection(db, "candles");
+  const photos = collection(db, "photos");
   const clean = (s, n) => String(s || "").replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, "").trim().slice(0, n);
 
   // Anonyme Anmeldung erst beim ersten Beitrag (nicht beim Seitenaufruf).
@@ -55,11 +59,13 @@ if (!cfg.apiKey) {
     const cred = await au.signInAnonymously(auth);
     return cred.user.uid;
   }
-  async function write(col, data) {
+  async function write(col, data, extra) {
     const id = await uid();
     const batch = writeBatch(db);
     batch.set(doc(db, "ratelimits", id), { last: serverTimestamp() });
-    batch.set(doc(col), data);
+    const ref = doc(col);
+    batch.set(ref, data);
+    if (extra) extra(batch, ref.id);
     try { await batch.commit(); }
     catch (e) { if (e && e.code === "permission-denied") { const err = new Error("rejected"); err.code = "rejected"; throw err; } throw e; }
   }
@@ -81,6 +87,23 @@ if (!cfg.apiKey) {
     },
     async addCandle(name) {
       await write(candles, { name: clean(name, 40), createdAt: serverTimestamp() });
+    },
+    onPhotos(cb) {
+      onSnapshot(query(photos, where("approved", "==", true), orderBy("createdAt", "desc"), limit(120)),
+        snap => cb(snap.docs.map(d => { const x = d.data(); return { id: d.id, name: clean(x.name, 60), caption: clean(x.caption, 140), thumb: String(x.thumb || "").startsWith("data:image/jpeg;base64,") ? x.thumb : "" }; }).filter(p => p.thumb)),
+        err => { console.error(err); cb([]); });
+    },
+    async getPhoto(id) {
+      const d = await getDoc(doc(db, "photoFull", id));
+      const v = d.exists() ? String(d.data().data || "") : "";
+      return v.startsWith("data:image/jpeg;base64,") ? v : null;
+    },
+    // Foto: Vorschau und große Fassung getrennt, damit die Seite schnell lädt. Sichtbar erst nach Freigabe.
+    async addPhoto({ name, caption, thumb, full, lang }) {
+      await write(photos, {
+        name: clean(name, 60), caption: clean(caption, 140), thumb, lang: lang === "tr" ? "tr" : "de",
+        approved: false, createdAt: serverTimestamp()
+      }, (batch, id) => batch.set(doc(db, "photoFull", id), { data: full, createdAt: serverTimestamp() }));
     },
     async addEntry({ name, relation, message, lang }) {
       await write(guestbook, {
