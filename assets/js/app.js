@@ -90,7 +90,7 @@
     M.gallery.filter(ph => ph.src).forEach(ph => {
       const f = el("figure", "shot"); f.tabIndex = 0;
       const im = el("img"); im.src = ph.src; im.alt = L(ph.caption); im.decoding = "async";
-      im.addEventListener("load", measure);
+      im.addEventListener("load", () => { measure(); centerShot(); });
       f.append(im, el("figcaption", null, L(ph.caption)));
       if (ph.video) { const pb = el("span", "shot__play"); pb.setAttribute("aria-hidden", "true"); f.append(pb); }
       const open = () => openLightbox(ph.src, L(ph.caption), ph.video);
@@ -330,7 +330,12 @@
   const nav = $(".nav");
   const noHover = matchMedia("(hover: none)").matches;
   let scenes = [];
-  function collectScenes() { scenes = $$("[data-scene]"); measure(); tick(); }
+  const mobile = matchMedia("(max-width: 820px)");
+  function collectScenes() {
+    scenes = $$("[data-scene]").filter(sc => !(mobile.matches && sc.classList.contains("reel")));
+    measure(); tick(); centerShot();
+  }
+  mobile.addEventListener?.("change", () => collectScenes());
   function measure() {
     const tr = $("#gallery");
     if (tr) tr.style.setProperty("--shift", Math.max(0, tr.scrollWidth - innerWidth) + "px");
@@ -351,14 +356,17 @@
       $("#wordsAfter").classList.toggle("on", p > .78);
     }
     nav.classList.toggle("is-on", scrollY > vh * .7);
-    // Ohne Maus (Handy, Tablet): das Bild in der Mitte wird farbig
-    if (noHover) {
-      const shots = $$(".shot"), mid = innerWidth / 2; let best = null, bd = Infinity;
-      const reel = $(".reel"), inReel = reel && reel._p > 0 && reel._p < 1;
-      shots.forEach(sh => { const r = sh.getBoundingClientRect(), d = Math.abs(r.left + r.width / 2 - mid); if (d < bd) { bd = d; best = sh; } });
-      shots.forEach(sh => sh.classList.toggle("is-center", inReel && sh === best));
-    }
+    if (noHover || mobile.matches) centerShot();
   }
+  // Ohne Maus (Handy, Tablet): das Bild in der Mitte des Bands wird farbig
+  function centerShot() {
+    if (!noHover && !mobile.matches) { $$(".shot.is-center").forEach(s => s.classList.remove("is-center")); return; }
+    const shots = $$(".shot"), mid = innerWidth / 2; let best = null, bd = Infinity;
+    shots.forEach(sh => { const r = sh.getBoundingClientRect(), d = Math.abs(r.left + r.width / 2 - mid); if (d < bd) { bd = d; best = sh; } });
+    shots.forEach(sh => sh.classList.toggle("is-center", sh === best));
+  }
+  let shotRaf = 0;
+  $("#gallery").addEventListener("scroll", () => { cancelAnimationFrame(shotRaf); shotRaf = requestAnimationFrame(centerShot); }, { passive: true });
   let ticking = false;
   addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(() => { ticking = false; tick(); }); } }, { passive: true });
   addEventListener("resize", () => { measure(); tick(); });
@@ -370,6 +378,18 @@
     glowIO = glowIO || new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle("lit", e.isIntersecting || e.boundingClientRect.top < 0)), { rootMargin: "-38% 0px -38% 0px" });
     $$(".glow").forEach(n => glowIO.observe(n));
   }
+
+  /* ---------- Menü (Handy) ---------- */
+  const menu = $("#menu"), menuBtn = $("#menuBtn");
+  function setMenu(open) {
+    menuBtn.setAttribute("aria-expanded", String(open));
+    document.body.classList.toggle("menu-open", open);
+    if (open) { menu.hidden = false; requestAnimationFrame(() => menu.classList.add("is-open")); }
+    else { menu.classList.remove("is-open"); setTimeout(() => { if (menuBtn.getAttribute("aria-expanded") === "false") menu.hidden = true; }, 300); }
+  }
+  menuBtn.addEventListener("click", () => setMenu(menuBtn.getAttribute("aria-expanded") !== "true"));
+  menu.addEventListener("click", e => { if (e.target.closest("a")) setMenu(false); });
+  addEventListener("keydown", e => { if (e.key === "Escape" && menuBtn.getAttribute("aria-expanded") === "true") setMenu(false); });
 
   /* ---------- Aktiver Menüpunkt ---------- */
   const navLinks = $$(".nav__links a");

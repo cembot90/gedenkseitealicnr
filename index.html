@@ -9,8 +9,8 @@
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="theme-color" content="#0d0e10">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://www.google.com https://www.recaptcha.net; connect-src 'self' https://firestore.googleapis.com https://*.googleapis.com https://content-firebaseappcheck.googleapis.com https://www.google.com; frame-src https://www.google.com https://www.recaptcha.net; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
-  <link rel="stylesheet" href="assets/css/fonts.css">
-  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/fonts.css?v=20261026a">
+  <link rel="stylesheet" href="assets/css/style.css?v=20261026a">
 </head>
 <body>
   <a class="skip" href="#jahrestag">Zum Inhalt</a>
@@ -25,11 +25,28 @@
       <a href="#bilder" data-i18n="navGallery"></a>
       <a href="#gedenkbuch" data-i18n="navBook"></a>
     </nav>
-    <div class="seg-switch" role="group" aria-label="Sprache / Dil">
-      <button type="button" data-lang="de" aria-pressed="true">DE</button>
-      <button type="button" data-lang="tr" aria-pressed="false">TR</button>
+    <div class="nav__end">
+      <div class="seg-switch" role="group" aria-label="Sprache / Dil">
+        <button type="button" data-lang="de" aria-pressed="true">DE</button>
+        <button type="button" data-lang="tr" aria-pressed="false">TR</button>
+      </div>
+      <button class="nav__menu" type="button" id="menuBtn" aria-expanded="false" aria-controls="menu" aria-label="Menü">
+        <span></span><span></span>
+      </button>
     </div>
   </header>
+
+  <div class="menu" id="menu" hidden>
+    <nav aria-label="Menü">
+      <a href="#jahrestag" data-i18n="navYear"></a>
+      <a href="#leben" data-i18n="navLife"></a>
+      <a href="#erinnerungen" data-i18n="navMemories"></a>
+      <a href="#worte" data-i18n="navWords"></a>
+      <a href="#bilder" data-i18n="navGallery"></a>
+      <a href="#kerzen" data-i18n="candlesTitle"></a>
+      <a href="#gedenkbuch" data-i18n="navBook"></a>
+    </nav>
+  </div>
 
   <main id="top">
     <!-- 1 · Auftakt: Porträt zieht sich beim Scrollen zurück -->
@@ -188,9 +205,9 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <script src="assets/js/config.js"></script>
-  <script src="assets/js/content.js"></script>
-  <script src="assets/js/app.js"></script>
-  <script type="module" src="assets/js/store.js"></script>
+  <script src="assets/js/config.js?v=20261026a"></script>
+  <script src="assets/js/content.js?v=20261026a"></script>
+  <script src="assets/js/app.js?v=20261026a"></script>
+  <script type="module" src="assets/js/store.js?v=20261026a"></script>
 </body>
 </html>
