@@ -557,6 +557,21 @@ function viewSettings(main) {
   cb.addEventListener("change", () => { state.draft.features = Object.assign({}, state.draft.features, { sharedPhotos: cb.checked }); markDirty(); });
   sw.append(cb, el("span")); row.append(t, sw); main.append(row);
 
+  // Repo-Stand übernehmen: löscht die in der Verwaltung gespeicherten Inhalte, danach gilt wieder content.js aus dem Repo
+  const rp = el("section", "panel"); rp.style.maxWidth = "760px";
+  rp.append(el("h2", null, "Neue Inhalte aus dem Repo übernehmen"),
+    el("p", null, state.publishedAt
+      ? `In der Verwaltung gespeicherte Inhalte (zuletzt ${when(state.publishedAt)}) haben gerade Vorrang. Wenn Claude neue Texte oder Fotos ins Repo eingebaut hat, tippe hier, damit die Seite diese zeigt. Deine eigenen Änderungen aus der Verwaltung werden dabei ersetzt.`
+      : "Die Seite zeigt bereits den Stand aus dem Repo. Hier ist nichts zu tun."));
+  if (state.publishedAt) {
+    const rb = button("btn btn--ghost", "Repo-Stand übernehmen", () => {
+      if (!confirm("Inhalte aus der Verwaltung durch den Stand aus dem Repo ersetzen?")) return;
+      act(async () => { await deleteDoc(doc(db, "site", "content")); state.dirty = false; state.draft = defaults(); }, "Übernommen. Die Seite zeigt jetzt den Stand aus dem Repo.");
+    });
+    rb.style.marginTop = "16px"; rp.append(rb);
+  }
+  main.append(rp);
+
   const acc = el("section", "panel"); acc.style.maxWidth = "760px";
   acc.append(el("h2", null, "Konto"), el("p", null, `Angemeldet als ${state.user.email}`));
   const btns = el("div"); btns.style.cssText = "display:flex;gap:10px;flex-wrap:wrap;margin-top:16px";

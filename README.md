@@ -64,6 +64,7 @@ Einträge erscheinen sofort. Unpassendes in der Firebase-Konsole > Firestore > `
 
 Übersicht, Inhalte (Editor DE/TR für Seitenkopf, Jahresgedenken, Lebensweg, Erinnerungen, Galerie), Mediathek, Freigaben, Gedenkbuch, Lichter, Einstellungen.
 Inhalte aus der Verwaltung liegen in Firestore (`site/content`) und überschreiben `content.js`; Fotos in `media`/`mediaData`. Audio und Video bleiben im Repo.
+Wurden Inhalte im Repo geändert (z. B. durch Claude), unter Einstellungen „Repo-Stand übernehmen“ tippen, sonst bleiben die Verwaltungs-Inhalte sichtbar.
 
 ## Wartungsmodus / Passwortschutz
 
