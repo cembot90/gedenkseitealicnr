@@ -65,15 +65,15 @@ window.MEMORIAL = {
 
   timeline: [
     { year: "1966", title: { de: "Erzincan", tr: "Erzincan" },
-      text: { de: "Am 1. Februar 1966 in Erzincan geboren. [Kindheit, Familie, erste Erinnerungen.]", tr: "1 Şubat 1966'da Erzincan'da doğdu. [Çocukluğu, ailesi, ilk anılar.]" } },
+      text: { de: "Am 1. Februar 1966 kam er in Erzincan zur Welt, gemeinsam mit seinem Zwillingsbruder Veli. [Kindheit, erste Erinnerungen.]", tr: "1 Şubat 1966'da ikiz kardeşi Veli ile birlikte Erzincan'da dünyaya geldi. [Çocukluğu, ilk anılar.]" } },
     { year: "[Jahr]", title: { de: "Ein neues Zuhause", tr: "Yeni bir yuva" },
       text: { de: "[Der Weg nach Deutschland: wann, wohin, mit wem.]", tr: "[Almanya'ya geliş: ne zaman, nereye, kiminle.]" } },
     { year: "[Jahr]", title: { de: "Familie", tr: "Aile" },
-      text: { de: "[Hochzeit, Kinder, Enkel.] Für seine Familie hat er gearbeitet, gesorgt und gelebt.", tr: "[Evlilik, çocuklar, torunlar.] Ailesi için çalıştı, onlar için yaşadı." } },
+      text: { de: "Mit seiner Frau Sunay gründete er seine Familie, ihre Kinder sind Deniz und Damla. Für sie hat er gearbeitet, gesorgt und gelebt.", tr: "Eşi Sunay ile ailesini kurdu, çocukları Deniz ve Damla. Onlar için çalıştı, onlar için yaşadı." } },
     { year: "[Jahr]", title: { de: "Fleiß und Herz", tr: "Emek ve gönül" },
       text: { de: "[Beruf, worauf er stolz war, was ihm wichtig war.]", tr: "[Mesleği, gurur duyduğu şeyler, onun için önemli olanlar.]" } },
     { year: "2025", title: { de: "Hakka yürüdü", tr: "Hakka yürüdü" },
-      text: { de: "Nach einer langen und schweren Zeit ist er am 14. September 2025 von uns gegangen. In seiner Heimat Erzincan hat er seine letzte Ruhe gefunden.", tr: "Uzun ve zor bir dönemin ardından 14 Eylül 2025'te Hakka yürüdü. Memleketi Erzincan'da toprağa verildi." } }
+      text: { de: "Nach einer langen und schweren Zeit ist er am 14. September 2025 von uns gegangen. Noch an diesem Tag fragte er nach den Kleinen. In seiner Heimat Erzincan hat er seine letzte Ruhe gefunden.", tr: "Uzun ve zor bir dönemin ardından 14 Eylül 2025'te Hakka yürüdü. O gün bile küçükleri sordu. Memleketi Erzincan'da toprağa verildi." } }
   ],
 
   // Fröhliche Erinnerungen: hier wird die Seite farbig.
@@ -81,16 +81,16 @@ window.MEMORIAL = {
   memories: [
     { color: "amber", icon: "sun", image: "images/garten-sonnenuntergang.jpg",
       title: { de: "Zwei Prinzessinnen im Abendlicht", tr: "Akşam güneşinde iki prenses" },
-      text: { de: "Auf einer Hochzeit in Frankfurt, die wir gemeinsam mit den Kleinen besucht haben. Die Sonne ging unter, und er hielt beide Babys im Arm, als wäre es das Selbstverständlichste der Welt. Genau so wollen wir ihn in Erinnerung behalten.", tr: "Minikler ile birlikte gittiğimiz Frankfurt'taki bir düğünde. Güneş batarken iki bebeği birden kucağına almıştı, sanki dünyanın en doğal şeyiymiş gibi. Onu tam da böyle hatırlamak istiyoruz." } },
+      text: { de: "Auf einer Hochzeit in Frankfurt, links Lorîn, rechts Evîn. Eigene Enkel hatte er noch nicht, aber die Enkel seines Zwillingsbruders Veli waren für ihn wie seine eigenen. Die Sonne ging unter, und er hielt beide im Arm, als wäre es das Selbstverständlichste der Welt.", tr: "Frankfurt'ta bir düğünde, solda Lorîn, sağda Evîn. Henüz kendi torunu yoktu ama ikiz kardeşi Veli'nin torunlarını kendi torunu gibi severdi. Güneş batarken ikisini birden kucağına almıştı, sanki dünyanın en doğal şeyiymiş gibi." } },
     { color: "sea", icon: "star", image: "images/einschulung.jpg",
-      title: { de: "Der große Schultag", tr: "Okulun ilk günü" },
-      text: { de: "Die Schultüte fest im Arm, die Hand von Ali auf der Schulter. Stolz kann man nicht besser zeigen. [Wer ist auf dem Bild?]", tr: "Okul hediyesi sımsıkı kucakta, Ali'nin eli omzunda. Gurur ancak böyle gösterilir. [Fotoğrafta kimler var?]" } },
+      title: { de: "Yemins großer Tag", tr: "Yemin'in büyük günü" },
+      text: { de: "Gesundheitlich ging es ihm da schon sehr schlecht. Trotzdem ist er die lange Strecke gefahren, weil er Yemins Einschulung auf keinen Fall verpassen wollte. Seine Hand auf Yemins Schulter sagt alles.", tr: "Sağlığı o zaman çok kötüydü. Yine de Yemin'in okula başladığı günü kaçırmamak için o uzun yolu gitti. Yemin'in omzundaki eli her şeyi anlatıyor." } },
     { color: "rose", icon: "heart", image: "images/mit-dem-baby.jpg",
-      title: { de: "Ganz behutsam", tr: "Usulca, şefkatle" },
-      text: { de: "Ein Neugeborenes im Arm und dieser ruhige, warme Blick. [Ein Satz von euch dazu.]", tr: "Kucağında yeni doğmuş bir bebek ve o sakin, sıcak bakış. [Sizden bir cümle.]" } },
+      title: { de: "Willkommen, Evîn", tr: "Hoş geldin, Evîn" },
+      text: { de: "Evîn, gerade erst auf der Welt, ganz behutsam in seinem Arm. Dieser ruhige, warme Blick zeigt, wie sehr er die Kleinen liebte.", tr: "Daha yeni doğmuş Evîn, onun kollarında usulca. O sakin, sıcak bakış küçükleri ne kadar çok sevdiğini gösteriyor." } },
     { color: "sky", icon: "wave", image: "images/auf-dem-sofa.jpg",
-      title: { de: "Sofa, Tee und Kinderlachen", tr: "Kanepe, çay ve çocuk kahkahası" },
-      text: { de: "[Eine lustige oder warme Geschichte aus dem Familienalltag mit ihm.]", tr: "[Onunla aile hayatından komik ya da sıcak bir hikâye.]" } }
+      title: { de: "Lorîn, Evîn und er", tr: "Lorîn, Evîn ve o" },
+      text: { de: "Auf dem Sofa, eng beieinander. Lorîn, Evîn und Yemin liebten ihn sehr, und er liebte sie unendlich. Noch an seinem letzten Tag fragte er nach ihnen.", tr: "Kanepede, yan yana. Lorîn, Evîn ve Yemin onu çok severdi, o da onları sonsuz severdi. Son gününde bile onları sordu." } }
   ],
 
   // Gedenkrede: eine Karte mit Umschalter DE | TR.
@@ -158,12 +158,12 @@ window.MEMORIAL = {
   ],
 
   gallery: [
-    { src: "images/garten-sonnenuntergang.jpg", caption: { de: "Auf der Hochzeit in Frankfurt", tr: "Frankfurt'taki düğünde" } },
-    { video: "video/erinnerung.mp4", src: "video/erinnerung-poster.jpg", caption: { de: "Ein kleiner Moment", tr: "Küçük bir an" } },
-    { src: "images/einschulung.jpg", caption: { de: "Einschulung", tr: "Okulun ilk günü" } },
-    { src: "images/mit-der-kleinen.jpg", caption: { de: "Gemeinsam gemütlich", tr: "Birlikte, huzurla" } },
-    { src: "images/auf-dem-sofa.jpg", caption: { de: "Mit den Kleinsten", tr: "En küçüklerle" } },
-    { src: "images/mit-dem-baby.jpg", caption: { de: "Willkommen auf der Welt", tr: "Dünyaya hoş geldin" } }
+    { src: "images/garten-sonnenuntergang.jpg", caption: { de: "Mit Lorîn und Evîn auf der Hochzeit in Frankfurt", tr: "Frankfurt'taki düğünde Lorîn ve Evîn ile" } },
+    { video: "video/erinnerung.mp4", src: "video/erinnerung-poster.jpg", caption: { de: "Yemins Einschulung und Evîns erste Tage", tr: "Yemin'in okula başlaması ve Evîn'in ilk günleri" } },
+    { src: "images/einschulung.jpg", caption: { de: "Yemins Einschulung", tr: "Yemin okula başlıyor" } },
+    { src: "images/mit-der-kleinen.jpg", caption: { de: "Bei ihm waren die Kleinen zuhause", tr: "Küçükler onun yanında kendini evinde hissederdi" } },
+    { src: "images/auf-dem-sofa.jpg", caption: { de: "Mit Lorîn und Evîn", tr: "Lorîn ve Evîn ile" } },
+    { src: "images/mit-dem-baby.jpg", caption: { de: "Evîn, gerade erst auf der Welt", tr: "Daha yeni doğmuş Evîn" } }
   ],
 
   family: { de: "Devr-i Daim. Işıklar yoldaşın olsun. Die Familie Çınar", tr: "Devr-i Daim. Işıklar yoldaşın olsun. Çınar Ailesi" }
