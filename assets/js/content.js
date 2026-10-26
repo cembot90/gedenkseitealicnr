@@ -81,7 +81,7 @@ window.MEMORIAL = {
   memories: [
     { color: "amber", icon: "sun", image: "images/garten-sonnenuntergang.jpg",
       title: { de: "Zwei Prinzessinnen im Abendlicht", tr: "Akşam güneşinde iki prenses" },
-      text: { de: "Sonnenuntergang, frisches Gras und zwei Kleine auf dem Arm. Genau so wollen wir ihn in Erinnerung behalten. [Was war das für ein Tag?]", tr: "Gün batımı, taze çimen ve kucağında iki minik. Onu tam da böyle hatırlamak istiyoruz. [O gün neydi?]" } },
+      text: { de: "Auf einer Hochzeit in Frankfurt, die wir gemeinsam mit den Kleinen besucht haben. Die Sonne ging unter, und er hielt beide Babys im Arm, als wäre es das Selbstverständlichste der Welt. Genau so wollen wir ihn in Erinnerung behalten.", tr: "Minikler ile birlikte gittiğimiz Frankfurt'taki bir düğünde. Güneş batarken iki bebeği birden kucağına almıştı, sanki dünyanın en doğal şeyiymiş gibi. Onu tam da böyle hatırlamak istiyoruz." } },
     { color: "sea", icon: "star", image: "images/einschulung.jpg",
       title: { de: "Der große Schultag", tr: "Okulun ilk günü" },
       text: { de: "Die Schultüte fest im Arm, die Hand von Ali auf der Schulter. Stolz kann man nicht besser zeigen. [Wer ist auf dem Bild?]", tr: "Okul hediyesi sımsıkı kucakta, Ali'nin eli omzunda. Gurur ancak böyle gösterilir. [Fotoğrafta kimler var?]" } },
@@ -94,7 +94,7 @@ window.MEMORIAL = {
   ],
 
   // Gedenkrede: eine Karte mit Umschalter DE | TR.
-  // Zeitmarken (t, in Sekunden): DE aus der Textspur der Suno-Aufnahme, TR geschätzt bis die Aufnahme da ist.
+  // Zeitmarken (t, in Sekunden) aus den Textspuren der Suno-Aufnahmen.
   speeches: [
     {
       id: "gedenkrede",
@@ -127,23 +127,30 @@ window.MEMORIAL = {
         tr: {
           src: "audio/rede-tr.m4a",
           segments: [
-            { t: 0, text: "Sevgili ailem, sevgili dostlar,", translation: "Liebe Familie, liebe Freunde," },
-            { t: 3, text: "bir yıl önce vedalaştık.", translation: "vor einem Jahr haben wir Abschied genommen." },
-            { t: 6, text: "O gün dilimiz tutulmuştu, söylemek istediğimiz pek çok şey söylenmeden kaldı.", translation: "Damals waren wir sprachlos, und vieles, was wir sagen wollten, blieb ungesagt." },
-            { t: 12, text: "Bugün yeniden bir aradayız, yalnızca yasla değil, minnetle de.", translation: "Heute stehen wir wieder zusammen, nicht nur in Trauer, sondern auch in Dankbarkeit." },
-            { t: 18, text: "Ali Çınar çok söze ihtiyaç duymayan bir insandı.", translation: "Ali Çınar war ein Mensch, der nicht viele Worte brauchte." },
-            { t: 22, text: "Sevgisini yaptıklarıyla gösterirdi: alın teriyle, güvenilirliğiyle, gelen herkese açık olan kapısıyla.", translation: "Er zeigte seine Liebe durch das, was er tat: durch harte Arbeit, durch Verlässlichkeit, durch ein offenes Haus für jeden, der kam." },
-            { t: 29, text: "Kendini nadiren düşünür, bizi ise hep düşünürdü.", translation: "Er hat selten an sich gedacht und immer an uns." },
-            { t: 33, text: "Bir keresinde şöyle demişti: „Ömrümü yaşayamadan gittim.“", translation: "Er hat einmal gesagt: „Ömrümü yaşayamadan gittim.“" },
-            { t: 38, text: "Bu söz yüreğimizi yakıyor.", translation: "Dieser Satz tut weh." },
-            { t: 41, text: "Ama bugün etrafımıza baktığımızda, onun neler yarattığını görüyoruz.", translation: "Aber wenn wir uns heute hier umsehen, dann sehen wir, was er geschaffen hat." },
-            { t: 45, text: "Çocuklarını, kardeşlerini, ailesini görüyoruz.", translation: "Wir sehen seine Kinder, seine Geschwister, seine Familie." },
-            { t: 48, text: "Bize kazandırdığı değerleri görüyoruz.", translation: "Wir sehen die Werte, die er uns mitgegeben hat." },
-            { t: 51, text: "Belki kendi ömrünü tam yaşayamadı, ama onu bize armağan etti.", translation: "Vielleicht hat er sein eigenes Leben nicht ganz gelebt, aber er hat es uns geschenkt." },
-            { t: 57, text: "Memleketi Erzincan onu geri aldı.", translation: "Seine Heimat Erzincan hat ihn zurückbekommen." },
-            { t: 61, text: "Biz ise onu her sohbette, her anıda, onu hatırlatan her kahkahada yanımızda taşıyoruz.", translation: "Wir aber tragen ihn mit uns, in jedem Gespräch, in jeder Erinnerung, in jedem Lachen, das an ihn erinnert." },
-            { t: 68, text: "Sevgili Ali, canım babam: Seni unutmayacağız.", translation: "Lieber Ali, lieber Baba: Wir vergessen dich nicht." },
-            { t: 72, text: "Devr-i Daim. Işıklar yoldaşın olsun.", translation: "Devr-i Daim. Işıklar yoldaşın olsun." }
+            { t: 2.0, text: "Sevgili ailemiz, değerli dostlar, canlar,", translation: "Liebe Familie, liebe Freunde, ihr Lieben," },
+            { t: 9.0, text: "Bir yıl önce Ali Çınar'ı son yolculuğuna uğurladık.", translation: "Vor einem Jahr haben wir Ali Çınar auf seinem letzten Weg begleitet." },
+            { t: 15.8, text: "O gün dilimiz tutulmuştu.", translation: "An jenem Tag fehlten uns die Worte." },
+            { t: 19.3, text: "Söylemek istediğimiz nice söz yüreğimizde kaldı.", translation: "Vieles, was wir sagen wollten, blieb in unseren Herzen." },
+            { t: 26.6, text: "Bugün yeniden bir aradayız, yalnızca hüzünle değil, minnetle de.", translation: "Heute sind wir wieder zusammen, nicht nur in Trauer, sondern auch in Dankbarkeit." },
+            { t: 39.4, text: "Ali Çınar az konuşan, çok yapan bir insandı.", translation: "Ali Çınar war ein Mensch, der wenig sprach und viel tat." },
+            { t: 45.9, text: "Sevgisini sözle değil, emeğiyle gösterdi.", translation: "Seine Liebe zeigte er nicht mit Worten, sondern mit seiner Arbeit." },
+            { t: 54.2, text: "Alın teriyle, sözünün eri oluşuyla,", translation: "Mit dem Schweiß seiner Stirn, mit seiner Verlässlichkeit," },
+            { t: 59.7, text: "kapısını gelen herkese açık tutan cömertliğiyle.", translation: "mit der Großzügigkeit, die seine Tür für jeden offen hielt." },
+            { t: 66.6, text: "Kendini hep en sona koydu, önce bizi düşündü.", translation: "Sich selbst stellte er immer zuletzt, zuerst dachte er an uns." },
+            { t: 75.3, text: "Bir gün şöyle demişti: „Ömrümü yaşayamadan gittim.“", translation: "Eines Tages sagte er: „Ich bin gegangen, ohne mein Leben gelebt zu haben.“" },
+            { t: 81.2, text: "Bu söz hepimizin yüreğini yakıyor.", translation: "Dieser Satz brennt in unser aller Herzen." },
+            { t: 87.4, text: "Ama bugün etrafımıza baktığımızda, geride neler bıraktığını görüyoruz.", translation: "Doch wenn wir uns heute umsehen, sehen wir, was er hinterlassen hat." },
+            { t: 95.5, text: "Evlatlarını, kardeşlerini, koca bir aileyi görüyoruz.", translation: "Wir sehen seine Kinder, seine Geschwister, eine große Familie." },
+            { t: 103.8, text: "Bize öğrettiği değerleri görüyoruz.", translation: "Wir sehen die Werte, die er uns mitgegeben hat." },
+            { t: 109.9, text: "Belki kendi ömrünü doyasıya yaşayamadı,", translation: "Vielleicht konnte er sein eigenes Leben nicht in vollen Zügen leben," },
+            { t: 117.0, text: "ama o ömrü bize armağan etti.", translation: "aber er hat es uns geschenkt." },
+            { t: 126.5, text: "Doğduğu topraklar, Erzincan, onu bağrına bastı.", translation: "Erzincan, die Erde, in der er geboren wurde, hat ihn in ihre Arme geschlossen." },
+            { t: 132.2, text: "Biz ise onu her sohbetimizde, her hatıramızda,", translation: "Wir aber tragen ihn in jedem Gespräch, in jeder Erinnerung" },
+            { t: 146.3, text: "onu hatırlatan her gülüşte yanımızda taşıyoruz.", translation: "und in jedem Lachen, das an ihn erinnert, mit uns." },
+            { t: 156.1, text: "Ali'miz, babamız, kardeşimiz,", translation: "Unser Ali, unser Vater, unser Bruder," },
+            { t: 167.2, text: "seni hiç unutmayacağız.", translation: "wir werden dich niemals vergessen." },
+            { t: 174.2, text: "Devr-i daim olsun.", translation: "Devr-i Daim." },
+            { t: 179.1, text: "Işıklar yoldaşın olsun.", translation: "Mögen die Lichter dich begleiten." }
           ]
         }
       }
@@ -151,7 +158,7 @@ window.MEMORIAL = {
   ],
 
   gallery: [
-    { src: "images/garten-sonnenuntergang.jpg", caption: { de: "Im Garten bei Sonnenuntergang", tr: "Bahçede gün batımı" } },
+    { src: "images/garten-sonnenuntergang.jpg", caption: { de: "Auf der Hochzeit in Frankfurt", tr: "Frankfurt'taki düğünde" } },
     { video: "video/erinnerung.mp4", src: "video/erinnerung-poster.jpg", caption: { de: "Ein kleiner Moment", tr: "Küçük bir an" } },
     { src: "images/einschulung.jpg", caption: { de: "Einschulung", tr: "Okulun ilk günü" } },
     { src: "images/mit-der-kleinen.jpg", caption: { de: "Gemeinsam gemütlich", tr: "Birlikte, huzurla" } },

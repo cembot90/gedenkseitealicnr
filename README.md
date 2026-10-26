@@ -12,7 +12,7 @@ Statische Seite auf GitHub Pages (`https://cembot90.github.io/gedenkseitealicnr/
 | `assets/js/app.js` | Darstellung, Sprache, Musik, Reden-Player |
 | `assets/js/store.js` | Datenbank (Gedenkbuch, Kerzen) |
 | `assets/css/style.css` | Design |
-| `audio/` | `trauerlied.m4a` (Hintergrundmusik), `rede-de.m4a`, später `rede-tr.m4a` |
+| `audio/` | `trauerlied.m4a` (Hintergrundmusik), `rede-de.m4a`, `rede-tr.m4a` |
 | `images/` | Porträt und Galerie |
 | `firestore.rules` | Sicherheitsregeln der Datenbank |
 | `impressum.html`, `datenschutz.html` | Rechtstexte |
