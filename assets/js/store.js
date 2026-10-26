@@ -4,7 +4,7 @@
   - Besucher können Einträge nur ANLEGEN, nie ändern oder löschen (erzwungen in firestore.rules).
   - Einträge erscheinen sofort (approved:true). Spam blendet die Familie aus (approved:false) oder löscht ihn.
   - Serverseitige Pausenzeit pro Besucher (30 s) und Linksperre, siehe firestore.rules.
-  - App Check sorgt dafür, dass nur diese Webseite schreiben darf, nicht beliebige Skripte.
+  - Optional zuschaltbar: App Check (reCAPTCHA), falls trotzdem Spam auftaucht (siehe README).
   - Die Ausgabe erfolgt in app.js ausschließlich über textContent, eingeschleuster Code wird nie ausgeführt.
 */
 const cfg = window.FIREBASE_CONFIG || {};
@@ -31,7 +31,9 @@ if (!cfg.apiKey) {
     async addEntry(e) { await new Promise(r => setTimeout(r, 400)); entries.unshift({ ...e, date: new Date() }); el.forEach(cb => cb([...entries])); },
     onPhotos(cb) { cb([]); },
     async addPhoto() { await new Promise(r => setTimeout(r, 700)); /* Vorschau: nichts gespeichert, live erst nach Freigabe sichtbar */ },
-    async getPhoto() { return null; }
+    async getPhoto() { return null; },
+    onContent() {},
+    async getMedia() { return null; }
   });
 } else {
   /* ---------- Live mit Firebase ---------- */
@@ -50,6 +52,7 @@ if (!cfg.apiKey) {
   const guestbook = collection(db, "guestbook");
   const candles = collection(db, "candles");
   const photos = collection(db, "photos");
+  const mediaCache = new Map();
   const clean = (s, n) => String(s || "").replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, "").trim().slice(0, n);
 
   // Anonyme Anmeldung erst beim ersten Beitrag (nicht beim Seitenaufruf).
@@ -92,6 +95,18 @@ if (!cfg.apiKey) {
       onSnapshot(query(photos, where("approved", "==", true), orderBy("createdAt", "desc"), limit(120)),
         snap => cb(snap.docs.map(d => { const x = d.data(); return { id: d.id, name: clean(x.name, 60), caption: clean(x.caption, 140), thumb: String(x.thumb || "").startsWith("data:image/jpeg;base64,") ? x.thumb : "" }; }).filter(p => p.thumb)),
         err => { console.error(err); cb([]); });
+    },
+    // Inhalte aus der Verwaltung (admin.html); fehlt das Dokument, bleibt content.js maßgeblich
+    onContent(cb) {
+      onSnapshot(doc(db, "site", "content"), d => { if (d.exists() && d.data().content) cb(d.data().content); }, err => console.error(err));
+    },
+    // Bild aus der Mediathek, einmal geladen und dann zwischengespeichert
+    getMedia(id) {
+      if (!mediaCache.has(id)) mediaCache.set(id, getDoc(doc(db, "mediaData", id)).then(d => {
+        const v = d.exists() ? String(d.data().data || "") : "";
+        return v.startsWith("data:image/jpeg;base64,") ? v : null;
+      }).catch(e => { console.error(e); mediaCache.delete(id); return null; }));
+      return mediaCache.get(id);
     },
     async getPhoto(id) {
       const d = await getDoc(doc(db, "photoFull", id));

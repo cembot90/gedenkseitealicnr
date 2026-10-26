@@ -48,16 +48,23 @@ Einträge erscheinen sofort. Unpassendes in der Firebase-Konsole > Firestore > `
 
 ### Was die Sicherheit ausmacht
 
-- Besucher können nur neue Einträge anlegen, nie etwas ändern, löschen oder unfreigegebene Einträge lesen.
-- Länge und Felder werden serverseitig geprüft, unbekannte Felder werden abgelehnt.
-- Alle Texte werden als reiner Text angezeigt, eingeschleuster Code wird nie ausgeführt.
-- Content Security Policy erlaubt nur Skripte von dieser Seite und von Google/Firebase.
-- Suchmaschinen sind ausgeschlossen (`robots.txt`, `noindex`).
-- Es liegen keine geheimen Schlüssel im Repository.
+- Datenbankregeln (`firestore.rules`) erzwingen alles serverseitig: Besucher können nur anlegen, nie ändern, löschen oder Verborgenes lesen. Felder, Längen und Formate werden geprüft, Links abgelehnt, 30 Sekunden Pause pro Besucher.
+- Verwaltung nur mit Google-Konto `cembot90@gmail.com` (bestätigte E-Mail). Die Admin-Seite lässt sich nicht in fremde Seiten einbetten.
+- Alle Texte werden als reiner Text angezeigt (`textContent`), eingeschleuster Code wird nie ausgeführt. Bilder nur aus `images/`, `video/` oder der eigenen Mediathek.
+- Content Security Policy: Skripte nur von dieser Seite und `gstatic.com` (Firebase), Verbindungen nur zu Google-APIs, keine Inline-Skripte.
+- Keine Cookies, kein Tracking, Schriften lokal. Fotos ohne GPS-/Kameradaten, Audio/Video ohne Metadaten.
+- Kostenloser Spark-Tarif ohne Zahlungsdaten: Missbrauch kann keine Kosten verursachen.
+- Suchmaschinen: `noindex` auf allen Seiten.
+- Keine geheimen Schlüssel im Repository (der Firebase-`apiKey` ist öffentlich und per Website-Beschränkung gesichert).
 
-## Vorbereitet, noch nicht freigeschaltet: „Fotos mit Ali“
+## Verwaltung (`admin.html`)
+
+Übersicht, Inhalte (Editor DE/TR für Seitenkopf, Jahresgedenken, Lebensweg, Erinnerungen, Galerie), Mediathek, Freigaben, Gedenkbuch, Lichter, Einstellungen.
+Inhalte aus der Verwaltung liegen in Firestore (`site/content`) und überschreiben `content.js`; Fotos in `media`/`mediaData`. Audio und Video bleiben im Repo.
+
+## „Fotos mit Ali“ (in der Verwaltung unter Einstellungen einschaltbar)
 
 Besucher teilen Fotos, die erst nach Freigabe erscheinen (Verwaltung über `admin.html`, Google-Login nur für cembot90@gmail.com).
-Einschalten: in `content.js` `features.sharedPhotos` auf `true`, dann in Firebase die Regeln aus `firestore.rules` veröffentlichen,
+Vor dem Einschalten in Firebase die Regeln aus `firestore.rules` veröffentlichen,
 Index `photos` (approved aufsteigend, createdAt absteigend) anlegen, Google-Anmeldung aktivieren, `cembot90.github.io` als autorisierte Domain
 eintragen, `https://alicnr-ccf0a.firebaseapp.com/*` beim API-Schlüssel ergänzen und die auskommentierten Abschnitte in `datenschutz.html`/`impressum.html` aktivieren.

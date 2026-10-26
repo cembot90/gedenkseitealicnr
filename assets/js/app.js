@@ -18,7 +18,23 @@
     star: '<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9Z"/>',
     leaf: '<path d="M5 19c0-8 6-14 15-14 0 9-6 15-14 15"/><path d="M5 19 14 10"/>'
   };
-  const svgIcon = (name) => { const s = document.createElementNS("http://www.w3.org/2000/svg", "svg"); s.setAttribute("viewBox", "0 0 24 24"); s.setAttribute("aria-hidden", "true"); s.innerHTML = ICONS[name] || ICONS.star; return s; };
+  const svgIcon = (name) => { const s = document.createElementNS("http://www.w3.org/2000/svg", "svg"); s.setAttribute("viewBox", "0 0 24 24"); s.setAttribute("aria-hidden", "true"); s.innerHTML = Object.prototype.hasOwnProperty.call(ICONS, name) ? ICONS[name] : ICONS.star; return s; };
+
+  /* ---------- Bilder: Pfad im Repo oder "media:ID" aus der Mediathek ---------- */
+  // Nur eigene Dateien (images/, video/) oder Mediathek-IDs zulassen, nichts von fremden Servern
+  const SAFE_PATH = /^(images|video)\/[\w\-./]+\.(jpe?g|png|webp|mp4)$/i, SAFE_MEDIA = /^media:[A-Za-z0-9]{10,40}$/;
+  const safeSrc = v => { v = String(v || ""); return (SAFE_PATH.test(v) && !v.includes("..")) || SAFE_MEDIA.test(v) ? v : ""; };
+  function resolveSrc(src) {
+    src = safeSrc(src);
+    if (!src.startsWith("media:")) return Promise.resolve(src);
+    const S = window.MemorialStore;
+    return S && S.getMedia ? S.getMedia(src.slice(6)) : Promise.resolve(null);
+  }
+  function setImg(im, src) {
+    src = safeSrc(src); if (!src) return;
+    if (!src.startsWith("media:")) { im.src = src; return; }
+    resolveSrc(src).then(u => { if (u) im.src = u; });
+  }
 
   /* ---------- Rendering ---------- */
   function renderStatic() {
@@ -37,7 +53,14 @@
     $("#footFamily").textContent = L(M.family);
     document.title = (lang === "tr" ? "Anısına: " : "In Erinnerung an ") + p.name;
     const img = $(".portrait__img");
-    if (p.portrait) { img.style.backgroundImage = `url("${encodeURI(p.portrait)}")`; img.style.backgroundPosition = p.portraitPosition || "center"; }
+    if (p.portrait) {
+      img.style.backgroundPosition = p.portraitPosition || "center";
+      resolveSrc(p.portrait).then(u => { if (u) img.style.backgroundImage = `url("${u.startsWith("data:") ? u : encodeURI(u)}")`; });
+    }
+    // Schalter aus der Verwaltung
+    const shareOn = !!(M.features && M.features.sharedPhotos);
+    [$("#geteilt"), $(".menu a[href='#geteilt']")].forEach(n => { if (n) n.hidden = !shareOn; });
+    if (shareOn) subscribePhotos();
 
     // Seine Worte, Wort für Wort
     const line = $("#wordsLine"); line.replaceChildren();
@@ -74,8 +97,8 @@
       const st = el("div", "stage");
       st.append(el("div", "moment__glow"));
       if (m.image) {
-        const fr = el("div", "moment__frame"); const im = el("img"); im.src = m.image; im.alt = L(m.title); im.loading = "lazy"; im.decoding = "async";
-        fr.append(im); fr.addEventListener("click", () => openLightbox(m.image, L(m.title))); st.append(fr);
+        const fr = el("div", "moment__frame"); const im = el("img"); setImg(im, m.image); im.alt = L(m.title); im.loading = "lazy"; im.decoding = "async";
+        fr.append(im); fr.addEventListener("click", () => { if (im.src) openLightbox(im.src, L(m.title)); }); st.append(fr);
       }
       const cp = el("div", "moment__copy");
       const ic = el("span", "moment__icon"); ic.append(svgIcon(m.icon));
@@ -87,13 +110,14 @@
 
     // Galerie: Band, das beim Scrollen seitlich durchfährt
     const g = $("#gallery"); g.replaceChildren();
-    M.gallery.filter(ph => ph.src).forEach(ph => {
+    (M.gallery || []).filter(ph => safeSrc(ph.src)).forEach(ph => {
       const f = el("figure", "shot"); f.tabIndex = 0;
-      const im = el("img"); im.src = ph.src; im.alt = L(ph.caption); im.decoding = "async";
+      const im = el("img"); setImg(im, ph.src); im.alt = L(ph.caption); im.decoding = "async";
       im.addEventListener("load", () => { measure(); centerShot(); });
       f.append(im, el("figcaption", null, L(ph.caption)));
-      if (ph.video) { const pb = el("span", "shot__play"); pb.setAttribute("aria-hidden", "true"); f.append(pb); }
-      const open = () => openLightbox(ph.src, L(ph.caption), ph.video);
+      if (safeSrc(ph.video)) { const pb = el("span", "shot__play"); pb.setAttribute("aria-hidden", "true"); f.append(pb); }
+      const vid = safeSrc(ph.video);
+      const open = () => { if (im.src) openLightbox(im.src, L(ph.caption), vid); };
       f.addEventListener("click", open); f.addEventListener("keydown", e => { if (e.key === "Enter") open(); });
       g.append(f);
     });
@@ -302,9 +326,11 @@
   });
 
   /* ---------- Fotos mit Ali: teilen, erst nach Freigabe sichtbar ---------- */
-  // Noch nicht freigeschaltet: Bereich, Menüeintrag und Dialog entfernen
-  if (!(M.features && M.features.sharedPhotos)) {
-    ["#geteilt", "#shareDialog", ".menu a[href='#geteilt']"].forEach(sel => { const n = $(sel); if (n) n.remove(); });
+  let photosSubscribed = false;
+  function subscribePhotos() {
+    const S = window.MemorialStore;
+    if (photosSubscribed || !S || !S.onPhotos) return;
+    photosSubscribed = true; S.onPhotos(renderShared);
   }
   let lastShared = null;
   function renderShared(list) {
@@ -408,13 +434,22 @@
   });
   }
 
+  function applyContent(c) {
+    if (!c || typeof c !== "object") return;
+    ["intro", "anniversary", "timeline", "memories", "gallery", "family"].forEach(k => { if (c[k] !== undefined) M[k] = c[k]; });
+    if (c.person) Object.assign(M.person, c.person);
+    if (c.features) M.features = Object.assign({}, M.features, c.features);
+  }
+
   /* ---------- Store anbinden ---------- */
   function bindStore() {
     const S = window.MemorialStore; if (!S) return;
     $("#demoNote").hidden = !S.demo;
     S.onCandles(renderCandles);
     S.onEntries(renderEntries);
-    if (S.onPhotos && M.features && M.features.sharedPhotos) S.onPhotos(renderShared);
+    if (M.features && M.features.sharedPhotos) subscribePhotos();
+    // Inhalte aus der Verwaltung übernehmen und neu zeichnen
+    if (S.onContent) S.onContent(c => { applyContent(c); renderStatic(); });
   }
   if (window.MemorialStore) bindStore(); else window.addEventListener("memorial-store-ready", bindStore, { once: true });
 

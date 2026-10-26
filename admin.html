@@ -6,39 +6,65 @@
   <title>Verwaltung · Ali Çınar</title>
   <meta name="robots" content="noindex, nofollow, noarchive">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://apis.google.com; connect-src 'self' https://*.googleapis.com https://firestore.googleapis.com; frame-src https://alicnr-ccf0a.firebaseapp.com https://accounts.google.com; img-src 'self' data: https://*.googleusercontent.com; style-src 'self' 'unsafe-inline'; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
-  <link rel="stylesheet" href="assets/css/fonts.css?v=20261026e">
-  <link rel="stylesheet" href="assets/css/style.css?v=20261026e">
-  <link rel="stylesheet" href="assets/css/admin.css?v=20261026e">
+  <meta name="theme-color" content="#000000">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://apis.google.com; connect-src 'self' https://*.googleapis.com https://firestore.googleapis.com; frame-src https://alicnr-ccf0a.firebaseapp.com https://accounts.google.com; img-src 'self' data: blob: https://*.googleusercontent.com; style-src 'self' 'unsafe-inline'; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <link rel="stylesheet" href="assets/css/fonts.css?v=20261026h">
+  <link rel="stylesheet" href="assets/css/style.css?v=20261026h">
+  <link rel="stylesheet" href="assets/css/admin.css?v=20261026h">
 </head>
-<body class="admin">
-  <header class="admin__bar">
-    <a class="nav__name" href="index.html">Ali Çınar</a>
-    <span class="admin__who" id="who"></span>
-    <button class="btn btn--ghost admin__small" type="button" id="logout" hidden>Abmelden</button>
-  </header>
+<body class="adm">
 
-  <main class="admin__main">
-    <section id="login" class="admin__login">
-      <h1 class="h2">Verwaltung</h1>
-      <p class="sub">Hier gibst du geteilte Fotos frei und blendest Einträge aus. Zugang nur mit dem Google-Konto der Familie.</p>
-      <button class="btn btn--primary" type="button" id="loginBtn">Mit Google anmelden</button>
+  <!-- Anmeldung -->
+  <main class="login" id="login">
+    <div class="login__card">
+      <div class="login__mark" aria-hidden="true">AÇ</div>
+      <h1>Verwaltung</h1>
+      <p>Inhalte bearbeiten, Fotos freigeben, Gedenkbuch und Lichter pflegen. Zugang nur mit dem Google-Konto der Familie.</p>
+      <button class="btn btn--primary btn--wide" type="button" id="loginBtn">Mit Google anmelden</button>
       <p class="form-status" id="loginStatus" role="status"></p>
-    </section>
-
-    <div id="panel" hidden>
-      <nav class="admin__tabs" aria-label="Bereiche">
-        <button type="button" data-tab="pending" aria-pressed="true">Fotos zur Freigabe <span class="count" id="cPending"></span></button>
-        <button type="button" data-tab="approved" aria-pressed="false">Freigegebene Fotos <span class="count" id="cApproved"></span></button>
-        <button type="button" data-tab="book" aria-pressed="false">Gedenkbuch <span class="count" id="cBook"></span></button>
-        <button type="button" data-tab="candles" aria-pressed="false">Lichter <span class="count" id="cCandles"></span></button>
-      </nav>
-      <section class="admin__list" data-panel="pending"></section>
-      <section class="admin__list" data-panel="approved" hidden></section>
-      <section class="admin__list" data-panel="book" hidden></section>
-      <section class="admin__list" data-panel="candles" hidden></section>
+      <a class="login__back" href="index.html">Zur Gedenkseite</a>
     </div>
   </main>
+
+  <!-- Verwaltung -->
+  <div class="app" id="app" hidden>
+    <aside class="side">
+      <div class="side__brand"><span class="side__mark" aria-hidden="true">AÇ</span><span>Ali Çınar<small>Verwaltung</small></span></div>
+      <nav class="side__nav" aria-label="Bereiche">
+        <button type="button" data-view="home"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h13V10"/></svg>Übersicht</button>
+        <button type="button" data-view="content"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></svg>Inhalte</button>
+        <button type="button" data-view="media"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="14" rx="2.5"/><circle cx="9" cy="10" r="1.6"/><path d="m4 17 5-4.5 4 3.5 3-2.5 4 3.5"/></svg>Mediathek</button>
+        <button type="button" data-view="review"><svg viewBox="0 0 24 24"><path d="M5 12.5 9.5 17 19 7.5"/></svg>Freigaben<span class="badge" id="bReview"></span></button>
+        <button type="button" data-view="book"><svg viewBox="0 0 24 24"><path d="M5 4.5h11a3 3 0 0 1 3 3v12H8a3 3 0 0 1-3-3z"/><path d="M5 16.5a3 3 0 0 1 3-3h11"/></svg>Gedenkbuch<span class="badge badge--soft" id="bBook"></span></button>
+        <button type="button" data-view="candles"><svg viewBox="0 0 24 24"><path d="M12 3c1.5 2 2.5 3.4 2.5 5a2.5 2.5 0 0 1-5 0c0-1.6 1-3 2.5-5Z"/><rect x="10" y="12" width="4" height="9" rx="1"/></svg>Lichter<span class="badge badge--soft" id="bCandles"></span></button>
+        <button type="button" data-view="settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M5.6 18.4l1.8-1.8M16.6 7.4l1.8-1.8"/></svg>Einstellungen</button>
+      </nav>
+      <div class="side__foot">
+        <a href="index.html" target="_blank" rel="noopener">Seite ansehen</a>
+        <span class="side__who" id="who"></span>
+        <button type="button" class="linkbtn" id="logout">Abmelden</button>
+      </div>
+    </aside>
+
+    <main class="main" id="main" tabindex="-1"></main>
+
+    <div class="savebar" id="savebar" hidden>
+      <span>Ungespeicherte Änderungen</span>
+      <button type="button" class="btn btn--ghost" id="discard">Verwerfen</button>
+      <button type="button" class="btn btn--primary" id="publish">Veröffentlichen</button>
+    </div>
+  </div>
+
+  <!-- Bild aus der Mediathek wählen -->
+  <dialog class="dialog dialog--wide" id="pickDialog" aria-labelledby="pickTitle">
+    <div class="pick__head">
+      <h3 class="dialog__title" id="pickTitle">Bild wählen</h3>
+      <label class="btn btn--primary pick__upload">Neues Foto hochladen<input type="file" accept="image/*" multiple hidden id="pickUpload"></label>
+    </div>
+    <p class="hint" id="pickStatus"></p>
+    <div class="mgrid" id="pickGrid"></div>
+    <div class="dialog__actions"><button class="btn btn--ghost" type="button" id="pickClose">Abbrechen</button></div>
+  </dialog>
 
   <dialog id="lightbox" class="lightbox">
     <button class="lightbox__close" type="button" aria-label="Schließen">×</button>
@@ -47,7 +73,8 @@
   </dialog>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <script src="assets/js/config.js?v=20261026e"></script>
-  <script type="module" src="assets/js/admin.js?v=20261026e"></script>
+  <script src="assets/js/config.js?v=20261026h"></script>
+  <script src="assets/js/content.js?v=20261026h"></script>
+  <script type="module" src="assets/js/admin.js?v=20261026h"></script>
 </body>
 </html>
