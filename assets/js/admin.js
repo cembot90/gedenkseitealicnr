@@ -14,7 +14,7 @@ const [{ initializeApp }, fs, au] = await Promise.all([
   import(`${SDK}/firebase-firestore.js`),
   import(`${SDK}/firebase-auth.js`)
 ]);
-const { getFirestore, collection, doc, getDoc, setDoc, query, where, orderBy, limit, onSnapshot, updateDoc, deleteDoc, writeBatch, serverTimestamp } = fs;
+const { getFirestore, collection, doc, getDoc, getDocs, setDoc, query, where, orderBy, limit, onSnapshot, updateDoc, deleteDoc, writeBatch, serverTimestamp } = fs;
 
 const app = initializeApp(window.FIREBASE_CONFIG);
 const db = getFirestore(app);
@@ -465,8 +465,73 @@ function viewReview(main) {
   if (!state.approved.length) c2.append(el("p", "empty-admin", "Noch keine freigegebenen Fotos."));
   state.approved.forEach(d => c2.append(photoCard(d, false))); main.append(c2);
 }
+/* ---------- Sicherung und Erinnerungsheft ---------- */
+const isoOf = ts => ts?.toDate ? ts.toDate().toISOString() : "";
+const today = () => new Date().toISOString().slice(0, 10);
+async function allDocs(name, ...cond) {
+  // absteigend wie die vorhandenen Indizes, dann umdrehen: älteste zuerst
+  const s = await getDocs(query(collection(db, name), ...cond, orderBy("createdAt", "desc")));
+  return s.docs.map(d => ({ id: d.id, ...d.data() })).reverse();
+}
+function download(name, text, type) {
+  const url = URL.createObjectURL(new Blob([text], { type }));
+  const a = el("a"); a.href = url; a.download = name; document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
+async function backup(format) {
+  const [book, lights] = await Promise.all([allDocs("guestbook"), allDocs("candles")]);
+  const entries = book.map(x => ({ id: x.id, name: x.name || "", relation: x.relation || "", message: x.message || "", lang: x.lang || "", sichtbar: x.approved === true, datum: isoOf(x.createdAt) }));
+  const candles = lights.map(x => ({ id: x.id, name: x.name || "", datum: isoOf(x.createdAt) }));
+  if (format === "csv") {
+    // Mit BOM und Semikolon, damit Excel Umlaute und Spalten richtig erkennt
+    const q = v => `"${String(v).replace(/"/g, '""')}"`;
+    const rows = [["Art", "Datum", "Name", "Beziehung", "Text", "Sprache", "Sichtbar"].map(q).join(";")];
+    entries.forEach(e => rows.push(["Eintrag", e.datum, e.name, e.relation, e.message, e.lang, e.sichtbar ? "ja" : "nein"].map(q).join(";")));
+    candles.forEach(c => rows.push(["Licht", c.datum, c.name, "", "", "", "ja"].map(q).join(";")));
+    download(`gedenkbuch-ali-cinar-${today()}.csv`, "\uFEFF" + rows.join("\r\n"), "text/csv;charset=utf-8");
+  } else {
+    download(`gedenkbuch-ali-cinar-${today()}.json`, JSON.stringify({ gesichert: new Date().toISOString(), seite: "https://cembot90.github.io/gedenkseitealicnr/", gedenkbuch: entries, lichter: candles }, null, 2), "application/json");
+  }
+  return `${entries.length} Einträge und ${candles.length} Lichter gesichert.`;
+}
+async function printBooklet() {
+  const [book, lights] = await Promise.all([allDocs("guestbook", where("approved", "==", true)), allDocs("candles")]);
+  const M = window.MEMORIAL || {}, P = M.person || {};
+  const pb = $("#printBook"); pb.replaceChildren();
+  const fmt = new Intl.DateTimeFormat("de-DE", { day: "numeric", month: "long", year: "numeric" });
+  const cover = el("section", "pb__cover");
+  cover.append(el("p", "pb__lead", "In Erinnerung an · Anısına"), el("h1", "pb__name", P.name || "Ali Çınar"),
+    el("p", "pb__nick", "Baba, dayı, amca, kardeş"), el("p", "pb__dates", `${P.born || "01.02.1966"}  ·  ${P.died || "14.09.2025"}`),
+    el("p", "pb__devr", "Devr-i Daim. Işıklar yoldaşın olsun."));
+  pb.append(cover);
+  const sec = el("section", "pb__book"); sec.append(el("h2", null, "Gedenkbuch · Anı Defteri"));
+  if (!book.length) sec.append(el("p", "pb__meta", "Noch keine Einträge."));
+  book.forEach(x => {
+    const a = el("article", "pb__entry");
+    a.append(el("p", "pb__msg", x.message || ""), el("p", "pb__meta", [x.name || "Anonym", x.relation, x.createdAt?.toDate ? fmt.format(x.createdAt.toDate()) : ""].filter(Boolean).join("  ·  ")));
+    sec.append(a);
+  });
+  pb.append(sec);
+  const lt = el("section", "pb__lights");
+  lt.append(el("h2", null, "Lichter · Çerağlar"), el("p", "pb__meta", `${lights.length === 1 ? "Ein Licht wurde" : `${lights.length} Lichter wurden`} für Ali angezündet. Ali için ${lights.length} çerağ uyandırıldı.`));
+  const names = [...new Set(lights.map(x => (x.name || "").trim()).filter(Boolean))];
+  if (names.length) lt.append(el("p", "pb__names", names.join("  ·  ")));
+  pb.append(lt);
+  await document.fonts.ready;
+  print();
+}
+function bookTools() {
+  const w = el("div", "headbtns");
+  w.append(
+    button("btn btn--ghost", "Als Heft drucken", () => act(printBooklet)),
+    button("btn btn--ghost", "Sichern (JSON)", () => act(() => backup("json").then(toast))),
+    button("btn btn--ghost", "Als Tabelle (CSV)", () => act(() => backup("csv").then(toast)))
+  );
+  return w;
+}
+
 function viewBook(main) {
-  head(main, "Gedenkbuch", "Einträge erscheinen sofort. Ausgeblendete Einträge sieht nur die Verwaltung.");
+  head(main, "Gedenkbuch", "Einträge erscheinen sofort. Ausgeblendete Einträge sieht nur die Verwaltung. Sichere das Gedenkbuch ab und zu als Datei.", bookTools());
   const rows = el("div", "rows");
   if (!state.entries.length) rows.append(el("p", "empty-admin", "Noch keine Einträge."));
   state.entries.forEach(d => {

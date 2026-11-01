@@ -25,10 +25,11 @@ if (!cfg.apiKey) {
   const cl = new Set(), el = new Set();
   ready({
     demo: true,
-    onCandles(cb) { cl.add(cb); cb([...candles]); },
-    onEntries(cb) { el.add(cb); cb([...entries]); },
-    async addCandle(name) { candles.unshift({ name }); cl.forEach(cb => cb([...candles])); },
-    async addEntry(e) { await new Promise(r => setTimeout(r, 400)); entries.unshift({ ...e, date: new Date() }); el.forEach(cb => cb([...entries])); },
+    onCandles(cb) { cl.add(cb); cb([...candles], { more: false, total: candles.length }); },
+    onEntries(cb) { el.add(cb); cb([...entries], { more: false, total: entries.length }); },
+    async moreCandles() {}, async moreEntries() {},
+    async addCandle(name) { candles.unshift({ name }); cl.forEach(cb => cb([...candles], { more: false, total: candles.length })); },
+    async addEntry(e) { await new Promise(r => setTimeout(r, 400)); entries.unshift({ ...e, date: new Date() }); el.forEach(cb => cb([...entries], { more: false, total: entries.length })); },
     onPhotos(cb) { cb([]); },
     async addPhoto() { await new Promise(r => setTimeout(r, 700)); /* Vorschau: nichts gespeichert, live erst nach Freigabe sichtbar */ },
     async getPhoto() { return null; },
@@ -44,7 +45,7 @@ if (!cfg.apiKey) {
     import(`${SDK}/firebase-auth.js`),
     window.APPCHECK_SITE_KEY ? import(`${SDK}/firebase-app-check.js`) : Promise.resolve(null)
   ]);
-  const { getFirestore, collection, doc, getDoc, writeBatch, serverTimestamp, query, where, orderBy, limit, onSnapshot } = fs;
+  const { getFirestore, collection, doc, getDoc, getDocs, getCountFromServer, writeBatch, serverTimestamp, query, where, orderBy, limit, startAfter, onSnapshot } = fs;
 
   const app = initializeApp(cfg);
   if (ac) ac.initializeAppCheck(app, { provider: new ac.ReCaptchaV3Provider(window.APPCHECK_SITE_KEY), isTokenAutoRefreshEnabled: true });
@@ -86,21 +87,57 @@ if (!cfg.apiKey) {
     catch (e) { if (e && e.code === "permission-denied") { const err = new Error("rejected"); err.code = "rejected"; throw err; } throw e; }
   }
 
+  /*
+    Kontingent schonen (Spark-Tarif: 50.000 Lesevorgänge am Tag):
+    nur die neueste Seite wird live beobachtet, Älteres lädt "Weitere anzeigen" einmalig nach.
+    Die Gesamtzahl kommt aus einer Zählabfrage (1 Lesevorgang je 1.000 Dokumente).
+    cb(liste, { more: weitere vorhanden, total: Gesamtzahl oder null })
+  */
+  function paged(base, size, map, cb) {
+    const live = new Map(), older = new Map();
+    let hasMore = false, first = true, total = null;
+    const sorted = () => [...new Map([...older, ...live]).values()].sort((a, b) => b.t - a.t);
+    const emit = () => { const list = sorted(); cb(list.map(x => x.v), { more: hasMore, total: total == null ? null : Math.max(total, list.length) }); };
+    const item = d => ({ v: map(d), t: d.data().createdAt?.toMillis?.() ?? Date.now(), d });
+    getCountFromServer(base).then(r => { total = r.data().count; if (!first) emit(); }).catch(e => console.error(e));
+    onSnapshot(query(base, orderBy("createdAt", "desc"), limit(size)), snap => {
+      const newest = Math.max(0, ...[...live.values()].map(y => y.t));
+      snap.docChanges().forEach(ch => {
+        if (ch.type === "removed") {
+          const x = live.get(ch.doc.id); live.delete(ch.doc.id);
+          if (!x) return;
+          // Aus der ersten Seite gerutscht, weil Neueres dazukam: weiter zeigen. Sonst gelöscht oder ausgeblendet.
+          if (snap.size === size && x.t <= Math.min(...[...live.values()].map(y => y.t))) older.set(ch.doc.id, x);
+          else if (total != null) total--;
+        } else {
+          const it = item(ch.doc);
+          if (ch.type === "added" && !first && total != null && it.t >= newest) total++;
+          older.delete(ch.doc.id); live.set(ch.doc.id, it);
+        }
+      });
+      if (first) hasMore = snap.size === size;
+      first = false; emit();
+    }, err => { console.error(err); cb([], { more: false, total: null }); });
+    return async function more() {
+      const all = sorted(); if (!all.length) return;
+      const snap = await getDocs(query(base, orderBy("createdAt", "desc"), startAfter(all[all.length - 1].d), limit(size * 2)));
+      snap.docs.forEach(d => older.set(d.id, item(d)));
+      hasMore = snap.size === size * 2;
+      emit();
+    };
+  }
+  const mapEntry = d => {
+    const x = d.data();
+    return { name: clean(x.name, 60), relation: clean(x.relation, 60), message: clean(x.message, 1500), date: x.createdAt?.toDate?.() || null };
+  };
+  let moreCandles = null, moreEntries = null;
+
   ready({
     demo: false,
-    onCandles(cb) {
-      onSnapshot(query(candles, orderBy("createdAt", "desc"), limit(300)),
-        snap => cb(snap.docs.map(d => ({ name: clean(d.data().name, 40) }))),
-        err => { console.error(err); cb([]); });
-    },
-    onEntries(cb) {
-      onSnapshot(query(guestbook, where("approved", "==", true), orderBy("createdAt", "desc"), limit(200)),
-        snap => cb(snap.docs.map(d => {
-          const x = d.data();
-          return { name: clean(x.name, 60), relation: clean(x.relation, 60), message: clean(x.message, 1500), date: x.createdAt?.toDate?.() || null };
-        })),
-        err => { console.error(err); cb([]); });
-    },
+    onCandles(cb) { moreCandles = paged(candles, 36, d => ({ name: clean(d.data().name, 40) }), cb); },
+    moreCandles() { return moreCandles ? moreCandles() : Promise.resolve(); },
+    onEntries(cb) { moreEntries = paged(query(guestbook, where("approved", "==", true)), 15, mapEntry, cb); },
+    moreEntries() { return moreEntries ? moreEntries() : Promise.resolve(); },
     async addCandle(name) {
       await write(candles, { name: clean(name, 40), createdAt: serverTimestamp() });
     },

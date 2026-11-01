@@ -207,7 +207,8 @@ window.UI = {
     fError: "Das hat leider nicht geklappt. Bitte versuchen Sie es später erneut.", fRejected: "Nicht gespeichert. Bitte warten Sie kurz zwischen zwei Beiträgen und verzichten Sie auf Links.",
     fTooShort: "Bitte schreiben Sie ein paar Worte.",
     noEntries: "Noch keine Einträge. Sie können den ersten schreiben.",
-    music: "Musik", musicOn: "Musik pausieren", musicOff: "Musik abspielen",
+    music: "Musik", musicOn: "Musik pausieren", musicOff: "Musik abspielen", volume: "Lautstärke",
+    moreEntries: "Weitere Einträge anzeigen", moreCandles: "Weitere Lichter anzeigen", loading: "Wird geladen …",
     demo: "Vorschau: Einträge werden noch nicht gespeichert."
   },
   tr: {
@@ -241,7 +242,8 @@ window.UI = {
     fError: "Maalesef olmadı. Lütfen daha sonra tekrar deneyin.", fRejected: "Kaydedilmedi. Lütfen iki yazı arasında biraz bekleyin ve bağlantı eklemeyin.",
     fTooShort: "Lütfen birkaç kelime yazın.",
     noEntries: "Henüz yazı yok. İlk yazan siz olabilirsiniz.",
-    music: "Müzik", musicOn: "Müziği durdur", musicOff: "Müziği çal",
+    music: "Müzik", musicOn: "Müziği durdur", musicOff: "Müziği çal", volume: "Ses düzeyi",
+    moreEntries: "Daha fazla yazı göster", moreCandles: "Daha fazla çerağ göster", loading: "Yükleniyor …",
     demo: "Önizleme: yazılar henüz kaydedilmiyor."
   }
 };

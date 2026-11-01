@@ -31,12 +31,14 @@ Gedenkseite für **Ali Çınar** (01.02.1966 bis 14.09.2025, Erzincan), den vers
 
 ## Stand der Verwaltung (`admin.html`)
 
-Vorhanden: Übersicht, Inhalte (Editor DE/TR), Mediathek (Fotos), Freigaben, Gedenkbuch, Lichter, Einstellungen mit Wartungsmodus („Mit Passwort“ oder „Geschlossen“, PBKDF2-Hash in `site/gate`) und „Repo-Stand übernehmen“.
+Vorhanden: Übersicht, Inhalte (Editor DE/TR), Mediathek (Fotos), Freigaben, Gedenkbuch (mit Sicherung als JSON/CSV und druckbarem Erinnerungsheft), Lichter, Einstellungen mit Wartungsmodus („Mit Passwort“ oder „Geschlossen“, PBKDF2-Hash in `site/gate`) und „Repo-Stand übernehmen“.
 
 ## Technische Hinweise
 
 - Reine statische Seite ohne Build-Schritt. Kein Framework.
 - Nach Änderungen an CSS oder JS die Versionsnummer `?v=` in `index.html` (und ggf. `admin.html`) überall erhöhen.
 - Inhalte aus der Verwaltung (`site/content`) überschreiben `content.js`. Nach Inhaltsänderungen im Repo Cem darauf hinweisen, in der Verwaltung „Repo-Stand übernehmen“ zu tippen.
-- Fotos ohne GPS- und Kameradaten einchecken, Audio und Video ohne Metadaten.
+- Fotos ohne GPS- und Kameradaten einchecken, Audio und Video ohne Metadaten. Zu jedem neuen Foto in `images/` eine WebP-Fassung gleichen Namens anlegen (Qualität 80).
+- Firebase-Kontingent (Spark, 50.000 Lesevorgänge am Tag) schonen: keine großen Live-Abfragen auf der öffentlichen Seite, lieber kleine Seiten plus „Weitere anzeigen“ (siehe `paged()` in `store.js`).
+- Vorschau beim Teilen: `images/vorschau.jpg` und `og:`-Angaben in `index.html`; bei geändertem Porträt oder Namen mit anpassen.
 - Alle Seiten `noindex`. Keine Cookies, kein Tracking, Schriften lokal.

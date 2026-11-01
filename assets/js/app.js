@@ -30,8 +30,13 @@
     const S = window.MemorialStore;
     return S && S.getMedia ? S.getMedia(src.slice(6)) : Promise.resolve(null);
   }
+  // Fotos aus dem Repo: kleinere WebP-Fassung neben der JPG-Datei; fehlt sie, bleibt es beim JPG
   function setImg(im, src) {
     src = safeSrc(src); if (!src) return;
+    if (/\.jpe?g$/i.test(src)) {
+      im.addEventListener("error", function back() { im.removeEventListener("error", back); im.src = src; });
+      im.src = src.replace(/\.jpe?g$/i, ".webp"); return;
+    }
     if (!src.startsWith("media:")) { im.src = src; return; }
     resolveSrc(src).then(u => { if (u) im.src = u; });
   }
@@ -215,6 +220,15 @@
   const music = $("#bgMusic"); const musicBtn = $("#musicBtn");
   music.src = M.music.src; music.volume = M.music.volume; music.preload = "auto";
   let musicWanted = false, musicMissing = false, fadeTimer = null, userActed = false;
+  // Lautstärke: eigene Wahl wird auf dem Gerät gemerkt. iPhone/iPad erlauben das nicht (dort regeln die Tasten), dann kein Regler.
+  const canVolume = (() => { try { const a = new Audio(); a.volume = .5; return a.volume === .5; } catch { return false; } })();
+  const savedVol = parseFloat(store.get("vol"));
+  let userVol = savedVol >= 0 && savedVol <= 1 ? savedVol : M.music.volume;
+  const volBox = $("#volBox"), volRange = $("#volRange");
+  volRange.value = String(userVol);
+  volRange.addEventListener("input", () => {
+    userVol = parseFloat(volRange.value); clearInterval(fadeTimer); music.volume = userVol; store.set("vol", String(userVol));
+  });
   function fadeTo(target, ms = 900) {
     clearInterval(fadeTimer);
     const start = music.volume, steps = 30, d = (target - start) / steps; let i = 0;
@@ -224,7 +238,7 @@
     if (musicMissing) return false;
     musicWanted = true; updateMusicLabel();
     music.volume = 0;
-    try { await music.play(); fadeTo(M.music.volume, 2000); return true; }
+    try { await music.play(); fadeTo(userVol, 2000); return true; }
     catch (e) { musicWanted = false; updateMusicLabel(); if (e && e.name !== "NotAllowedError") musicMissing = true; return false; }
   }
   function stopMusic() {
@@ -236,6 +250,8 @@
     $("#musicLabel").textContent = musicWanted ? t("musicOn") : L(M.music.title);
     musicBtn.setAttribute("aria-pressed", String(musicWanted));
     musicBtn.setAttribute("aria-label", musicWanted ? t("musicOn") : t("musicOff"));
+    volBox.hidden = !(musicWanted && canVolume);
+    volRange.setAttribute("aria-label", t("volume"));
   }
   musicBtn.addEventListener("click", async () => {
     userActed = true;
@@ -249,7 +265,7 @@
   (window.GATE || Promise.resolve()).then(() => startMusic()).then(ok => {
     if (ok) return;
     const kick = (e) => {
-      if (e.target && e.target.closest && e.target.closest("#musicBtn, .play, .speech__lang")) return; // diese Knöpfe entscheiden selbst
+      if (e.target && e.target.closest && e.target.closest("#musicBtn, #volBox, .play, .speech__lang")) return; // diese Knöpfe entscheiden selbst
       ["pointerdown", "keydown", "touchend"].forEach(n => removeEventListener(n, kick, true));
       setTimeout(() => {
         const speechRunning = players.some(p => !p.audio.paused);
@@ -260,16 +276,27 @@
   });
 
   /* ---------- Kerzen ---------- */
-  let lastCandles = null;
-  function renderCandles(list) {
-    lastCandles = list;
+  let lastCandles = null, candleMeta = {};
+  // Knopf "Weitere anzeigen": lädt ältere Lichter bzw. Einträge einmalig nach (schont das Firebase-Kontingent)
+  function moreButton(key, loader) {
+    const b = el("button", "btn btn--ghost more", t(key)); b.type = "button";
+    b.addEventListener("click", async () => {
+      b.disabled = true; b.textContent = t("loading");
+      try { await loader(); } catch (e) { console.error(e); toast(t("fError")); b.disabled = false; b.textContent = t(key); }
+    });
+    return b;
+  }
+  function renderCandles(list, meta) {
+    lastCandles = list; if (meta) candleMeta = meta;
     const f = $("#candles"); f.replaceChildren();
+    $$("#kerzen .more").forEach(n => n.remove());
     if (!list) { $("#candleCount").textContent = ""; return; }
-    $("#candleCount").textContent = t("candlesCount", list.length);
-    list.slice(0, 120).forEach(c => {
+    $("#candleCount").textContent = t("candlesCount", candleMeta.total ?? list.length);
+    list.forEach(c => {
       const w = el("div", "cwrap"); const cd = el("span", "candle"); cd.append(el("span", "flame"));
       w.append(cd, el("span", "cname", c.name || "")); f.append(w);
     });
+    if (candleMeta.more) f.after(moreButton("moreCandles", () => window.MemorialStore.moreCandles()));
   }
   const dlg = $("#candleDialog");
   $$("[data-action='candle']").forEach(b => b.addEventListener("click", () => {
@@ -283,9 +310,9 @@
   });
 
   /* ---------- Gedenkbuch ---------- */
-  let lastEntries = null;
-  function renderEntries(list) {
-    lastEntries = list;
+  let lastEntries = null, entryMeta = {};
+  function renderEntries(list, meta) {
+    lastEntries = list; if (meta) entryMeta = meta;
     const box = $("#entries"); box.replaceChildren();
     if (!list) return;
     if (!list.length) { box.append(el("p", "empty", t("noEntries"))); return; }
@@ -299,6 +326,7 @@
       if (e.date) meta.append(el("span", "entry__date", df.format(e.date)));
       a.append(meta); box.append(a);
     });
+    if (entryMeta.more) box.append(moreButton("moreEntries", () => window.MemorialStore.moreEntries()));
   }
   const form = $("#bookForm"), status = $("#formStatus"), msg = form.elements.message;
   msg.addEventListener("input", () => { $("#msgCount").textContent = msg.value.length; });
