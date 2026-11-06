@@ -168,3 +168,27 @@ body.adm { min-height: 100svh; }
 .switchrow--flat { padding: 0; background: none; border-radius: 0; max-width: none; }
 .gatepanel { margin-top: 0; margin-bottom: 30px; }
 .settings__sub { display: block; margin: 0 0 12px; }
+
+/* ---------- Knöpfe im Kopf, Erinnerungsheft ---------- */
+.headbtns { display: flex; flex-wrap: wrap; gap: 10px; }
+.headbtns .btn { padding: 10px 18px; font-size: 15px; }
+.printbook { display: none; }
+@media print {
+  @page { size: A4; margin: 20mm 18mm; }
+  html, body.adm { background: #fff !important; color: #111 !important; }
+  body.adm > *:not(.printbook) { display: none !important; }
+  .printbook { display: block; font-family: 'Manrope', sans-serif; color: #111; }
+  .printbook h1, .printbook h2, .pb__msg { font-family: 'Cormorant Garamond', serif; }
+  .pb__cover { min-height: 240mm; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; break-after: page; }
+  .pb__lead { margin: 0 0 8mm; font-size: 12pt; letter-spacing: .08em; color: #6e6e73; }
+  .pb__name { margin: 0; font-size: 48pt; font-weight: 500; }
+  .pb__nick { margin: 6mm 0 0; font-size: 13pt; color: #424245; }
+  .pb__dates { margin: 10mm 0 0; font-size: 13pt; color: #424245; white-space: pre-wrap; }
+  .pb__devr { margin: 28mm 0 0; font-style: italic; font-size: 12pt; color: #6e6e73; }
+  .printbook h2 { margin: 0 0 8mm; font-size: 24pt; font-weight: 500; text-align: center; }
+  .pb__entry { break-inside: avoid; padding: 6mm 0; border-bottom: .3mm solid #d2d2d7; }
+  .pb__msg { margin: 0; font-size: 14pt; line-height: 1.45; white-space: pre-wrap; }
+  .pb__meta { margin: 3mm 0 0; font-size: 9.5pt; color: #6e6e73; white-space: pre-wrap; }
+  .pb__lights { break-before: page; text-align: center; }
+  .pb__names { margin: 8mm 0 0; font-size: 11pt; line-height: 1.9; color: #424245; }
+}

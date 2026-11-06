@@ -15,7 +15,7 @@ Statische Seite auf GitHub Pages (`https://cembot90.github.io/gedenkseitealicnr/
 | `admin.html`, `assets/js/admin.js` | Verwaltung |
 | `assets/css/style.css` | Design |
 | `audio/` | `trauerlied.m4a` (Hintergrundmusik), `rede-de.m4a`, `rede-tr.m4a` |
-| `images/` | Porträt und Galerie |
+| `images/` | Porträt und Galerie (je JPG und kleinere WebP-Fassung), `vorschau.jpg` für WhatsApp & Co. |
 | `firestore.rules` | Sicherheitsregeln der Datenbank |
 | `impressum.html`, `datenschutz.html` | Rechtstexte |
 | `manifest.webmanifest`, `icons/` | App-Symbol und Einstellungen für „Zum Home-Bildschirm“ |
@@ -27,6 +27,12 @@ Statische Seite auf GitHub Pages (`https://cembot90.github.io/gedenkseitealicnr/
 - Startet jemand die Rede oder das Video, stoppt die Musik; wieder an nur über den Musik-Knopf.
 - Die Gedenkrede hat einen Umschalter DE | TR. Sätze mit Startzeit in Sekunden stehen in `content.js`.
 - Nach Änderungen an CSS/JS die Versionsnummer `?v=` in `index.html` erhöhen, damit Browser die neue Fassung laden.
+
+## Ladezeit und Firebase-Kontingent
+
+- Der kostenlose Spark-Tarif erlaubt 50.000 Lesevorgänge am Tag. Die Seite lädt deshalb nur die neuesten 36 Lichter und 15 Einträge live, Älteres über „Weitere anzeigen“. Die Gesamtzahl der Lichter kommt aus einer Zählabfrage (1 Lesevorgang je 1.000 Lichter). Ein Besuch kostet so rund 55 statt bis zu 500 Lesevorgänge.
+- Fotos im Repo: neben jeder `*.jpg` eine `*.webp` gleichen Namens ablegen (ca. 30 % kleiner). Fehlt sie, zeigt die Seite das JPG.
+- Vorschau beim Teilen: `images/vorschau.jpg` (1200 × 630) und die `og:`-Angaben in `index.html`. WhatsApp speichert Vorschauen eine Weile zwischen; Änderungen erscheinen dort erst verzögert.
 
 ## Gedenkbuch absichern (einmalig, ca. 15 Minuten)
 
@@ -63,6 +69,7 @@ Einträge erscheinen sofort. Unpassendes in der Firebase-Konsole > Firestore > `
 ## Verwaltung (`admin.html`)
 
 Übersicht, Inhalte (Editor DE/TR für Seitenkopf, Jahresgedenken, Lebensweg, Erinnerungen, Galerie), Mediathek, Freigaben, Gedenkbuch, Lichter, Einstellungen.
+Im Gedenkbuch: „Sichern (JSON)“ und „Als Tabelle (CSV)“ laden alle Einträge und Lichter als Datei herunter (ab und zu machen, die Daten liegen sonst nur in Firebase). „Als Heft drucken“ erzeugt ein schlichtes Erinnerungsheft (Deckblatt, alle sichtbaren Einträge, Lichter), im Druckdialog „Als PDF speichern“ wählen.
 Inhalte aus der Verwaltung liegen in Firestore (`site/content`) und überschreiben `content.js`; Fotos in `media`/`mediaData`. Audio und Video bleiben im Repo.
 Wurden Inhalte im Repo geändert (z. B. durch Claude), unter Einstellungen „Repo-Stand übernehmen“ tippen, sonst bleiben die Verwaltungs-Inhalte sichtbar.
 
