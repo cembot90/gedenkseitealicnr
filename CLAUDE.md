@@ -19,6 +19,8 @@ Gedenkseite für **Ali Çınar** (01.02.1966 bis 14.09.2025, Erzincan), den vers
 - Alles **zweisprachig Deutsch und Türkisch**. Neue Texte immer in beiden Sprachen anlegen (`{ de: …, tr: … }` in `assets/js/content.js`).
 - Auf Türkisch ist Ali für die Familie **„Baba, dayı, amca, kardeş“** (deutsch: „Vater, Onkel, Bruder“).
 - Farben: **Grau, Silber, Schwarz**. Farbe nur bei fröhlichen Erinnerungen (Galerie: grau, Bild unter der Maus bzw. in der Mitte farbig). Die dezenten goldenen Akzente (Herz, Licht, App-Symbol „AÇ“, Verwaltung) sind bewusst so entschieden.
+- Schrift: Überschriften, Namen, Zitate und die Worte im Gedenkbuch in der Serifenschrift Cormorant Garamond (würdevoll, warm), Fließtext und Bedienelemente serifenlos. Kleine Zeilen über oder unter Überschriften in Großbuchstaben mit weitem Abstand. Keine fetten, technischen Überschriften.
+- Platzhalter in eckigen Klammern im Lebensweg (z. B. „[Jahr]“) blendet die Seite automatisch aus, bis sie in der Verwaltung ausgefüllt sind.
 - Suno-Reden (`audio/rede-de.m4a`, `audio/rede-tr.m4a`, Sätze mit Zeitmarken in `content.js`) und Hintergrundmusik (`audio/trauerlied.m4a`) sind eingebunden. Rechte (Suno Pro) stehen im Impressum.
 
 ## Sicherheit

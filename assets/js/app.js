@@ -55,6 +55,7 @@
     $("#places").textContent = L(p.places);
     $("#intro").textContent = L(M.intro);
     $("#footName").textContent = p.name;
+    $("#footDates").textContent = `${p.born}  ·  ${p.died}`;
     $("#footFamily").textContent = L(M.family);
     document.title = (lang === "tr" ? "Anısına: " : "In Erinnerung an ") + p.name;
     const img = $(".portrait__img");
@@ -88,10 +89,14 @@
 
     // Lebensweg
     const tl = $("#timeline"); tl.replaceChildren();
+    // Platzhalter in eckigen Klammern (noch nicht ausgefüllt) erscheinen nicht auf der Seite
+    const filled = v => String(v || "").replace(/\[[^\]]*\]/g, "").replace(/\s{2,}/g, " ").trim();
     M.timeline.forEach(item => {
-      const li = el("li", "tl");
-      li.append(el("div", "tl__year glow", item.year));
-      const b = el("div", "tl__body"); b.append(el("h3", null, L(item.title)), el("p", null, L(item.text)));
+      const year = filled(item.year), title = filled(L(item.title)), text = filled(L(item.text));
+      if (!text && !year) return;
+      const li = el("li", "tl" + (year ? "" : " tl--plain"));
+      if (year) li.append(el("div", "tl__year glow", year));
+      const b = el("div", "tl__body"); b.append(el("h3", null, title)); if (text) b.append(el("p", null, text));
       li.append(b); tl.append(li);
     });
 
